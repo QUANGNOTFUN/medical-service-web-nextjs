@@ -18,7 +18,7 @@ interface Poster {
 const posters: Poster[] = [
     {
         id: 1,
-        image: '/images/posters/poster1.jpg',
+        image: '/image/poster1.jpg',
         title: 'Khám sức khỏe miễn phí',
         description: 'Đăng ký ngay hôm nay để nhận ưu đãi khám tổng quát miễn phí!',
         ctaText: 'Đặt lịch ngay',
@@ -26,7 +26,7 @@ const posters: Poster[] = [
     },
     {
         id: 2,
-        image: '/images/posters/poster2.jpg',
+        image: '/image/poster2.jpg',
         title: 'Tư vấn online 24/7',
         description: 'Kết nối với bác sĩ mọi lúc, mọi nơi với dịch vụ tư vấn trực tuyến.',
         ctaText: 'Tìm hiểu thêm',
@@ -34,7 +34,7 @@ const posters: Poster[] = [
     },
     {
         id: 3,
-        image: '/images/posters/poster3.jpg',
+        image: '/image/poster3.jpg',
         title: 'Gói xét nghiệm hiện đại',
         description: 'Công nghệ tiên tiến, kết quả nhanh chóng trong 24h.',
         ctaText: 'Xem chi tiết',
