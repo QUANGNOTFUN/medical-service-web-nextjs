@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import ServiceCard from "../components/ServiceCard";
-import { motion } from "framer-motion";
 import DoctorCard from "../components/DoctorCard";
 
 export const metadata: Metadata = {
