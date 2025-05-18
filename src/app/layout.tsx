@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
-import PosterCarousel from "./components/Poster";
+import "./globals.css"
+import Header from "@/components/header/Header";
+import Footer from "../components/footer/Footer";
+import PosterCarousel from "@/components/silders/Poster";
 import { FC, ReactNode } from "react";
-import IconMessage from "@/app/components/IconMessage";
+import IconMessage from "@/components/icons/IconMessage";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -26,7 +26,7 @@ interface RootLayoutProps {
     children: ReactNode;
 }
 
-const RootLayout: FC<RootLayoutProps> = ({ children }) => {
+const HomeLayout: FC<RootLayoutProps> = ({ children }) => {
     return (
         <html lang="vi" className={`${geistSans.variable} ${geistMono.variable}`}>
         <body className="min-h-screen flex flex-col bg-gray-50">
@@ -41,4 +41,4 @@ const RootLayout: FC<RootLayoutProps> = ({ children }) => {
     );
 };
 
-export default RootLayout;
+export default HomeLayout;
