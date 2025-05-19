@@ -21,10 +21,11 @@ interface AdminSidebarProps {
 const AdminSidebar: React.FC<AdminSidebarProps> = ({ className = '' }) => {
   const sidebarItems: SidebarItem[] = [
     { title: 'Dashboard', href: '/management', icon: <DashboardIcon /> },
-    { title: 'Movies', href: '/management/movies', icon: <MoviesIcon /> },
-    { title: 'Users', href: '/management/users', icon: <UsersIcon /> },
-    { title: 'Bookings', href: '/management/bookings', icon: <BookingsIcon /> },
-    { title: 'Settings', href: '/management/settings', icon: <SettingsIcon /> },
+    { title: 'Danh sách bác sĩ', href: '/management/doctor', icon: <MoviesIcon /> },
+    { title: 'Danh sách bệnh nhân', href: '/management/patient', icon: <UsersIcon /> },
+    { title: 'Danh sách thuốc', href: '/management/medication', icon: <BookingsIcon /> },
+    { title: 'Danh sách tài liệu', href: '/management/document', icon: <BookingsIcon /> },
+    { title: 'Cài đặt', href: '/management/settings', icon: <SettingsIcon /> },
   ];
 
   return (
