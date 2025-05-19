@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css"
+import "../globals.css"
 import Header from "@/components/header/Header";
-import Footer from "../components/footer/Footer";
+import Footer from "../../components/footer/Footer";
 import PosterCarousel from "@/components/silders/Poster";
 import { FC, ReactNode } from "react";
 import IconMessage from "@/components/icons/IconMessage";
