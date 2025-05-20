@@ -3,7 +3,6 @@ import AdminSidebar from '@/components/sidebar/AdminSidebar';
 import '../globals.css';
 import {Geist, Geist_Mono} from "next/font/google";
 import type {Metadata} from "next";
-import AdminSearch from "@/components/searchs/AdminSearch";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -20,27 +19,22 @@ export const metadata: Metadata = {
   description: "Nền tảng quản lý sức khỏe, hỗ trợ đặt lịch khám và theo dõi bệnh án dễ dàng.",
 };
 
-export default function ManagementLayout({
+export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
   <html lang="vi" className={`${geistSans.variable} ${geistMono.variable}`}>
-  <body className="min-h-screen flex flex-col bg-gray-50">
-    <div className="flex min-h-screen">
+  <body className="bg-gray-50">
+    <div className="min-h-screen flex flex-row">
       <AdminSidebar />
 
       <main className="flex-1 p-6 overflow-auto bg-gray-100 dark:bg-gray-800 rounded-lg shadow-md">
-        <div className="flex flex-row justify-between mb-6">
-          <AdminSearch className=" mb-6"/>
-        </div>
-
         <div className="container mx-auto">
           {children}
         </div>
       </main>
-
     </div>
     </body>
   </html>

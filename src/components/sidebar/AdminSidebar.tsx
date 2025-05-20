@@ -18,16 +18,16 @@ interface AdminSidebarProps {
   className?: string;
 }
 
-const AdminSidebar: React.FC<AdminSidebarProps> = ({ className = '' }) => {
-  const sidebarItems: SidebarItem[] = [
-    { title: 'Dashboard', href: '/management', icon: <DashboardIcon /> },
-    { title: 'Danh sách bác sĩ', href: '/management/doctor', icon: <MoviesIcon /> },
-    { title: 'Danh sách bệnh nhân', href: '/management/patient', icon: <UsersIcon /> },
-    { title: 'Danh sách thuốc', href: '/management/medication', icon: <BookingsIcon /> },
-    { title: 'Danh sách tài liệu', href: '/management/document', icon: <BookingsIcon /> },
-    { title: 'Cài đặt', href: '/management/settings', icon: <SettingsIcon /> },
-  ];
+const sidebarItems: SidebarItem[] = [
+  { title: 'Dashboard', href: '/dashboard', icon: <DashboardIcon /> },
+  { title: 'Danh sách bác sĩ', href: '/management/doctors', icon: <MoviesIcon /> },
+  { title: 'Danh sách bệnh nhân', href: '/management/patients', icon: <UsersIcon /> },
+  { title: 'Danh sách thuốc', href: '/management/medications', icon: <BookingsIcon /> },
+  { title: 'Danh sách tài liệu', href: '/management/documents', icon: <BookingsIcon /> },
+  { title: 'Cài đặt', href: '/management/settings', icon: <SettingsIcon /> },
+];
 
+const AdminSidebar: React.FC<AdminSidebarProps> = ({ className = '' }) => {
   return (
     <aside className={`w-64 h-screen bg-gray-800 text-white ${className}`}>
       <div className="p-4 border-b border-gray-700">
