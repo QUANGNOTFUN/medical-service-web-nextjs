@@ -1,4 +1,6 @@
+import RegisterPage from "@/app/(auth)/register/page";
+
 const Register = () => {
-    return <Register />
+    return <RegisterPage />
 }
 export default Register;

@@ -71,6 +71,10 @@ export default function LoginPage() {
                         </p>
                     )}
                 </form>
+                <p className="text-sm mt-4 text-center">
+                    Chưa có tài khoản? <a href="/register" className="text-blue-600 hover:underline">Đăng ký</a>
+                </p>
+
             </div>
         </div>
     );
