@@ -13,7 +13,7 @@ const services = [
     { icon: '💻', title: 'Tư vấn online', description: 'Kết nối với bác sĩ mọi lúc, mọi nơi.' },
 ];
 
-const doctors = [
+const doctors =  [
     {
         image: '/image/doctor1.jpg',
         name: 'BS. Nguyễn Văn Hùng',

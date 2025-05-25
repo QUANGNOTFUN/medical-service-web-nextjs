@@ -1,5 +1,5 @@
 import { GraphQLClient } from "graphql-request";
-import {Medication} from "@/types/medications";
+import {CreateMedicationInput, Medication, UpdateMedicationInput} from "@/types/medications";
 
 const graphqlEndpoint = "http://localhost:3000/graphql";
 
