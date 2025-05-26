@@ -1,72 +1,61 @@
-import { GraphQLClient } from "graphql-request";
-import {Medication} from "@/types/medications";
+import { gql } from "@apollo/client";
 
-const graphqlEndpoint = "http://localhost:3000/graphql";
+export const SEARCH_MEDICATIONS = gql`
+	query SearchMedications($input: SearchMedicationsInput!) {
+	  searchMedications(input: $input) {
+	    id
+	    acronym
+	    name
+	    price
+	    available_quantity
+	  }
+	}
+`;
 
-export const graphQLClient = new GraphQLClient(graphqlEndpoint, {
-	headers: {},
-});
-
-export async function getMedications() {
-	const query = `
-    query {
-      medications {
-        id
-        acronym
-        name
-        price
-        available_quantity
-      }
+export const GET_MEDICATIONS = gql`
+  query GetMedications {
+    medications {
+      id
+      acronym
+      name
+      price
+      available_quantity
     }
-  `;
-	const data = await graphQLClient.request<{ medications: Medication[] }>(query);
-	return data.medications;
-}
+  }
+`;
 
-export async function getMedication(id: number) {
-	const query = `
-    query {
-      medication(id: ${id}) {
-        id
-        acronym
-        name
-        price
-        available_quantity
-      }
+export const GET_MEDICATION = gql`
+  query GetMedication($id: Int!) {
+    medication(id: $id) {
+      id
+      acronym
+      name
+      price
+      available_quantity
     }
-	`;
-	const data = await graphQLClient.request<{ medication: Medication }>(query);
-	return data.medication;
-}
+  }
+`;
 
-export async function createMedication(input: CreateMedicationInput) {
-	const query = `
-    mutation {
-      createMedication(input: ${JSON.stringify(input)}) {
-        id
-        acronym
-        name
-        price
-        available_quantity
-        }
-        }
-	`;
-	const data = await graphQLClient.request<{ createMedication: Medication }>(query);
-	return data.createMedication;
-}
+export const CREATE_MEDICATION = gql`
+  mutation CreateMedication($input: CreateMedicationInput!) {
+    createMedication(input: $input) {
+      id
+      acronym
+      name
+      price
+      available_quantity
+    }
+  }
+`;
 
-export async function updateMedication(input: UpdateMedicationInput) {
-	const query = `
-    mutation {
-      updateMedication(input: ${JSON.stringify(input)}) {
-        id
-        acronym
-        name
-        price
-        available_quantity
-        }
-        }
-	`;
-	const data = await graphQLClient.request<{ updateMedication: Medication }>(query);
-	return data.updateMedication;
-}
+export const UPDATE_MEDICATION = gql`
+  mutation UpdateMedication($input: UpdateMedicationInput!) {
+    updateMedication(input: $input) {
+      id
+      acronym
+      name
+      price
+      available_quantity
+    }
+  }
+`;

@@ -19,7 +19,7 @@ interface AdminSidebarProps {
 }
 
 const sidebarItems: SidebarItem[] = [
-  { title: 'Dashboard', href: '/dashboard', icon: <DashboardIcon /> },
+  { title: 'Dashboard', href: '/management', icon: <DashboardIcon /> },
   { title: 'Danh sách bác sĩ', href: '/management/doctors', icon: <MoviesIcon /> },
   { title: 'Danh sách bệnh nhân', href: '/management/patients', icon: <UsersIcon /> },
   { title: 'Danh sách thuốc', href: '/management/medications', icon: <BookingsIcon /> },
@@ -29,7 +29,7 @@ const sidebarItems: SidebarItem[] = [
 
 const AdminSidebar: React.FC<AdminSidebarProps> = ({ className = '' }) => {
   return (
-    <aside className={`w-64 h-screen bg-gray-800 text-white ${className}`}>
+    <aside className={`w-64 h-screen bg-gray-50 dark:bg-gray-800 text-black dark:text-white ${className}`}>
       <div className="p-4 border-b border-gray-700">
         <h2 className="text-xl font-bold">Admin Panel</h2>
       </div>
