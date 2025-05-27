@@ -1,4 +1,3 @@
-// app/components/Header.tsx
 "use client";
 
 import Link from "next/link";
@@ -10,7 +9,7 @@ export default function Header() {
 
     const navLinks = [
         { label: "Trang Chủ", href: "/" },
-        { label: "Bác Sĩ", href: "/doctors" },
+        { label: "Bác Sĩ", href: "/doctor" },
         { label: "Đặt Lịch", href: "/booking" },
         { label: "Liên Hệ", href: "/contact" },
     ];
