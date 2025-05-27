@@ -1,37 +1,30 @@
-"use client"; // Đánh dấu là Client Component để dùng usePathname
+"use client";
 
-import React from "react";
+import React, {ChangeEvent} from "react";
 import { usePathname } from "next/navigation";
 
-interface Placeholder {
-	name: string;
+const placeholderMap: Record<string, string> = {
+	"management/users": "Tìm kiếm người dùng",
+	"management/doctors": "Tìm kiếm bác sĩ",
+	"management/movies": "Tìm kiếm phim",
+	"management/bookings": "Tìm kiếm lịch khám",
+	"management/reservations": "Tìm kiếm đặt phòng",
+	"management/reports": "Tìm kiếm báo cáo",
+	"management/settings": "Tìm kiếm cài đặt",
 }
 
-const PlaceholderItems: Placeholder[] = [
-	{ name: "Nhập tên bác sĩ" },         // Index 0: /doctor
-	{ name: "Nhập tên bệnh nhân" },      // Index 1: /doctor/patients
-	{ name: "Nhập tên viết tắt của đơn thuốc" }, // Index 2: /doctor/dashboard
-	{ name: "Đơn hàng" },                // Index 3: Route khác (nếu có)
-];
+export interface AdminSearchProps {
+	placeholder?: string;
+	onSearch?: (term: string) => void;
+}
 
-export default function AdminSearch() {
+export default function AdminSearch({ placeholder: customPlaceholder, onSearch }: AdminSearchProps) {
 	const pathname = usePathname();
+	const placeholder = customPlaceholder || placeholderMap[pathname] || "Tìm kiếm";
 
-	// Ánh xạ route với placeholder
-	const getPlaceholder = () => {
-		switch (true) {
-			case pathname === "/management/doctor":
-				return PlaceholderItems[0].name;
-			case pathname === "/management/patient":
-				return PlaceholderItems[1].name;
-			case pathname === "/management/medication":
-				return PlaceholderItems[2].name;
-			default:
-				return PlaceholderItems[3].name; // Giá trị mặc định
-		}
-	};
-
-	const placeholder = getPlaceholder();
+	const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+		if (onSearch) onSearch(e.target.value)
+	}
 
 	return (
 		<div className="relative">
@@ -55,8 +48,11 @@ export default function AdminSearch() {
 			<input
 				type="text"
 				id="table-search-users"
-				className="block py-3 ps-10 text-base text-gray-900 border border-gray-300 rounded-lg w-90 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+				className="block py-3 ps-10 text-base text-gray-900 border border-gray-300 rounded-lg w-90
+					bg-gray-50 shadow-xl hover:border-gray-800 focus:outline-none focus:ring-1 focus:ring-violet-500 focus:border-violet-500
+					dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-300 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
 				placeholder={placeholder}
+				onChange={handleChange}
 			/>
 		</div>
 	);
