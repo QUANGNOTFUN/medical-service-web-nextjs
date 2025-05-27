@@ -1,37 +1,35 @@
 'use client';
 import { useMutation } from '@apollo/client';
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import LOGIN_MUTATION from '@/libs/graphqls/mutations';
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useSnackbar } from "notistack";
+
 
 export default function LoginPage() {
     const router = useRouter();
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const { enqueueSnackbar } = useSnackbar();
+    const {setLoading} = useLoading();
+    const { register, handleSubmit, formState: { errors } } = useForm();
 
-    const [login, { loading, error }] = useMutation(LOGIN_MUTATION);
+    const onSubmit = async (data: any) => {
+        console.log("data form=> ", data)
+        setLoading(true)
+        const res = await signIn('credentials', {
+            redirect: false,
+            email: data.email,
+            password: data.password
+        })
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        try {
-            const { data } = await login({
-                variables: {
-                    userData: {
-                        email,
-                        password,
-                    },
-                },
-            });
-
-            if (data?.login?.accessToken) {
-                localStorage.setItem('accessToken', data.login.accessToken);
-                localStorage.setItem('refreshToken', data.login.refreshToken);
-                router.push('/');
-            }
-        } catch (err) {
-            console.error('Login error:', err);
+        if (res?.error) {
+            console.log("err=> ", res.error)
+            setLoading(false);
+            enqueueSnackbar("Incorrect email or password!", { variant: 'error' })
+        } else {
+            router.push('/')
+            setLoading(false);
         }
-    };
+    }
 
     return (
         <div className="flex min-h-screen items-center justify-center bg-gray-100">
@@ -56,6 +54,7 @@ export default function LoginPage() {
                             onChange={(e) => setPassword(e.target.value)}
                             className="w-full px-4 py-2 mt-1 border rounded-md"
                             required
+                            minLength={6}
                         />
                     </div>
                     <button

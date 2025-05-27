@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState } from 'react';
@@ -14,7 +13,7 @@ export default function RegisterPage() {
         full_name: '',
         email: '',
         password: '',
-        gender: 'MALE',
+        gender: 'OTHER',
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -53,8 +52,10 @@ export default function RegisterPage() {
                     placeholder="Họ và tên"
                     value={form.full_name}
                     onChange={handleChange}
+                    pattern="^[A-Za-zÀ-ỹ\s]+$"
                     className="w-full px-4 py-2 border rounded-md"
                     required
+                    minLength={6}
                 />
 
                 <input
@@ -75,6 +76,7 @@ export default function RegisterPage() {
                     onChange={handleChange}
                     className="w-full px-4 py-2 border rounded-md"
                     required
+                    minLength={6}
                 />
 
                 <select
@@ -90,13 +92,15 @@ export default function RegisterPage() {
 
                 <button
                     type="submit"
-                    className="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700"
+                    className="w-full bg-yellow-600 text-white py-2 rounded-md hover:bg-yellow-500"
                     disabled={loading}
                 >
                     {loading ? 'Đang đăng ký...' : 'Đăng ký'}
                 </button>
-
                 {error && <p className="text-red-600 text-sm">Đăng ký thất bại: {error.message}</p>}
+                <p className="text-sm mt-4 text-center">
+                    Đã có tài khoản? <a href="/login" className="text-blue-600 hover:underline">Đăng nhập</a>
+                </p>
             </form>
         </div>
     );

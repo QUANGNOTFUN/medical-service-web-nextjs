@@ -1,6 +1,7 @@
 // src/app/layout.tsx
 import '../globals.css';
 import { Providers } from './providers';
+import React from "react";
 
 export const metadata = {
     title: 'Medical Service',
