@@ -1,80 +1,115 @@
-'use client';
-import { useMutation } from '@apollo/client';
-import React, { useState } from 'react';
+"use client";
+
+import { useForm } from "react-hook-form";
+import { getErrorMessage } from "@/app/utils/common";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useSnackbar } from "notistack";
+import { useLoading } from "@/app/context/loadingContext";
+import Link from "next/link";
+import { LockClosedIcon } from "@heroicons/react/24/solid"; // Thay thế biểu tượng
 
-
-export default function LoginPage() {
+const Login = () => {
     const router = useRouter();
     const { enqueueSnackbar } = useSnackbar();
-    const {setLoading} = useLoading();
+    const { setLoading } = useLoading();
     const { register, handleSubmit, formState: { errors } } = useForm();
 
     const onSubmit = async (data: any) => {
-        console.log("data form=> ", data)
-        setLoading(true)
-        const res = await signIn('credentials', {
+        setLoading(true);
+        const res = await signIn("credentials", {
             redirect: false,
             email: data.email,
-            password: data.password
-        })
+            password: data.password,
+        });
 
         if (res?.error) {
-            console.log("err=> ", res.error)
             setLoading(false);
-            enqueueSnackbar("Incorrect email or password!", { variant: 'error' })
+            enqueueSnackbar("Sai email hoặc mật khẩu", { variant: "error" });
         } else {
-            router.push('/')
+            router.push("/");
             setLoading(false);
         }
-    }
+    };
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-gray-100">
-            <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-md">
-                <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Đăng nhập</h2>
-                <form onSubmit={handleSubmit} className="space-y-5">
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Email</label>
-                        <input
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            className="w-full px-4 py-2 mt-1 border rounded-md"
-                            required
-                        />
+        <div className="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+            <div className="max-w-md w-full space-y-8 bg-white p-8 rounded shadow">
+                <div className="flex flex-col items-center">
+                    <div className="bg-blue-500 text-white rounded-full p-3">
+                        <LockClosedIcon className="h-6 w-6" />
                     </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Mật khẩu</label>
-                        <input
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            className="w-full px-4 py-2 mt-1 border rounded-md"
-                            required
-                            minLength={6}
-                        />
-                    </div>
-                    <button
-                        type="submit"
-                        className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700"
-                        disabled={loading}
-                    >
-                        {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
-                    </button>
-                    {error && (
-                        <p className="text-red-600 text-sm">
-                            Đăng nhập thất bại: {error.message}
-                        </p>
-                    )}
-                </form>
-                <p className="text-sm mt-4 text-center">
-                    Chưa có tài khoản? <a href="/register" className="text-blue-600 hover:underline">Đăng ký</a>
-                </p>
+                    <h2 className="mt-6 text-center text-2xl font-bold text-gray-900">
+                        Hãy đăng nhập vào tài khoản của bạn để tiếp tục
+                    </h2>
+                </div>
+                <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)} noValidate>
+                    <div className="space-y-4">
+                        <div>
+                            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                                Địa chỉ email
+                            </label>
+                            <input
+                                id="email"
+                                type="email"
+                                {...register("email", {
+                                    required: "Ô nhập email là bắt buộc",
+                                    pattern: {
+                                        value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                        message: "Vui lòng nhập đúng định dạng email"
+                                    }
+                                })}
+                                className={`mt-1 block w-full px-3 py-2 border ${
+                                    errors.email ? "border-red-500" : "border-gray-300"
+                                } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
+                            />
+                            {errors.email && (
+                                <p className="mt-1 text-sm text-red-600">{getErrorMessage(errors.email)}</p>
+                            )}
+                        </div>
 
+                        <div>
+                            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                                Password
+                            </label>
+                            <input
+                                id="password"
+                                type="password"
+                                {...register("password", {
+                                    required: "Ô nhập mật khẩu là bắt buộc",
+                                    minLength: {
+                                        value: 6,
+                                        message: "Mật khẩu phải có ít nhất 6 ký tự"
+                                    }
+                                })}
+                                className={`mt-1 block w-full px-3 py-2 border ${
+                                    errors.password ? "border-red-500" : "border-gray-300"
+                                } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
+                            />
+                            {errors.password && (
+                                <p className="mt-1 text-sm text-red-600">{getErrorMessage(errors.password)}</p>
+                            )}
+                        </div>
+                    </div>
+
+                    <div>
+                        <button
+                            type="submit"
+                            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none"
+                        >
+                            Đăng nhập
+                        </button>
+                    </div>
+
+                    <div className="text-sm text-right">
+                        <Link href="/register" className="text-blue-600 hover:underline">
+                            Không có tài khoản? Đăng ký ngay!!
+                        </Link>
+                    </div>
+                </form>
             </div>
         </div>
     );
-}
+};
+
+export default Login;

@@ -1,12 +1,12 @@
 import { ApolloClient, gql, InMemoryCache } from "@apollo/client";
-import { NextAuthOptions, User } from "next-auth";
+import { NextAuthOptions } from "next-auth";
 import NextAuth from "next-auth/next";
 import CredentialsProvider from 'next-auth/providers/credentials';
 
 const client = new ApolloClient({
     uri: process.env.GRAPHQL_API_URL,
     cache: new InMemoryCache(),
-})
+});
 
 const authOptions: NextAuthOptions = {
     providers: [
@@ -16,15 +16,16 @@ const authOptions: NextAuthOptions = {
                 email: { label: "Email", type: "email" },
                 password: { label: "Password", type: "password" }
             },
-            async authorize(credentials, req) {
+            async authorize(credentials,req) {
+                if (!credentials?.email || !credentials?.password) return null;
+
                 const mutation = gql`
-                    mutation Login($email:String!, $password:String!) {
-                        login(userData:{
-                            email:$email
-                            password:$password
-                        }){
-                            user{
-                                username
+                    mutation Login($email: String!, $password: String!) {
+                        login(userData: {
+                            email: $email,
+                            password: $password
+                        }) {
+                            user {
                                 email
                             }
                             accessToken
@@ -37,21 +38,20 @@ const authOptions: NextAuthOptions = {
                     const { data } = await client.mutate({
                         mutation,
                         variables: {
-                            email: credentials?.email,
-                            password: credentials?.password
+                            email: credentials.email,
+                            password: credentials.password
                         }
-                    })
-                    console.log("data=> ", data)
-                    if (data?.login) {
+                    });
+
+                    if (data?.login?.accessToken) {
                         return {
-                            name: data?.login.user.username,
-                            email: data?.login.user.email,
-                            accessToken: data?.login.accessToken
-                        } as User
+                            email: data.login.user.email,
+                            accessToken: data.login.accessToken,
+                        } as any;
                     }
                     return null;
                 } catch (error) {
-                    console.log("err=> ", error)
+                    console.error("Login error:", error);
                     return null;
                 }
             }
@@ -65,25 +65,20 @@ const authOptions: NextAuthOptions = {
         async jwt({ token, user }) {
             if (user) {
                 token.email = user.email;
-                token.name = user.name;
-                token.accessToken = user.accessToken;
+                token.accessToken = (user as any).accessToken;
             }
             return token;
         },
 
         async session({ session, token }) {
-            if (session.user) {
-                session.user = {
-                    email: token.email,
-                    name: token.name,
-                    accessToken: token.accessToken
-                }
-            }
-
+            session.user = {
+                email: token.email,
+                accessToken: token.accessToken,
+            };
             return session;
         },
     },
-}
+};
 
 const handler = NextAuth(authOptions);
 

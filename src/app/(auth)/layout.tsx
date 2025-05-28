@@ -1,18 +1,10 @@
-// src/app/layout.tsx
-import '../globals.css';
-import { Providers } from './providers';
-import React from "react";
+import PublicLayout from "@/app/(auth)/publicLayout";
+import {ReactNode} from "react";
 
-export const metadata = {
-    title: 'Medical Service',
-};
-
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-    return (
-        <html lang="en">
-        <body>
-        <Providers>{children}</Providers>
-        </body>
-        </html>
-    );
+const AppLayout = ({ children }: { children: ReactNode }) => {
+    return(
+    <PublicLayout>{children}</PublicLayout>
+    )
 }
+
+export default AppLayout;

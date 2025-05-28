@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { useRouter } from 'next/navigation';
-import REGISTER_MUTATION from "@/libs/graphqls/registerMutations";
+import REGISTER_MUTATION from "@/libs/graphqls/mutations/registerMutations";
 
 export default function RegisterPage() {
     const router = useRouter();
