@@ -6,7 +6,6 @@ import Footer from "../../components/footer/Footer";
 import PosterCarousel from "@/components/silders/Poster";
 import { FC, ReactNode } from "react";
 import IconMessage from "@/components/icons/IconMessage";
-
 const geistSans = Geist({
     variable: "--font-geist-sans",
     subsets: ["latin"],
@@ -30,12 +29,11 @@ const HomeLayout: FC<RootLayoutProps> = ({ children }) => {
     return (
         <html lang="vi" className={`${geistSans.variable} ${geistMono.variable}`}>
         <body className="min-h-screen flex flex-col bg-gray-50">
-        <Header />
-        <PosterCarousel />
-        <main className="flex-grow">{children}</main>
-        <Footer />
-        {/* Icon Message */}
-        <IconMessage isVisible={true} />
+            <Header />
+            <PosterCarousel />
+            <main className="flex-grow">{children}</main>
+            <Footer />
+            <IconMessage isVisible={true} />
         </body>
         </html>
     );
