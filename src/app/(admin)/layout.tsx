@@ -1,5 +1,5 @@
 import React from 'react';
-import AdminSidebar from '@/components/sidebar/AdminSidebar';
+import AdminSidebar from '@/app/(admin)/_components/sidebar/AdminSidebar';
 import '../globals.css';
 import {Geist, Geist_Mono} from "next/font/google";
 import type {Metadata} from "next";

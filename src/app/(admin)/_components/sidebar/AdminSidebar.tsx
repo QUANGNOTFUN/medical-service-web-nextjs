@@ -19,10 +19,10 @@ interface AdminSidebarProps {
 }
 
 const sidebarItems: SidebarItem[] = [
-  { title: 'Dashboard', href: '/management', icon: <DashboardIcon /> },
-  { title: 'Danh sách bác sĩ', href: '/management/doctors', icon: <MoviesIcon /> },
-  { title: 'Danh sách bệnh nhân', href: '/management/patients', icon: <UsersIcon /> },
-  { title: 'Danh sách thuốc', href: '/management/medications', icon: <BookingsIcon /> },
+  { title: 'Dashboard', href: '/admin-dashboard', icon: <DashboardIcon /> },
+  { title: 'Danh sách bác sĩ', href: '/doctor-manage', icon: <MoviesIcon /> },
+  { title: 'Danh sách bệnh nhân', href: '/patient-manage', icon: <UsersIcon /> },
+  { title: 'Danh sách thuốc', href: '/medication-manage', icon: <BookingsIcon /> },
   { title: 'Danh sách tài liệu', href: '/management/documents', icon: <BookingsIcon /> },
   { title: 'Cài đặt', href: '/management/settings', icon: <SettingsIcon /> },
 ];

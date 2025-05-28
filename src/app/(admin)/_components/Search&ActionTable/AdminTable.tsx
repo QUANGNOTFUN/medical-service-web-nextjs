@@ -1,43 +1,42 @@
-"use client"
-
 import { useState, useEffect } from "react";
 
-interface Header {
+export interface HeaderAdminTable {
 	label: string;
 	key: string;
 }
 
-interface Action {
-	type: "add" | "update" | "delete";
-	label?: string;
+export interface ActionAdminTable {
+	type:  "view" | "create" | "update" | "delete";
 	onClick?: () => void;
 }
 
-interface TableProps<T> {
-	headers: Header[];
+export interface AdminTableProps<T> {
+	headers: HeaderAdminTable[];
 	items: T[];
-	actions?: Action[];
+	action: ActionAdminTable;
 }
 
-const AdminTable = <T,>({ headers, items, actions = [] }: TableProps<T>) => {
+const AdminTable = <T,>(
+	{ headers, items, action }: AdminTableProps<T>
+) => {
 	const [isAdd, setIsAdd] = useState(false);
 	const [isUpdate, setIsUpdate] = useState(false);
 	const [isDelete, setIsDelete] = useState(false);
-	const [newItem, setNewItem] = useState<{ [key: string]: string}>({});
+	const [newItem, setNewItem] = useState<{ [key: string]: string }>({});
 
 	useEffect(() => {
-		setIsAdd(actions.some((action) => action?.type === "add"));
-		setIsUpdate(actions.some((action) => action?.type === "update"));
-		setIsDelete(actions.some((action) => action?.type === "delete"));
-	}, [actions]);
+		setIsAdd(action.type === "create");
+		setIsUpdate(action.type === "update");
+		setIsDelete(action.type === "delete");
+	}, [action]);
 
 	const handleInputChange = (key: string, value: string) => {
 		setNewItem((prev) => ({...prev, [key]: value}));
 	}
 
 	const handleAdd = () => {
-		const addAction = actions.find((a) => a.type === "add");
-		if (addAction?.onClick) addAction.onClick();
+		const addAction = action as AdminTableProps<T>["action"];
+		if (addAction?.type === "create") { addAction.onClick?.(); }
 		setNewItem({});
 		setIsAdd(false);
 	}
@@ -123,6 +122,7 @@ const AdminTable = <T,>({ headers, items, actions = [] }: TableProps<T>) => {
 							<td className={"py-1 px-4 text-center text-xs md:text-base hover:bg-violet-200 dark:hover:bg-gray-600 dark:hover:text-white"}>
 								{ isUpdate && (
 									<button
+										onClick={action.onClick}
 										className="py-2 px-4 rounded-xl  font-bold bg-violet-400 hover:bg-violet-500 text-gray-600 hover:text-gray-900
 											dark:bg-gray-900 dark:hover:bg-gray-700 dark:text-gray-100"
 									>

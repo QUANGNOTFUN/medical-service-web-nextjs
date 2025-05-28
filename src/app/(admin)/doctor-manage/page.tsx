@@ -1,8 +1,8 @@
 "use client"
 
-import AdminTable from "@/components/tables/AdminTable";
-import AdminSearch from "@/components/searchs/AdminSearch";
-import DropdownIcon from "@/components/dropdowns/DropdownIcon";
+import AdminTable from "@/app/(admin)/_components/Search&ActionTable/AdminTable";
+import TableSearch from "@/app/(admin)/_components/Search&ActionTable/TableSearch";
+import TableDropdownActions from "@/app/(admin)/_components/Search&ActionTable/TableDropdownActions";
 import {CircleEllipsis} from "lucide-react";
 
 const headers = [
@@ -19,9 +19,9 @@ export default function DoctorPage() {
 	return (
 		<div className={"flex flex-col"}>
 			<div className={"flex justify-between mb-4"}>
-				<AdminSearch />
+				<TableSearch />
 
-				<DropdownIcon icon={CircleEllipsis} items={[
+				<TableDropdownActions icon={CircleEllipsis} items={[
 					{ icon: CircleEllipsis, label: "Thêm", onClick: () => console.log("ChevronDown clicked")},
 					{ icon: CircleEllipsis, label: "Cập nhật", onClick: () => console.log("ChevronDown clicked")},
 					{ icon: CircleEllipsis, label: "Xóa", onClick: () => console.log("ChevronDown clicked")},

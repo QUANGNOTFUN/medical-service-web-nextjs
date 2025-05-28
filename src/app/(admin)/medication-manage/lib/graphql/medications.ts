@@ -59,3 +59,15 @@ export const UPDATE_MEDICATION = gql`
     }
   }
 `;
+
+export const DELETE_MEDICATION = gql`
+  mutation DeleteMedication($input: DeleteMedicationInput!) {
+    deleteMedication(input: $input) {
+      id
+      acronym
+      name
+      price
+      available_quantity
+    }
+  }
+`;

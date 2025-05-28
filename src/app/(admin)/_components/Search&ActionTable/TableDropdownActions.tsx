@@ -1,16 +1,36 @@
-"use client"
+import {ComponentType, useState} from "react";
+import {BadgePlus, LucideProps, Pencil, SettingsIcon, Trash2, View} from "lucide-react";
+import {ActionAdminTable} from "@/app/(admin)/_components/Search&ActionTable/AdminTable";
 
-import type DropdownIconsProps from "@/components/dropdowns/types/dropdown";
-import {useState} from "react";
-import {CircleEllipsis} from "lucide-react";
+interface DropdownItem {
+	icon: ComponentType<LucideProps>;
+	label: "Xem" | "Thêm" | "Sửa" | "Xóa";
+	type?: ActionAdminTable["type"];
+}
 
-export default function DropdownIcon(
-	{ items}: DropdownIconsProps
+export interface TableDropdownActionsProps {
+	icon?: ComponentType<LucideProps>;
+	items?: DropdownItem[];
+	onItemSelected?: (type: ActionAdminTable["type"]) => void;
+}
+
+export default function TableDropdownActions(
+	{ onItemSelected }: TableDropdownActionsProps
 ) {
+	const items: DropdownItem[] = [
+		{ icon: View, label: 'Xem', type: "view" },
+		{ icon: BadgePlus, label: "Thêm", type: "create" },
+		{ icon: Pencil, label: "Sửa", type: "update" },
+		{ icon: Trash2, label: "Xóa", type: "delete" },
+	]
 	const [isOpen, setIsOpen] = useState(false);
 
 	const handleToggle = () => {
 		setIsOpen(!isOpen)
+	}
+	const handleItemClick = (type: ActionAdminTable["type"]) => {
+		if (onItemSelected) onItemSelected(type);
+		setIsOpen(false);
 	}
 
 	return (
@@ -20,7 +40,7 @@ export default function DropdownIcon(
 				className={"flex items-center justify-center w-12 h-12 rounded-lg shadow-lg " +
 					"bg-gray-50 hover:bg-violet-200 focus:bg-violet-200 text-gray-700  hover:text-violet-500 focus:text-violet-500  " +
 					"dark:bg-gray-800 dark:hover:bg-gray-600 dark:focus:bg-gray-600 dark:text-gray-500 dark:hover:text-white dark:focus:text-white"}>
-					<CircleEllipsis className={"w-8 h-8"} />
+					<SettingsIcon className={"w-6 h-6"} />
 			</button>
 			{isOpen && (
 				<div
@@ -30,11 +50,10 @@ export default function DropdownIcon(
 					{items.map((item, index) => (
 						<div
 							key={index}
-							onClickCapture={handleToggle}
 							className={"flex flex-row mt-2 px-4 py-2 cursor-pointer shadow-lg rounded-lg " +
 								"bg-white hover:bg-violet-200 text-gray-700 hover:text-violet-500 " +
 					      "dark:bg-gray-800 dark:hover:bg-gray-600 dark:text-gray-300 dark:hover:text-white"}
-							onClick={item.onClick}
+							onClick={() => handleItemClick(item.type as ActionAdminTable["type"])}
 						>
 							{ item.icon && <item.icon className={"mr-2"} /> }
 							{ item.label }
