@@ -13,6 +13,9 @@ export default function Header() {
         { label: "Bác Sĩ", href: "/doctors" },
         { label: "Đặt Lịch", href: "/booking" },
         { label: "Liên Hệ", href: "/contact" },
+        { label: "Đăng nhập", href: "/login" },
+
+ 
     ];
 
     return (

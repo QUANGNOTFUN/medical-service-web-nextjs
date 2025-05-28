@@ -1,7 +1,6 @@
-export default function LoginPage() {
-    return (
-        <div>
-            <h1>Login Page</h1>
-        </div>
-    );
+import LoginPage from "./login";
+
+const Login = () => {
+    return <LoginPage />
 }
+export default LoginPage;
