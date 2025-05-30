@@ -3,6 +3,8 @@ import TableDropdownActions, {
 	TableDropdownActionsProps
 } from "@/app/(admin)/_components/Search&ActionTable/TableDropdownActions";
 import AdminTable, {AdminTableProps} from "@/app/(admin)/_components/Search&ActionTable/AdminTable";
+import DarkModeToggle from "@/components/toggles/DarkModeToogle";
+import React from "react";
 
 interface AdminTableLayoutProps {
 	searchProps: TableSearchProps;
@@ -17,6 +19,7 @@ export default function AdminTableLayout(
 			<div className={"flex flex-col"}>
 				<div className={"flex justify-between mb-4"}>
 					<TableSearch placeholder={searchProps.placeholder} onSearch={searchProps.onSearch} />
+					<DarkModeToggle />
 					<TableDropdownActions onItemSelected={dropdownProps.onItemSelected} />
 				</div>
 

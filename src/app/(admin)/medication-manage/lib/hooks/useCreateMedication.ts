@@ -8,8 +8,11 @@ export function useCreateMedication() {
 		{ input: CreateMedicationInput }
 	>(CREATE_MEDICATION);
 
+	const create = (input: CreateMedicationInput) =>
+		createMedication({variables: {input}});
+
 	return {
-		create: createMedication,
+		create,
 		data: data?.medication ?? null,
 		loading,
 		error

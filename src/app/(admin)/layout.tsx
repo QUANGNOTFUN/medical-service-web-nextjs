@@ -1,10 +1,8 @@
 import React from 'react';
-import AdminSidebar from '@/app/(admin)/_components/sidebar/AdminSidebar';
 import '../globals.css';
 import {Geist, Geist_Mono} from "next/font/google";
 import type {Metadata} from "next";
-import ApolloWrapper from "@/components/apollo/ApolloWrapper";
-import DarkModeToggle from "@/components/toggles/DarkModeToogle";
+import AdminClientWrapper from "@/app/(admin)/_components/AdminClientWrapper/AdminClientWrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,17 +27,9 @@ export default function AdminLayout({
   return (
   <html lang="vi" className={`${geistSans.variable} ${geistMono.variable}`}>
   <body className="min-h-screen">
-      <div className="min-h-screen flex flex-row">
-        <AdminSidebar />
-        <main className="flex-1 p-6 overflow-auto bg-gray-50 dark:bg-black shadow-md">
-          <DarkModeToggle />
-          <div className="container mx-auto p-4">
-            <ApolloWrapper>
-              {children}
-            </ApolloWrapper>
-          </div>
-        </main>
-      </div>
+      <AdminClientWrapper>
+        {children}
+      </AdminClientWrapper>
     </body>
   </html>
   );

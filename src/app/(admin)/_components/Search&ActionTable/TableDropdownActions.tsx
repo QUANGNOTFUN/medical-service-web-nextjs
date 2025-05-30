@@ -23,6 +23,7 @@ export default function TableDropdownActions(
 		{ icon: Pencil, label: "Sửa", type: "update" },
 		{ icon: Trash2, label: "Xóa", type: "delete" },
 	]
+
 	const [isOpen, setIsOpen] = useState(false);
 
 	const handleToggle = () => {
@@ -37,14 +38,14 @@ export default function TableDropdownActions(
 		<div className={"relative"}>
 			<button
 				onClick={handleToggle}
-				className={"flex items-center justify-center w-12 h-12 rounded-lg shadow-lg " +
+				className={"flex items-center justify-center w-12 h-12 outline outline-black/20 rounded-lg shadow-lg " +
 					"bg-gray-50 hover:bg-violet-200 focus:bg-violet-200 text-gray-700  hover:text-violet-500 focus:text-violet-500  " +
 					"dark:bg-gray-800 dark:hover:bg-gray-600 dark:focus:bg-gray-600 dark:text-gray-500 dark:hover:text-white dark:focus:text-white"}>
 					<SettingsIcon className={"w-6 h-6"} />
 			</button>
 			{isOpen && (
 				<div
-					className={"absolute right-0 w-48 p-2 mt-2 shadow-lg rounded-md " +
+					className={"absolute right-0 w-48 p-2 mt-2 outline outline-black/20 shadow-lg rounded-md " +
 					"bg-gray-50 dark:bg-gray-700 dark:text-gray-200 "}
 				>
 					{items.map((item, index) => (

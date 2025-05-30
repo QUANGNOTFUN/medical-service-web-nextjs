@@ -49,8 +49,8 @@ export const CREATE_MEDICATION = gql`
 `;
 
 export const UPDATE_MEDICATION = gql`
-  mutation UpdateMedication($input: UpdateMedicationInput!) {
-    updateMedication(input: $input) {
+  mutation UpdateMedication($id: Int!, $input: UpdateMedicationInput!) {
+    updateMedication(id: $id, input: $input) {
       id
       acronym
       name
@@ -61,8 +61,8 @@ export const UPDATE_MEDICATION = gql`
 `;
 
 export const DELETE_MEDICATION = gql`
-  mutation DeleteMedication($input: DeleteMedicationInput!) {
-    deleteMedication(input: $input) {
+  mutation DeleteMedication($id: Int!) {
+    deleteMedication(id: $id) {
       id
       acronym
       name
