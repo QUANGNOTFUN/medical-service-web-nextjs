@@ -16,6 +16,7 @@ import AdminForm from "@/app/(admin)/_components/Create&UpdateForm/AdminForm";
 import {useCreateMedication} from "@/app/(admin)/medication-manage/lib/hooks/useCreateMedication";
 import {useUpdateMedication} from "@/app/(admin)/medication-manage/lib/hooks/useUpdateMedication";
 import {useDeleteMedication} from "@/app/(admin)/medication-manage/lib/hooks/useDeleteMedication";
+import ConfirmationDialog from "@/app/(admin)/_components/dialog/ConfirmationDialog";
 
 export default function MedicationPage() {
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -38,11 +39,6 @@ export default function MedicationPage() {
   function handleSelectedId(id: number | null) {
     if (id !== null && id >= 0) {
       setSelectedId(id);
-
-      // handle action if type is deletion
-      if (selectedAction === "delete") {
-        handleDeleteSubmit().then(() => {});
-      }
     }
   }
 
@@ -70,11 +66,9 @@ export default function MedicationPage() {
   async function handleDeleteSubmit() {
     if (selectedId === null) return;
     try {
-      if (window.confirm("Bạn có chắc chắn muốn xóa thuốc này không?")) {
-        await deleteMedication(parseInt(String(selectedId)))
-        await refetchMedications()
-        handleAction("view") // clear form and selectedId after update
-      }
+      await deleteMedication(selectedId)
+      await refetchMedications()
+      handleAction("delete") // clear form and selectedId after update
     } catch (error) {
       console.error("Create medication error:", error);
     }
@@ -88,6 +82,7 @@ export default function MedicationPage() {
           onClose={() => handleAction("view")}
           onSubmit={handleCreateSubmit}
         />
+
       case "update":
         if (selectedId === null) return null;
         return <AdminForm
@@ -96,6 +91,17 @@ export default function MedicationPage() {
           onClose={() => handleAction("update")}
           onSubmit={handleUpdateSubmit}
         />
+
+      case "delete":
+        if (selectedId === null) return null;
+        return <ConfirmationDialog
+          isOpen={selectedAction === "delete"}
+          message={"Bạn có chắc chắn muốn xóa thuốc này không?"}
+          onClose={() => handleAction("delete")}
+          onConfirm={handleDeleteSubmit}
+          title={"Xác nhận xóa thuốc"}
+        />
+
       default:
         return null;
     }

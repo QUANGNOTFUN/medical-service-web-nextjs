@@ -6,14 +6,14 @@ export interface HeaderAdminTable {
 }
 
 export interface ActionAdminTable {
-	type:  "view" | "create" | "update" | "delete";
-	onClick?: (item: unknown) => void;
+	type:  "view" | "create" | "update" | "delete"; // action for a type of table
+	onClick?: (item: unknown) => void; // callback for action when click button
 }
 
 export interface AdminTableProps<T> {
-	headers: HeaderAdminTable[];
-	items: T[];
-	action: ActionAdminTable;
+	headers: HeaderAdminTable[]; // headers for table
+	items: T[]; // items for table
+	action: ActionAdminTable; // action for table
 }
 
 const AdminTable = <T,>(
@@ -43,6 +43,7 @@ const AdminTable = <T,>(
 								{header.label}
 							</th>
 						))}
+						{/*{ button for action with a type of table}*/}
 						{ (isUpdate || isDelete) && (
 							<th className={"w-fit py-3 px-4 text-center"}>
 								Hành động
@@ -70,7 +71,7 @@ const AdminTable = <T,>(
 								<td className={"max-w-20 border border-gray-300 py-1 px-4 text-center text-xs md:text-base hover:bg-violet-200 dark:hover:bg-gray-600 dark:hover:text-white"}>
 									<button
 										onClick={() => action.onClick && action.onClick(item[headers[0].key as keyof T])}
-										className={"container p-2 rounded-xl shadow-md outline outline-violet-500 bg-zinc-50 hover:bg-violet-300  hover:text-gray-50 dark:bg-gray-900 dark:hover:bg-gray-700 dark:text-gray-100"}
+										className={"container p-2 rounded-xl shadow-md outline outline-violet-500 dark:outline dark:outline-white/40 bg-zinc-50 hover:bg-violet-300  hover:text-gray-50 dark:bg-gray-900 dark:hover:bg-gray-700 dark:text-gray-100"}
 									>
 										{ isUpdate ? "Cập nhật" : "Xóa" }
 									</button>

@@ -52,7 +52,8 @@ export default function TableDropdownActions(
 						<div
 							key={index}
 							className={"flex flex-row mt-2 px-4 py-2 cursor-pointer shadow-lg rounded-lg " +
-								"bg-white hover:bg-violet-200 text-gray-700 hover:text-violet-500 " +
+								"outline outline-black/20 hover:outline-violet-500/80 dark:outline dark:outline-white/40 dark:hover:outline-white/80 " +
+								"bg-white hover:bg-violet-200 text-gray-700 hover:text-violet-500/80 " +
 					      "dark:bg-gray-800 dark:hover:bg-gray-600 dark:text-gray-300 dark:hover:text-white"}
 							onClick={() => handleItemClick(item.type as ActionAdminTable["type"])}
 						>
