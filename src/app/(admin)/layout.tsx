@@ -26,7 +26,7 @@ export default function AdminLayout({
 }) {
   return (
   <html lang="vi" className={`${geistSans.variable} ${geistMono.variable}`}>
-  <body className="min-h-screen">
+  <body>
       <AdminClientWrapper>
         {children}
       </AdminClientWrapper>

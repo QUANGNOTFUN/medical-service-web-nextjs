@@ -1,5 +1,7 @@
 import '../globals.css';
-import ApolloWrapper from "@/components/apollo/ApolloWrapper";
+import {LoadingProvider} from "@/app/context/loadingContext";
+import Providers from "../../../providers";
+import GlobalLoading from "@/components/loadings/globalLoading";
 
 export const metadata = {
     title: 'Medical Service',
@@ -9,7 +11,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     return (
         <html lang="vi">
         <body>
-        <ApolloWrapper>{children}</ApolloWrapper>
+        <Providers>
+            <LoadingProvider>
+                <GlobalLoading />
+                { children }
+            </LoadingProvider>
+        </Providers>
         </body>
         </html>
     );

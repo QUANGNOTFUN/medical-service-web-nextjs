@@ -39,6 +39,7 @@ export const apolloClient = new ApolloClient({
 		},
 		query: {
 			fetchPolicy: "cache-only",
+			errorPolicy: "all",
 		}
 	}
 });
