@@ -1,6 +1,6 @@
 import {useQuery} from "@apollo/client";
 import {Medication} from "@/types/medications";
-import {SEARCH_MEDICATIONS} from "@/app/(admin)/medication-manage/lib/graphql/medications";
+import {SEARCH_MEDICATIONS} from "@/libs/graphqls/medications";
 
 export function useSearchMedications(keyword: string) {
 	const {data, loading, error, refetch} = useQuery<{ searchMedications: Medication[] }>(SEARCH_MEDICATIONS, {

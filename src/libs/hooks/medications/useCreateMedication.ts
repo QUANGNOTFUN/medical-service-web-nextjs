@@ -1,5 +1,5 @@
 import {useMutation} from "@apollo/client";
-import {CREATE_MEDICATION} from "@/app/(admin)/medication-manage/lib/graphql/medications";
+import {CREATE_MEDICATION} from "@/libs/graphqls/medications";
 import {CreateMedicationInput, Medication} from "@/types/medications";
 
 export function useCreateMedication() {

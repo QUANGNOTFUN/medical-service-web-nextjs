@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { GET_MEDICATIONS } from "@/app/(admin)/medication-manage/lib/graphql/medications";
+import { GET_MEDICATIONS } from "@/libs/graphqls/medications";
 import { Medication } from "@/types/medications";
 
 export function useGetMedications() {

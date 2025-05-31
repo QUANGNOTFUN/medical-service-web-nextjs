@@ -1,7 +1,4 @@
-import {ActionAdminTable, HeaderAdminTable} from "@/app/(admin)/_components/Search&ActionTable/AdminTable";
-import {useCreateMedication} from "@/app/(admin)/medication-manage/lib/hooks/useCreateMedication";
-import {useUpdateMedication} from "@/app/(admin)/medication-manage/lib/hooks/useUpdateMedication";
-import {useDeleteMedication} from "@/app/(admin)/medication-manage/lib/hooks/useDeleteMedication";
+import {HeaderAdminTable} from "@/app/(admin)/_components/Search&ActionTable/AdminTable";
 import {CreateMedicationInput, UpdateMedicationInput} from "@/types/medications";
 import {AdminFormProps} from "@/app/(admin)/_components/Create&UpdateForm/AdminForm";
 

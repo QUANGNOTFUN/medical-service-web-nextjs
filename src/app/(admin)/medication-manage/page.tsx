@@ -1,8 +1,8 @@
 "use client"
 
 import {Loader} from "lucide-react";
-import {useGetMedications} from "@/app/(admin)/medication-manage/lib/hooks/useGetMedications";
-import {useSearchMedications} from "@/app/(admin)/medication-manage/lib/hooks/useSearchMedications";
+import {useGetMedications} from "@/libs/hooks/medications/useGetMedications";
+import {useSearchMedications} from "@/libs/hooks/medications/useSearchMedications";
 import {useState} from "react";
 import {
   HEADER_TABLE_MEDICATION,
@@ -13,9 +13,9 @@ import AdminTableLayout from "@/app/(admin)/_components/Search&ActionTable/Admin
 import {ActionAdminTable} from "@/app/(admin)/_components/Search&ActionTable/AdminTable";
 import {CreateMedicationInput, UpdateMedicationInput} from "@/types/medications";
 import AdminForm from "@/app/(admin)/_components/Create&UpdateForm/AdminForm";
-import {useCreateMedication} from "@/app/(admin)/medication-manage/lib/hooks/useCreateMedication";
-import {useUpdateMedication} from "@/app/(admin)/medication-manage/lib/hooks/useUpdateMedication";
-import {useDeleteMedication} from "@/app/(admin)/medication-manage/lib/hooks/useDeleteMedication";
+import {useCreateMedication} from "@/libs/hooks/medications/useCreateMedication";
+import {useUpdateMedication} from "@/libs/hooks/medications/useUpdateMedication";
+import {useDeleteMedication} from "@/libs/hooks/medications/useDeleteMedication";
 import ConfirmationDialog from "@/app/(admin)/_components/dialog/ConfirmationDialog";
 
 export default function MedicationPage() {

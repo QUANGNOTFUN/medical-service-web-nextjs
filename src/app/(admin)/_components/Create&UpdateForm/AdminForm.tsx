@@ -52,8 +52,7 @@ export default function AdminForm<T>({ initialData, title, fields, onClose, onSu
 		<div className={"fixed inset-0 bg-black/50 flex items-center justify-center z-50"}>
 			<div
 				ref={formRef}
-				className={`fixed top-20 left-1/2 bg-black/50 -translate-x-1/2
-        w-full max-w-xs sm:max-w-[20rem] md:max-w-[22rem] lg:max-w-[24rem] 
+				className={`relative w-full max-w-xs sm:max-w-[20rem] md:max-w-[22rem] lg:max-w-[24rem]
         transition-all duration-300 rounded-lg 
       `}
 			>
@@ -73,7 +72,7 @@ export default function AdminForm<T>({ initialData, title, fields, onClose, onSu
 					</button>
 				</div>
 
-				<form onSubmit={handleSubmit} className={"space-y-4 bg-white/90 dark:bg-gray-700 p-2 rounded-b-lg"}>
+				<form onSubmit={handleSubmit} className={"space-y-3 bg-white/90 dark:bg-gray-700 p-2 rounded-b-lg"}>
 					{fields.map((field) => (
 						<div key={String(field.key)} className={"flex flex-col bg-zinc-50 dark:bg-gray-800 hover:bg-zinc-100 hover:dark:bg-gray-500 outline outline-black/15 p-2 rounded-md shadow-lg"}>
 							<label className={"py-1 text-gray-700 dark:text-gray-200"}>{field.label}</label>
