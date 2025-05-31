@@ -1,7 +1,7 @@
 "use client";
 
-import { ReactNode } from "react";
-import { ApolloProvider } from "@apollo/client";
+import {ReactNode} from "react";
+import {ApolloProvider} from "@apollo/client";
 import {apolloClient} from "@/libs/apollo/client";
 
 interface DoctorsLayoutProps {

@@ -1,6 +1,5 @@
-import type { Metadata } from "next";
+import type {Metadata} from "next";
 import ServiceCard from "@/components/cards/ServiceCard";
-import DoctorCard from "@/components/cards/DoctorCard";
 
 export const metadata: Metadata = {
     title: "Trang Chủ - Y Tế Thông Minh",
@@ -13,20 +12,7 @@ const services = [
     { icon: '💻', title: 'Tư vấn online', description: 'Kết nối với bác sĩ mọi lúc, mọi nơi.' },
 ];
 
-const doctors =  [
-    {
-        image: '/image/doctor1.jpg',
-        name: 'BS. Nguyễn Văn Hùng',
-        specialty: 'Nội tổng quát',
-        description: 'Chuyên gia với hơn 15 năm kinh nghiệm trong khám và điều trị nội khoa.',
-    },
-    {
-        image: '/image/doctor2.jpg',
-        name: 'BS. Trần Thị Mai',
-        specialty: 'Nhi khoa',
-        description: 'Bác sĩ tận tâm, chuyên chăm sóc sức khỏe trẻ em.',
-    },
-];
+
 
 export default function HomePage() {
     return (
@@ -52,15 +38,7 @@ export default function HomePage() {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-200 text-center mb-8">Bác Sĩ Nổi Bật</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        {doctors.map((doctor, index) => (
-                            <DoctorCard
-                                key={index}
-                                image={doctor.image}
-                                name={doctor.name}
-                                specialty={doctor.specialty}
-                                description={doctor.description}
-                            />
-                        ))}
+
                     </div>
                 </div>
             </section>

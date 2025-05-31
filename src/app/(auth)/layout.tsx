@@ -1,5 +1,4 @@
 import '../globals.css';
-import { Providers } from './providers';
 import ApolloWrapper from "@/components/apollo/ApolloWrapper";
 
 export const metadata = {
@@ -8,7 +7,7 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
-        <html lang="en">
+        <html lang="vi">
         <body>
         <ApolloWrapper>{children}</ApolloWrapper>
         </body>

@@ -4,7 +4,7 @@ import { SessionProvider } from "next-auth/react"
 import { ReactNode } from "react"
 import { SnackbarProvider } from "notistack";
 import { ApolloProvider } from "@apollo/client";
-import {client} from "@/libs/apollo-client";
+import {apolloClient} from "@/libs/apollo/client";
 
 type ProvidersProps = {
   children: ReactNode
@@ -13,7 +13,7 @@ type ProvidersProps = {
 const Providers = ({ children }: ProvidersProps) => {
   return (
     <SessionProvider>
-      <ApolloProvider client={client}>
+      <ApolloProvider client={apolloClient}>
         <SnackbarProvider maxSnack={3} autoHideDuration={1000} anchorOrigin={{
           vertical: 'top',
           horizontal: 'right'
