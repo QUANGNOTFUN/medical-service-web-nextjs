@@ -1,6 +1,7 @@
-import LoginPage from "./login";
+import Login from "./login";
 
-const Login = () => {
-    return <LoginPage />
+const LoginPage = () => {
+    return <Login />
 }
+
 export default LoginPage;
