@@ -17,6 +17,7 @@ import {useCreateMedication} from "@/libs/hooks/medications/useCreateMedication"
 import {useUpdateMedication} from "@/libs/hooks/medications/useUpdateMedication";
 import {useDeleteMedication} from "@/libs/hooks/medications/useDeleteMedication";
 import ConfirmationDialog from "@/app/(admin)/_components/dialog/ConfirmationDialog";
+import {toast} from "react-toastify";
 
 export default function MedicationPage() {
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -46,6 +47,7 @@ export default function MedicationPage() {
     try {
       await createMedication(data)
       await refetchMedications()
+      toast.success("Tạo thành công", {toastId: "create-medication-success"})
       handleAction("view") // clear form after creation
     } catch (error) {
       console.error("Create medication error:", error);
@@ -57,6 +59,7 @@ export default function MedicationPage() {
     try {
       await updateMedication(selectedId, data)
       await refetchMedications()
+      toast.success("Cập nhật thành công", {toastId: "create-medication-success"})
       handleAction("update") // clear form and selectedId after update
     } catch (error) {
       console.error("Create medication error:", error);
@@ -68,6 +71,7 @@ export default function MedicationPage() {
     try {
       await deleteMedication(selectedId)
       await refetchMedications()
+      toast.success("Xóa thành công", {toastId: `create-medication-success-${selectedId}`})
       handleAction("delete") // clear form and selectedId after update
     } catch (error) {
       console.error("Create medication error:", error);
@@ -77,7 +81,7 @@ export default function MedicationPage() {
   const renderForm = () => {
     switch (selectedAction) {
       case "create":
-        return <AdminForm
+        return <AdminForm<CreateMedicationInput>
           { ...INIT_CREATE_MEDICATION_FORM }
           onClose={() => handleAction("view")}
           onSubmit={handleCreateSubmit}
@@ -85,7 +89,7 @@ export default function MedicationPage() {
 
       case "update":
         if (selectedId === null) return null;
-        return <AdminForm
+        return <AdminForm<UpdateMedicationInput>
           { ...INIT_UPDATE_MEDICATION_FORM }
           initialData={displayedMedications.find(medication => medication.id === selectedId)}
           onClose={() => handleAction("update")}

@@ -18,13 +18,13 @@ export const HEADER_TABLE_DOCTOR: HeaderAdminTable[] = [
 ]
 
 export const INIT_CREATE_DOCTOR_FORM: AdminFormProps<RegisterDoctorInput> = {
-	title: "Thêm mới thuốc",
+	title: "Thêm tài khoản bác sĩ",
 	fields: [
 		{ label: "Họ và tên", key: "full_name",  type: "text" },
 		{ label: "Email", key: "email", type: "text" },
 		{ label: "Mật khẩu", key: "password",  type: "password" },
-		{ label: "Giới tính", key: "gender",  type: "text" },
-		{ label: "Vai trò", key: "role",  type: "text" },
+		{ label: "Giới tính", key: "gender",  type: "select", options: ["MALE", "FEMALE", "OTHER"] },
+		{ label: "Vai trò", key: "role",  type: "select", options: ["DOCTOR", "ADMIN"] },
 	],
 	submitLabel: "Tạo"
 }
