@@ -1,4 +1,5 @@
 import { ApolloClient, gql, InMemoryCache } from "@apollo/client";
+import { jwtDecode } from "jwt-decode";
 import { NextAuthOptions } from "next-auth";
 import NextAuth from "next-auth/next";
 import CredentialsProvider from 'next-auth/providers/credentials';
@@ -41,35 +42,17 @@ const authOptions: NextAuthOptions = {
                     });
 
                     if (data?.login?.accessToken) {
+                        const decoded: any = jwtDecode(data.login.accessToken);
+
                         return {
                             email: credentials.email,
                             accessToken: data.login.accessToken,
+                            role: decoded.role,
                         } as any;
                     }
 
                 } catch (error: any) {
                     console.error("GraphQL Login error:", error?.networkError?.result?.errors);
-                    return null;
-                }
-
-                try {
-                    const { data } = await client.mutate({
-                        mutation,
-                        variables: {
-                            email: credentials.email,
-                            password: credentials.password
-                        }
-                    });
-                    console.log("GraphQL response data:", data);
-                    if (data?.login?.accessToken) {
-                        return {
-                            email: data.login.user.email,
-                            accessToken: data.login.accessToken,
-                        } as any;
-                    }
-                    return null;
-                } catch (error) {
-                    console.error("Login error:", error);
                     return null;
                 }
             }
@@ -84,6 +67,7 @@ const authOptions: NextAuthOptions = {
             if (user) {
                 token.email = user.email;
                 token.accessToken = user.accessToken;
+                token.role = user.role;
             }
             return token;
         },
@@ -92,6 +76,7 @@ const authOptions: NextAuthOptions = {
             session.user = {
                 email: token.email,
                 accessToken: token.accessToken,
+                role: token.role,
             };
             return session;
         },

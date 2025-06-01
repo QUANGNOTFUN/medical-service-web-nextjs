@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { LoadingProvider } from "./context/loadingContext";
 import React from "react";
 import Providers from "../../providers";
-import GlobalLoading from "@/components/loadings/globalLoading";
 import {Geist, Geist_Mono} from "next/font/google";
 
 const geistSans = Geist({
