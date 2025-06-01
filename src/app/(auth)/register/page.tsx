@@ -1,107 +1,160 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { useMutation } from '@apollo/client';
-import { useRouter } from 'next/navigation';
+import { useForm } from "react-hook-form";
+import { getErrorMessage } from "@/app/utils/common";
+import { useRouter } from "next/navigation";
+import { useSnackbar } from "notistack";
+import { useLoading } from "@/app/context/loadingContext";
+import { useMutation } from "@apollo/client";
+import React from "react";
 import REGISTER_MUTATION from "@/libs/graphqls/mutations/registerMutations";
 
-export default function RegisterPage() {
+const Register = () => {
     const router = useRouter();
-    const [register, { loading, error }] = useMutation(REGISTER_MUTATION);
+    const { enqueueSnackbar } = useSnackbar();
+    const { setLoading } = useLoading();
 
-    const [form, setForm] = useState({
-        full_name: '',
-        email: '',
-        password: '',
-        gender: 'OTHER',
-    });
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm();
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
-    };
+    const [registerUser] = useMutation(REGISTER_MUTATION);
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-
+    const onSubmit = async (data: any) => {
+        setLoading(true);
         try {
-            const { data } = await register({
-                variables: {
-                    userData: {
-                        ...form,
-                    },
-                },
-            });
+            const userData = {
+                ...data,
+                date_of_birth: data.date_of_birth || null,
+            };
+            console.log("Sending userData:", userData);
 
-            if (data?.register) {
-                alert('Đăng ký thành công!');
-                router.push('/login');
-            }
-        } catch (err) {
-            console.error('Đăng ký thất bại:', err);
+            await registerUser({ variables: { userData } });
+
+            enqueueSnackbar("Đăng ký thành công!", { variant: "success" });
+            router.push("/login");
+        } catch (error) {
+            enqueueSnackbar("Đăng ký thất bại!", { variant: "error" });
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-gray-100">
-            <form onSubmit={handleSubmit} className="bg-white p-8 rounded-xl shadow-md w-full max-w-md space-y-4">
-                <h2 className="text-2xl font-bold mb-4 text-center">Đăng ký</h2>
+        <div className="flex min-h-screen items-center justify-center bg-gray-100 px-4">
+            <form
+                onSubmit={handleSubmit(onSubmit)}
+                className="w-full max-w-md bg-white p-6 rounded shadow space-y-4"
+            >
+                <h2 className="text-2xl font-semibold text-center">Đăng ký</h2>
 
                 <input
-                    type="text"
-                    name="full_name"
+                    {...register("full_name", { required: "Họ tên không được để trống" })}
                     placeholder="Họ và tên"
-                    value={form.full_name}
-                    onChange={handleChange}
-                    pattern="^[A-Za-zÀ-ỹ\s]+$"
-                    className="w-full px-4 py-2 border rounded-md"
-                    required
-                    minLength={6}
+                    className="w-full border px-4 py-2 rounded"
                 />
+                {errors.full_name && (
+                    <p className="text-sm text-red-500">{getErrorMessage(errors.full_name)}</p>
+                )}
 
                 <input
-                    type="email"
-                    name="email"
+                    {...register("email", {
+                        required: "Email là bắt buộc",
+                        pattern: {
+                            value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                            message: "Email không hợp lệ",
+                        },
+                    })}
                     placeholder="Email"
-                    value={form.email}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border rounded-md"
-                    required
+                    type="email"
+                    className="w-full border px-4 py-2 rounded"
                 />
+                {errors.email && (
+                    <p className="text-sm text-red-500">{getErrorMessage(errors.email)}</p>
+                )}
 
                 <input
-                    type="password"
-                    name="password"
+                    {...register("password", {
+                        required: "Mật khẩu là bắt buộc",
+                        minLength: { value: 6, message: "Ít nhất 6 ký tự" },
+                    })}
                     placeholder="Mật khẩu"
-                    value={form.password}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border rounded-md"
-                    required
-                    minLength={6}
+                    type="password"
+                    className="w-full border px-4 py-2 rounded"
+                />
+                {errors.password && (
+                    <p className="text-sm text-red-500">{getErrorMessage(errors.password)}</p>
+                )}
+
+                <input
+                    {...register("phone", {
+                        pattern: {
+                            value: /^[0-9]{9,11}$/,
+                            message: "Số điện thoại không hợp lệ",
+                        },
+                    })}
+                    placeholder="Số điện thoại"
+                    className="w-full border px-4 py-2 rounded"
+                />
+                {errors.phone && (
+                    <p className="text-sm text-red-500">{getErrorMessage(errors.phone)}</p>
+                )}
+
+                <input
+                    {...register("address")}
+                    placeholder="Địa chỉ"
+                    className="w-full border px-4 py-2 rounded"
                 />
 
                 <select
-                    name="gender"
-                    value={form.gender}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border rounded-md"
+                    {...register("gender", { required: "Vui lòng chọn giới tính" })}
+                    className="w-full border px-4 py-2 rounded"
                 >
+                    <option value="">-- Chọn giới tính --</option>
                     <option value="MALE">Nam</option>
                     <option value="FEMALE">Nữ</option>
                     <option value="OTHER">Khác</option>
                 </select>
+                {errors.gender && (
+                    <p className="text-sm text-red-500">{getErrorMessage(errors.gender)}</p>
+                )}
+
+                <input
+                    {...register("date_of_birth")}
+                    type="date"
+                    className="w-full border px-4 py-2 rounded"
+                />
+
+                <select
+                    {...register("role", { required: "Vai trò là bắt buộc" })}
+                    className="w-full border px-4 py-2 rounded"
+                >
+                    <option value="USER">Người dùng</option>
+                    <option value="DOCTOR">Bác sĩ</option>
+                    <option value="ADMIN">Quản trị</option>
+                </select>
+                {errors.role && (
+                    <p className="text-sm text-red-500">{getErrorMessage(errors.role)}</p>
+                )}
 
                 <button
                     type="submit"
-                    className="w-full bg-yellow-600 text-white py-2 rounded-md hover:bg-yellow-500"
-                    disabled={loading}
+                    className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-500"
                 >
-                    {loading ? 'Đang đăng ký...' : 'Đăng ký'}
+                    Đăng ký
                 </button>
-                {error && <p className="text-red-600 text-sm">Đăng ký thất bại: {error.message}</p>}
-                <p className="text-sm mt-4 text-center">
-                    Đã có tài khoản? <a href="/login" className="text-blue-600 hover:underline">Đăng nhập</a>
+
+                <p className="text-center text-sm">
+                    Đã có tài khoản?{" "}
+                    <a href="/login" className="text-blue-600 hover:underline">
+                        Đăng nhập
+                    </a>
                 </p>
             </form>
         </div>
     );
-}
+};
+
+export default Register;
