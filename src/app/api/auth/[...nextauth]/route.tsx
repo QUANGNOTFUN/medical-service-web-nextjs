@@ -20,19 +20,37 @@ const authOptions: NextAuthOptions = {
                 if (!credentials?.email || !credentials?.password) return null;
 
                 const mutation = gql`
-                    mutation Login($email: String!, $password: String!) {
-                        login(userData: {
-                            email: $email,
-                            password: $password
-                        }) {
-                            user {
-                                email
-                            }
-                            accessToken
-                            refreshToken
-                        }
+                  mutation Login($email: String!, $password: String!) {
+                    login(userData: {
+                      email: $email
+                      password: $password
+                    }) {
+                      accessToken
+                      refreshToken
                     }
+                  }
                 `;
+
+                try {
+                    const { data, errors } = await client.mutate({
+                        mutation,
+                        variables: {
+                            email: credentials.email,
+                            password: credentials.password
+                        }
+                    });
+
+                    if (data?.login?.accessToken) {
+                        return {
+                            email: credentials.email,
+                            accessToken: data.login.accessToken,
+                        } as any;
+                    }
+
+                } catch (error: any) {
+                    console.error("GraphQL Login error:", error?.networkError?.result?.errors);
+                    return null;
+                }
 
                 try {
                     const { data } = await client.mutate({
@@ -42,7 +60,7 @@ const authOptions: NextAuthOptions = {
                             password: credentials.password
                         }
                     });
-
+                    console.log("GraphQL response data:", data);
                     if (data?.login?.accessToken) {
                         return {
                             email: data.login.user.email,
@@ -65,7 +83,7 @@ const authOptions: NextAuthOptions = {
         async jwt({ token, user }) {
             if (user) {
                 token.email = user.email;
-                token.accessToken = (user as any).accessToken;
+                token.accessToken = user.accessToken;
             }
             return token;
         },
