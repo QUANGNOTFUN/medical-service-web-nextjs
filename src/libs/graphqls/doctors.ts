@@ -5,13 +5,19 @@ export const GET_DOCTORS = gql`
     query GetDoctors {
         doctors {
             id
-            user_id
+            user {
+              id
+              email
+              full_name
+              phone
+              address
+              gender
+              date_of_birth
+            }
             qualifications
             work_seniority
             specialty
             hospital
-            created_at
-            updated_at
         }
     }
 `;
