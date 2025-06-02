@@ -8,7 +8,7 @@ export default function Header() {
     const [isOpen, setIsOpen] = useState(false);
 
     const navLinks = [
-        { label: "Trang Chủ", href: "/doctor-manage" },
+        { label: "Trang Chủ", href: "/admin-dashboard" },
         { label: "Bác Sĩ", href: "/doctor" },
         { label: "Đặt Lịch", href: "/booking" },
         { label: "Liên Hệ", href: "/contact" },

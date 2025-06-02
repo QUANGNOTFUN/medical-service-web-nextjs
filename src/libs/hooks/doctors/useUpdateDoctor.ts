@@ -1,6 +1,7 @@
 import {Reference, StoreObject, useMutation} from "@apollo/client";
 import {UPDATE_MEDICATION} from "@/libs/graphqls/medications";
 import {Medication, UpdateMedicationInput} from "@/types/medications";
+import {UpdateDoctorInput} from "@/types/doctors";
 
 export function useUpdateDoctor() {
 	const [updateMedication, {data, loading, error}] = useMutation<
@@ -23,7 +24,7 @@ export function useUpdateDoctor() {
 		},
 	});
 
-	const update =  (id: number, input: UpdateMedicationInput) =>
+	const update = (id: string, input: UpdateDoctorInput) =>
 		updateMedication({variables: {id, input}});
 
 	return {

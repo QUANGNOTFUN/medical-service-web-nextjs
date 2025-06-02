@@ -1,48 +1,49 @@
-import {HeaderAdminTable} from "@/app/(admin)/_components/Search&ActionTable/AdminTable";
-import {AdminFormProps} from "@/app/(admin)/_components/Create&UpdateForm/AdminForm";
-import {RegisterDoctorInput} from "@/types/register";
-import {UpdateMedicationInput} from "@/types/medications";
+import { HeaderAdminTable } from "@/app/(admin)/_components/Search&ActionTable/AdminTable";
+import { AdminFormProps } from "@/app/(admin)/_components/Create&UpdateForm/AdminForm";
+import { CreateDoctorInput, UpdateDoctorInput } from "@/types/doctors";
 
 export const HEADER_TABLE_DOCTOR: HeaderAdminTable[] = [
 	{ label: "ID", key: "id" },
-	{ label: "Email", key: "email" },
-	{ label: "Họ và tên", key: "full_name" },
-	{ label: "Số điện thoại", key: "phone" },
-	{ label: "Địa chỉ", key: "address" },
-	{ label: "Giới tính", key: "gender" },
-	{ label: "Ngày sinh", key: "date_of_birth" },
-	{ label: "Chứng ", key: "qualifications" },
-	{ label: "thâm niên làm việc", key: "work_seniority" },
+	{ label: "Email", key: "user.email" },
+	{ label: "Họ và tên", key: "user.full_name" },
+	{ label: "Số điện thoại", key: "user.phone" },
+	{ label: "Địa chỉ", key: "user.address" },
+	{ label: "Giới tính", key: "user.gender" },
+	{ label: "Ngày sinh", key: "user.date_of_birth" },
+	{ label: "Chứng chỉ", key: "qualifications" },
+	{ label: "Thâm niên làm việc", key: "work_seniority" },
 	{ label: "Chuyên ngành", key: "specialty" },
 	{ label: "Nơi làm việc", key: "hospital" },
-]
+];
 
-export const INIT_CREATE_DOCTOR_FORM: AdminFormProps<RegisterDoctorInput> = {
-	title: "Thêm mới thuốc",
+export const INIT_CREATE_DOCTOR_FORM = (users: { id: string, full_name: string, email: string }[]): AdminFormProps<CreateDoctorInput> => ({
+	title: "Thêm mới bác sĩ",
 	fields: [
-		{ label: "Họ và tên", key: "full_name",  type: "text" },
-		{ label: "Email", key: "email", type: "text" },
-		{ label: "Mật khẩu", key: "password",  type: "password" },
-		{ label: "Giới tính", key: "gender",  type: "text" },
-		{ label: "Vai trò", key: "role",  type: "text" },
+		{
+			label: "Chọn người dùng",
+			key: "user_id",
+			type: "select",
+			options: users.map(user => ({
+				label: `${user.full_name} (${user.email})`,
+				value: user.id,
+			}))
+		},
+		{ label: "Chứng chỉ", key: "qualifications", type: "text" },
+		{ label: "Thâm niên làm việc", key: "work_seniority", type: "number" },
+		{ label: "Chuyên ngành", key: "specialty", type: "text" },
+		{ label: "Nơi làm việc", key: "hospital", type: "text" },
 	],
-	submitLabel: "Tạo"
-}
+	submitLabel: "Tạo",
+});
 
-export const INIT_UPDATE_DOCTOR_FORM: AdminFormProps<UpdateMedicationInput> = {
-	title: "Cập nhật thuốc",
+
+export const INIT_UPDATE_DOCTOR_FORM: AdminFormProps<UpdateDoctorInput> = {
+	title: "Cập nhật bác sĩ",
 	fields: [
-		{ label: "ID", key: "id" },
-		{ label: "Email", key: "email" },
-		{ label: "Họ và tên", key: "full_name" },
-		{ label: "Số điện thoại", key: "phone" },
-		{ label: "Địa chỉ", key: "address" },
-		{ label: "Giới tính", key: "gender" },
-		{ label: "Ngày sinh", key: "date_of_birth" },
-		{ label: "Chứng ", key: "qualifications" },
-		{ label: "thâm niên làm việc", key: "work_seniority" },
-		{ label: "Chuyên ngành", key: "specialty" },
-		{ label: "Nơi làm việc", key: "hospital" },
+		{ label: "Chứng chỉ", key: "qualifications", type: "text" },
+		{ label: "Thâm niên làm việc", key: "work_seniority", type: "number" },
+		{ label: "Chuyên ngành", key: "specialty", type: "text" },
+		{ label: "Nơi làm việc", key: "hospital", type: "text" },
 	],
-	submitLabel: "Cập nhật"
-}
+	submitLabel: "Cập nhật",
+};

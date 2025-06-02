@@ -6,27 +6,29 @@ import AdminTableLayout from "@/app/(admin)/_components/Search&ActionTable/Admin
 import { ActionAdminTable } from "@/app/(admin)/_components/Search&ActionTable/AdminTable";
 import AdminForm from "@/app/(admin)/_components/Create&UpdateForm/AdminForm";
 import ConfirmationDialog from "@/app/(admin)/_components/dialog/ConfirmationDialog";
-import { HEADER_TABLE_DOCTOR, INIT_CREATE_DOCTOR_FORM } from "@/app/(admin)/doctor-manage/values/constants";
+import { HEADER_TABLE_DOCTOR, INIT_CREATE_DOCTOR_FORM, INIT_UPDATE_DOCTOR_FORM } from "@/app/(admin)/doctor-manage/values/constants";
 import { useGetDoctors } from "@/libs/hooks/doctors/useGetDoctors";
 import { useRegisterDoctor } from "@/libs/hooks/doctors/useCreateDoctor";
 import { useUpdateDoctor } from "@/libs/hooks/doctors/useUpdateDoctor";
-import { useDeleteDoctor } from "@/libs/hooks/doctors/useDeleteDoctor";
-import { RegisterDoctorInput, UpdateDoctorInput } from "@/types/doctors";
+import { CreateDoctorInput, UpdateDoctorInput } from "@/types/doctors";
+import {useDeleteDoctor} from "@/libs/hooks/doctors/userDeleteDoctor";
 
 export default function DoctorManagePage() {
 	const [searchTerm, setSearchTerm] = useState<string>("");
 	const [selectedAction, setSelectedAction] = useState<ActionAdminTable["type"]>("view");
-	const [selectedId, setSelectedId] = useState<number | null>(null);
+	const [selectedId, setSelectedId] = useState<string | null>(null);
 
 	const { doctors, loading: initLoading, error: errorDoctors, refetch: refetchDoctors } = useGetDoctors();
 	const { register: registerDoctor, loading: createLoading, error: errorCreate } = useRegisterDoctor();
 	const { update: updateDoctor, loading: updateLoading, error: errorUpdate } = useUpdateDoctor();
 	const { delete: deleteDoctor, loading: deleteLoading, error: errorDelete } = useDeleteDoctor();
 
-	const displayedDoctors = searchTerm ? doctors.filter(doctor =>
-		doctor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-		doctor.email.toLowerCase().includes(searchTerm.toLowerCase())
-	) : doctors;
+	const displayedDoctors = searchTerm
+		? doctors.filter(doctor =>
+			(doctor.user.full_name?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
+			(doctor.user.email?.toLowerCase() || "").includes(searchTerm.toLowerCase())
+		)
+		: doctors;
 
 	const loading = initLoading || createLoading || updateLoading || deleteLoading;
 	const error = errorDoctors || errorCreate || errorUpdate || errorDelete;
@@ -36,13 +38,13 @@ export default function DoctorManagePage() {
 		setSelectedId(null); // Clear selected item
 	}
 
-	function handleSelectedId(id: number | null) {
-		if (id !== null && id >= 0) {
+	function handleSelectedId(id: string | null) {
+		if (id !== null) {
 			setSelectedId(id);
 		}
 	}
 
-	async function handleCreateSubmit(data: RegisterDoctorInput) {
+	async function handleCreateSubmit(data: CreateDoctorInput) {
 		try {
 			await registerDoctor(data);
 			await refetchDoctors();
@@ -86,10 +88,17 @@ export default function DoctorManagePage() {
 				);
 			case "update":
 				if (selectedId === null) return null;
+				const selectedDoctor = displayedDoctors.find(doctor => doctor.id === selectedId);
+				if (!selectedDoctor) return null;
 				return (
 					<AdminForm
-						{...INIT_CREATE_DOCTOR_FORM}
-						initialData={displayedDoctors.find(doctor => doctor.id === selectedId)}
+						{...INIT_UPDATE_DOCTOR_FORM}
+						initialData={{
+							qualifications: selectedDoctor.qualifications,
+							work_seniority: selectedDoctor.work_seniority,
+							specialty: selectedDoctor.specialty,
+							hospital: selectedDoctor.hospital,
+						}}
 						onClose={() => handleAction("view")}
 						onSubmit={handleUpdateSubmit}
 					/>
@@ -127,7 +136,7 @@ export default function DoctorManagePage() {
 				tableProps={{
 					headers: HEADER_TABLE_DOCTOR,
 					items: displayedDoctors,
-					action: { type: selectedAction, onClick: (item) => handleSelectedId(item as number) },
+					action: { type: selectedAction, onClick: (item) => handleSelectedId(item as string) },
 				}}
 			/>
 		</div>

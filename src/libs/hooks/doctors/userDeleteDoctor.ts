@@ -24,7 +24,7 @@ export function useDeleteDoctor() {
         },
     });
 
-    const deleteFn = (id: number) =>
+    const deleteFn = (id: string) =>
         deleteDoctor({ variables: { id } });
 
     return {
