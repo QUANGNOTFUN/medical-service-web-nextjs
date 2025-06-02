@@ -1,6 +1,5 @@
 import type {Metadata} from "next";
 import ServiceCard from "@/components/cards/ServiceCard";
-import { useSession } from "next-auth/react";
 
 export const metadata: Metadata = {
     title: "Trang Chủ - Y Tế Thông Minh",

@@ -47,7 +47,7 @@ export default function Header() {
                             {/* Trigger */}
                             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-white text-sm font-medium text-gray-700 hover:bg-gray-100 cursor-pointer">
                                 <UserCircle className="w-5 h-5 text-gray-600" />
-                                {session.user.email?.split("@")[0]}
+                                {session.user.email}
                             </div>
 
                             {/* Dropdown - MUST be direct child and not hidden with `display: none` */}
@@ -57,10 +57,10 @@ export default function Header() {
                                 onMouseLeave={() => setIsOpen(false)}
                             >
                                 <Link
-                                    href="/account"
+                                    href="/profile"
                                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                                 >
-                                    Tài khoản
+                                    Hồ sơ khám
                                 </Link>
                                 <Link
                                     href="/booking"
@@ -70,7 +70,7 @@ export default function Header() {
                                 </Link>
                                 <button
                                     onClick={() => signOut()}
-                                    className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                    className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
                                 >
                                     Đăng xuất
                                 </button>
@@ -124,7 +124,7 @@ export default function Header() {
                             <button
                                 onClick={() => {
                                     setIsOpen(false);
-                                    signOut();
+                                    signOut()
                                 }}
                                 className="w-full text-left text-gray-700 hover:text-blue-600 font-medium"
                             >
