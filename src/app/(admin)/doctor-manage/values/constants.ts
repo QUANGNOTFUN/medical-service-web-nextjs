@@ -16,6 +16,13 @@ export const HEADER_TABLE_DOCTOR: HeaderAdminTable[] = [
 	{ label: "Nơi làm việc", key: "hospital" },
 ];
 
+export const HEADER_TABLE_USER: HeaderAdminTable[] = [
+	{ label: "ID", key: "id" },
+	{ label: "Email", key: "user.email" },
+	{ label: "Họ và tên", key: "user.full_name" },
+	{ label: "Số điện thoại", key: "user.phone" },
+];
+
 export const INIT_CREATE_DOCTOR_FORM = (users: { id: string, full_name: string, email: string }[]): AdminFormProps<CreateDoctorInput> => ({
 	title: "Thêm mới bác sĩ",
 	fields: [

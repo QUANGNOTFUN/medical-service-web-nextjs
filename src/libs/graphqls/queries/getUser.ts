@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
 export const GET_USER = gql`
-query GetAllUser(@id: Float!){
+query GetAllUser{
   getAllUsers(pagination: {page: 1, limit: 10}) {
     data {
       id

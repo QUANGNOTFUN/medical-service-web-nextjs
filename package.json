@@ -19,10 +19,11 @@
     "next": "^15.3.2",
     "next-auth": "^4.24.11",
     "notistack": "^3.0.2",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "react-draggable": "^4.4.6",
     "react-hook-form": "^7.56.4",
+    "react-table": "^7.8.0",
     "set-function-length": "^1.2.2"
   },
   "devDependencies": {
