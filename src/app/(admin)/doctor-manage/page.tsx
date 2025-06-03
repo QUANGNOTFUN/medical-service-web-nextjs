@@ -5,15 +5,18 @@ import { useState } from "react";
 import AdminTableLayout from "@/app/(admin)/_components/Search&ActionTable/AdminTableLayout";
 import { ActionAdminTable } from "@/app/(admin)/_components/Search&ActionTable/AdminTable";
 import ConfirmationDialog from "@/app/(admin)/_components/dialog/ConfirmationDialog";
-import { HEADER_TABLE_DOCTOR, INIT_UPDATE_DOCTOR_FORM } from "@/app/(admin)/doctor-manage/values/constants";
+import {
+  HEADER_TABLE_DOCTOR,
+  INIT_CREATE_DOCTOR_FORM,
+  INIT_UPDATE_DOCTOR_FORM
+} from "@/app/(admin)/doctor-manage/values/constants";
 import { useGetDoctors } from "@/libs/hooks/doctors/useGetDoctors";
 import { useRegisterDoctor } from "@/libs/hooks/doctors/useCreateDoctor";
 import { useUpdateDoctor } from "@/libs/hooks/doctors/useUpdateDoctor";
 import { useDeleteDoctor } from "@/libs/hooks/doctors/userDeleteDoctor";
-import { CreateDoctorInput, UpdateDoctorInput } from "@/types/doctors";
-import {useGetUsers} from "@/libs/hooks/user/useGetUser";
-import DoctorCreateTable from "@/app/(admin)/_components/Filter/DoctorCreateTable";
 import AdminForm from "@/app/(admin)/_components/Create&UpdateForm/AdminForm";
+import {RegisterDoctorInput} from "@/types/register";
+import {UpdateDoctorInput} from "@/types/doctors";
 
 export default function DoctorManagePage() {
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -21,7 +24,6 @@ export default function DoctorManagePage() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const { doctors, loading: initLoading, error: errorDoctors, refetch: refetchDoctors } = useGetDoctors();
-  const { users, loading: usersLoading, error: errorUsers } = useGetUsers();
   const { register: registerDoctor, loading: createLoading, error: errorCreate } = useRegisterDoctor();
   const { update: updateDoctor, loading: updateLoading, error: errorUpdate } = useUpdateDoctor();
   const { delete: deleteDoctor, loading: deleteLoading, error: errorDelete } = useDeleteDoctor();
@@ -33,8 +35,8 @@ export default function DoctorManagePage() {
       )
     : doctors;
 
-  const loading = initLoading || createLoading || updateLoading || deleteLoading || usersLoading;
-  const error = errorDoctors || errorCreate || errorUpdate || errorDelete || errorUsers;
+  const loading = initLoading || createLoading || updateLoading || deleteLoading ;
+  const error = errorDoctors || errorCreate || errorUpdate || errorDelete ;
 
   function handleAction(action: ActionAdminTable["type"]) {
     setSelectedAction(action);
@@ -47,11 +49,9 @@ export default function DoctorManagePage() {
     }
   }
 
-  async function handleCreateSubmit(data: CreateDoctorInput[]) {
+  async function handleCreateSubmit(data: RegisterDoctorInput) {
     try {
-      for (const item of data) {
-        await registerDoctor(item);
-      }
+      await registerDoctor(data);
       await refetchDoctors();
       handleAction("view");
     } catch (error) {
@@ -59,10 +59,12 @@ export default function DoctorManagePage() {
     }
   }
 
-  async function handleUpdateSubmit(data: UpdateDoctorInput) {
-    if (selectedId === null) return;
+
+  async function handleUpdateSubmit(formData: UpdateDoctorInput) {
+    if (!selectedId) return;
     try {
-      await updateDoctor(selectedId, data);
+      // Gửi thẳng formData lên server, không cần check gì
+      await updateDoctor(selectedId, formData);
       await refetchDoctors();
       handleAction("view");
     } catch (error) {
@@ -84,10 +86,9 @@ export default function DoctorManagePage() {
   const renderForm = () => {
     switch (selectedAction) {
       case "create":
-        if (!users) return null;
         return (
-          <DoctorCreateTable
-            users={users}
+          <AdminForm
+              {...INIT_CREATE_DOCTOR_FORM}
             onClose={() => handleAction("view")}
             onSubmit={handleCreateSubmit}
           />
@@ -97,18 +98,13 @@ export default function DoctorManagePage() {
         const selectedDoctor = displayedDoctors.find(doctor => doctor.id === selectedId);
         if (!selectedDoctor) return null;
         return (
-          <AdminForm
-            {...INIT_UPDATE_DOCTOR_FORM}
-            initialData={{
-              qualifications: selectedDoctor.qualifications,
-              work_seniority: selectedDoctor.work_seniority,
-              specialty: selectedDoctor.specialty,
-              hospital: selectedDoctor.hospital,
-            }}
-            onClose={() => handleAction("view")}
-            onSubmit={handleUpdateSubmit}
-          />
+            <AdminForm
+                {...INIT_UPDATE_DOCTOR_FORM}
+                onClose={() => handleAction("view")}
+                onSubmit={handleUpdateSubmit}
+            />
         );
+
       case "delete":
         if (selectedId === null) return null;
         return (

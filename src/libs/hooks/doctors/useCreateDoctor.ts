@@ -1,20 +1,49 @@
-import REGISTER_MUTATION from "@/libs/graphqls/mutations/registerMutations";
-import {RegisterDoctorInput} from "@/types/register";
-import {useMutation} from "@apollo/client";
+import { useMutation } from "@apollo/client";
+import { RegisterDoctorInput } from "@/types/register";
 import {CREATE_DOCTOR} from "@/libs/graphqls/doctors";
-import {CreateDoctorInput} from "@/types/doctors";
+
+interface RegisterDoctorResponse {
+	registerDoctor: {
+		id: string;
+		user: {
+			id: string;
+			email: string;
+			full_name: string;
+			gender: string;
+			role: string;
+		};
+		qualifications?: string | null;
+		work_seniority?: number | null;
+		specialty?: string | null;
+		hospital?: string | null;
+	};
+}
+
+interface RegisterDoctorVariables {
+	input: RegisterDoctorInput;
+}
 
 export function useRegisterDoctor() {
-	const [registerAccount, { data, loading, error }] = useMutation<{input: RegisterDoctorInput}>(REGISTER_MUTATION);
-	const [createDoctor, { data: dataDoctor, loading: loadingDoctor, error: errorDoctor }] = useMutation<{user_id: string}>(CREATE_DOCTOR);
-	
-	const register = (userData: CreateDoctorInput) => registerAccount({variables: {userData}});
-	const create = (user_id: string) => createDoctor({variables: {doctorData: {user_id}}});
-	
+	const [registerAccount, { data, loading, error }] = useMutation<
+		RegisterDoctorResponse,
+		RegisterDoctorVariables
+	>(CREATE_DOCTOR);
+
+	const register = async (input: RegisterDoctorInput) => {
+		try {
+			const response = await registerAccount({
+				variables: { input },
+			});
+			return response.data?.registerDoctor;
+		} catch (err: any) {
+			throw new Error(`Failed to register doctor: ${err.message}`);
+		}
+	};
+
 	return {
 		register,
-		data: data?.input,
-		loading ,
+		data: data?.registerDoctor,
+		loading,
 		error,
-	}
+	};
 }
