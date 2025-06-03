@@ -26,8 +26,6 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-  <html lang="vi" className={`${geistSans.variable} ${geistMono.variable}`}>
-  <body>
       <AdminClientWrapper>
         {children}
         <ToastContainer
@@ -43,7 +41,5 @@ export default function AdminLayout({
           theme={"light"}
         />
       </AdminClientWrapper>
-    </body>
-  </html>
   );
 }
