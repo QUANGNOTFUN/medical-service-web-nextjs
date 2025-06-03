@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useTable, useFilters, Column } from 'react-table';
 import { CreateDoctorInput } from '@/types/doctors';
-import './DoctorCreateTable.css';
 
 interface User {
   id: string;
@@ -81,7 +80,7 @@ const DoctorCreateTable: React.FC<DoctorCreateTableProps> = ({ users, onClose, o
     {
       columns,
       data: users,
-      defaultColumn: { Filter: DefaultColumnFilter },
+      defaultColumn: { filter: DefaultColumnFilter } as Partial<Column<User>>,
     },
     useFilters
   );
