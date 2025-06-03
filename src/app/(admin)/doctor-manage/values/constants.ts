@@ -24,6 +24,7 @@ export const INIT_CREATE_DOCTOR_FORM: AdminFormProps<RegisterDoctorInput & Creat
 		{ label: "Email", key: "email", type: "text" },
 		{ label: "Mật khẩu", key: "password",  type: "password" },
 		{ label: "Giới tính", key: "gender",  type: "select", options: ["MALE", "FEMALE", "OTHER"] },
+		{ label: "Role", key: "role",  type: "select", options: ["DOCTOR"] },
 		{ label: "Bằng cấp", key: "qualifications", type: "text" },
 		{ label: "Kinh nghiệm", key: "work_seniority", type: "number" },
 		{ label: "Chuyên khoa", key: "specialty", type: "text" },
