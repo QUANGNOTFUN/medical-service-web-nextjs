@@ -4,7 +4,6 @@ import { Loader } from "lucide-react";
 import { useState } from "react";
 import AdminTableLayout from "@/app/(admin)/_components/Search&ActionTable/AdminTableLayout";
 import { ActionAdminTable } from "@/app/(admin)/_components/Search&ActionTable/AdminTable";
-import AdminForm from "@/app/(admin)/_components/Create&UpdateForm/AdminForm";
 import ConfirmationDialog from "@/app/(admin)/_components/dialog/ConfirmationDialog";
 import { HEADER_TABLE_DOCTOR, INIT_UPDATE_DOCTOR_FORM } from "@/app/(admin)/doctor-manage/values/constants";
 import { useGetDoctors } from "@/libs/hooks/doctors/useGetDoctors";
@@ -13,6 +12,8 @@ import { useUpdateDoctor } from "@/libs/hooks/doctors/useUpdateDoctor";
 import { useDeleteDoctor } from "@/libs/hooks/doctors/userDeleteDoctor";
 import { CreateDoctorInput, UpdateDoctorInput } from "@/types/doctors";
 import {useGetUsers} from "@/libs/hooks/user/useGetUser";
+import DoctorCreateTable from "@/app/(admin)/_components/Filter/DoctorCreateTable";
+import AdminForm from "@/app/(admin)/_components/Create&UpdateForm/AdminForm";
 
 export default function DoctorManagePage() {
   const [searchTerm, setSearchTerm] = useState<string>("");
