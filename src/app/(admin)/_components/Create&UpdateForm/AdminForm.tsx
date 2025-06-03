@@ -2,7 +2,6 @@ import React, {FormEvent, useEffect, useRef, useState} from "react";
 import {XIcon} from "lucide-react";
 import {toast} from "react-toastify";
 
-
 export interface AdminFormProps<T> {
 	initialData?: T;
 	title: string;
