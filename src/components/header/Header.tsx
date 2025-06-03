@@ -34,6 +34,51 @@ export default function Header() {
                             {link.label}
                         </Link>
                     ))}
+
+                    {!session?.user ? (
+                        <Link
+                            href="/login"
+                            className="text-gray-700 hover:text-blue-600 font-medium"
+                        >
+                            Đăng nhập
+                        </Link>
+                    ) : (
+                        <div className="relative group">
+                            {/* Trigger */}
+                            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-white text-sm font-medium text-gray-700 hover:bg-gray-100 cursor-pointer">
+                                <UserCircle className="w-5 h-5 text-gray-600" />
+                                {session.user.email?.split("@")[0]}
+                            </div>
+
+                            {/* Dropdown - MUST be direct child and not hidden with `display: none` */}
+                            <div
+                                className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black/5 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-150"
+                                onMouseEnter={() => setIsOpen(true)}
+                                onMouseLeave={() => setIsOpen(false)}
+                            >
+                                <Link
+                                    href="/account"
+                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                >
+                                    Tài khoản
+                                </Link>
+                                <Link
+                                    href="/booking"
+                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                >
+                                    Lịch hẹn của tôi
+                                </Link>
+                                <button
+                                    onClick={() => signOut()}
+                                    className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                >
+                                    Đăng xuất
+                                </button>
+                            </div>
+                        </div>
+
+
+                    )}
                 </nav>
 
                 {/* Mobile Menu Toggle */}
@@ -58,6 +103,35 @@ export default function Header() {
                             {link.label}
                         </Link>
                     ))}
+
+                    {!session?.user ? (
+                        <Link
+                            href="/login"
+                            className="block text-gray-700 hover:text-blue-600 font-medium"
+                            onClick={() => setIsOpen(false)}
+                        >
+                            Đăng nhập
+                        </Link>
+                    ) : (
+                        <>
+                            <Link
+                                href="/account"
+                                className="block text-gray-700 hover:text-blue-600 font-medium"
+                                onClick={() => setIsOpen(false)}
+                            >
+                                Tài khoản
+                            </Link>
+                            <button
+                                onClick={() => {
+                                    setIsOpen(false);
+                                    signOut();
+                                }}
+                                className="w-full text-left text-gray-700 hover:text-blue-600 font-medium"
+                            >
+                                Đăng xuất
+                            </button>
+                        </>
+                    )}
                 </div>
             )}
         </header>
