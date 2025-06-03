@@ -14,7 +14,6 @@ interface AdminTableLayoutProps {
 export default function AdminTableLayout(
 	{ searchProps, dropdownProps, tableProps }: AdminTableLayoutProps
 ){
-
 	return (
 			<div className={"flex flex-col"}>
 				<div className={"flex justify-between mb-4"}>

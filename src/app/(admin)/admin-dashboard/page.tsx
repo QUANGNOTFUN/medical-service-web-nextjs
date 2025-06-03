@@ -6,7 +6,6 @@ import {CircleEllipsis} from "lucide-react";
 
 
 export default function ManagementPage() {
-    // Danh sách items cho dropdown
     const items: DropdownItem[] = [
         {
             icon: Icons.Settings,

@@ -1,8 +1,10 @@
 import {useEffect, useState} from "react";
+import {formatNumberWithCommas} from "@/libs/function/formatNumberWithCommas";
 
 export interface HeaderAdminTable {
 	label: string;
 	key: string;
+	type?: "text" | "number" | "date";
 }
 
 export interface ActionAdminTable {
@@ -62,7 +64,7 @@ const AdminTable = <T,>(
 									key={header.key}
 									className="py-2 px-4 border border-gray-300 text-center text-xs md:text-base hover:bg-violet-200 dark:hover:bg-gray-600 dark:hover:text-white"
 								>
-									{ String(item[header.key as keyof T] ?? "N/A") }
+									{ String(header.type === "number" ? formatNumberWithCommas(String(item[header.key as keyof T])) : item[header.key as keyof T] ?? "N/A") }
 								</td>
 							))}
 

@@ -18,8 +18,8 @@ export interface DeleteMedicationInput {
 }
 
 export interface UpdateMedicationInput {
-	acronym?: string;
-	name?: string;
-	price?: number;
-	available_quantity?: number;
+	acronym?: string | null;
+	name?: string | null;
+	price?: number | null;
+	available_quantity?: number | null;
 }

@@ -3,6 +3,7 @@ import '../globals.css';
 import {Geist, Geist_Mono} from "next/font/google";
 import type {Metadata} from "next";
 import AdminClientWrapper from "@/app/(admin)/_components/AdminClientWrapper/AdminClientWrapper";
+import {ToastContainer} from "react-toastify";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,12 +26,20 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-  <html lang="vi" className={`${geistSans.variable} ${geistMono.variable}`}>
-  <body>
       <AdminClientWrapper>
         {children}
+        <ToastContainer
+          position={"top-right"}
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick={true}
+          rtl={false}
+          pauseOnFocusLoss={false}
+          draggable
+          pauseOnHover={false}
+          theme={"light"}
+        />
       </AdminClientWrapper>
-    </body>
-  </html>
   );
 }
