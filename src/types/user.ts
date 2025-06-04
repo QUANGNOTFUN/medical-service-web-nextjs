@@ -4,6 +4,5 @@ export type User = {
 	full_name: string;
 	phone: string;
 	address: string;
-	gender: string;
 	date_of_birth: string;
 }

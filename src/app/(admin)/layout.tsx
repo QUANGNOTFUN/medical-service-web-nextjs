@@ -1,19 +1,9 @@
 import React from 'react';
 import '../globals.css';
-import {Geist, Geist_Mono} from "next/font/google";
 import type {Metadata} from "next";
 import AdminClientWrapper from "@/app/(admin)/_components/AdminClientWrapper/AdminClientWrapper";
 import {ToastContainer} from "react-toastify";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import ProtectedLayout from "@/app/(admin)/protectedLayout";
 
 export const metadata: Metadata = {
   title: "Quản lí phòng khám",
@@ -26,6 +16,7 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
+      <ProtectedLayout>
       <AdminClientWrapper>
         {children}
         <ToastContainer
@@ -41,5 +32,6 @@ export default function AdminLayout({
           theme={"light"}
         />
       </AdminClientWrapper>
+      </ProtectedLayout>
   );
 }

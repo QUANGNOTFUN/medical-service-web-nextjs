@@ -8,7 +8,8 @@ import { useLoading } from "@/app/context/loadingContext";
 import { useMutation } from "@apollo/client";
 import React, { useState } from "react";
 import REGISTER_MUTATION from "@/libs/graphqls/mutations/registerMutations";
-import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
+import {EyeIcon, EyeSlashIcon, LockClosedIcon} from "@heroicons/react/24/solid";
+import {UserPlus} from "lucide-react";
 
 const Register = () => {
     const [showPassword, setShowPassword] = useState(false);
@@ -29,7 +30,6 @@ const Register = () => {
             full_name: "",
             phone: "",
             address: "",
-            gender: "",
             date_of_birth: "",
             role: "USER",
         },
@@ -40,19 +40,19 @@ const Register = () => {
     const onSubmit = async (data: any) => {
         setLoading(true);
         try {
-            const { email, password, full_name, phone, address, gender, date_of_birth, role } = data;
+            const { email, password, full_name, phone, address, date_of_birth, role } = data;
             const userData = {
                 email,
                 password,
                 full_name,
                 phone,
                 address,
-                gender,
                 date_of_birth: date_of_birth || null,
                 role,
             };
             await registerUser({ variables: { userData } });
             enqueueSnackbar("Đăng ký thành công!", { variant: "success" });
+
             router.push("/login");
         } catch (error) {
             enqueueSnackbar(getErrorMessage(error), { variant: "error" });
@@ -71,8 +71,14 @@ const Register = () => {
     return (
         <div className="flex min-h-screen items-center justify-center bg-gray-100 px-4">
             <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-md bg-white p-6 rounded shadow space-y-4">
-                <h2 className="text-2xl font-semibold text-center">Đăng ký</h2>
-
+                <div className="flex flex-col items-center">
+                    <div className="bg-blue-500 text-white rounded-full p-3">
+                        <UserPlus className="h-6     w-6" />
+                    </div>
+                    <h2 className="mt-6 text-center text-2xl font-bold text-gray-900">
+                        Đăng ký nếu bạn chưa có tài khoản
+                    </h2>
+                </div>
                 {step === 1 && (
                     <div className="space-y-4">
                         <div>
@@ -166,23 +172,6 @@ const Register = () => {
                                 {...register("address")}
                                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                             />
-                        </div>
-
-                        <div>
-                            <label htmlFor="gender" className="block text-sm font-medium text-gray-700">Giới tính</label>
-                            <select
-                                id="gender"
-                                {...register("gender", { required: "Vui lòng chọn giới tính" })}
-                                className={`mt-1 block w-full px-3 py-2 border ${
-                                    errors.gender ? "border-red-500" : "border-gray-300"
-                                } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
-                            >
-                                <option value="">-- Chọn giới tính --</option>
-                                <option value="MALE">Nam</option>
-                                <option value="FEMALE">Nữ</option>
-                                <option value="OTHER">Khác</option>
-                            </select>
-                            {errors.gender && <p className="mt-1 text-sm text-red-600">{getErrorMessage(errors.gender)}</p>}
                         </div>
 
                         <div>
