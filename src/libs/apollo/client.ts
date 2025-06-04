@@ -4,7 +4,7 @@ import {getSession} from "next-auth/react";
 import {setContext} from "@apollo/client/link/context";
 
 const httpLink = new HttpLink({
-	uri: process.env.GRAPHQL_API_URL,
+	uri: "http://localhost:3000/graphql",
 	credentials: "include",
 });
 

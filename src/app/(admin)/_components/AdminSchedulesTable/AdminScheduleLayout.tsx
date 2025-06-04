@@ -13,16 +13,13 @@ export default function AdminScheduleLayout(
 		<div className={""}>
 			<div className={""}>
 				<DoctorScheduleFilter />
-			
 			</div>
 			
 			<AdminSchedulesTable headers={HEADER_SCHEDULE_TABLE} initialItems={[
 				{ key: "morning", label: "1"},
 				{ key: "morning", label: "2"},
 				{ key: "morning", label: "3"},
-				
 				{ key: "morning", label: "4"},
-				
 				{ key: "afternoon", label: "2"},
 			]} />
 		</div>

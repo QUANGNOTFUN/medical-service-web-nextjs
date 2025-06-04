@@ -1,14 +1,14 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-import { getErrorMessage } from "@/app/utils/common";
-import { useRouter } from "next/navigation";
-import { useSnackbar } from "notistack";
-import { useLoading } from "@/app/context/loadingContext";
-import { useMutation } from "@apollo/client";
-import React, { useState } from "react";
+import {useForm} from "react-hook-form";
+import {getErrorMessage} from "@/app/utils/common";
+import {useRouter} from "next/navigation";
+import {useSnackbar} from "notistack";
+import {useLoading} from "@/app/context/loadingContext";
+import {useMutation} from "@apollo/client";
+import React, {useState} from "react";
 import REGISTER_MUTATION from "@/libs/graphqls/mutations/registerMutations";
-import {EyeIcon, EyeSlashIcon, LockClosedIcon} from "@heroicons/react/24/solid";
+import {EyeIcon, EyeSlashIcon} from "@heroicons/react/24/solid";
 import {UserPlus} from "lucide-react";
 
 const Register = () => {

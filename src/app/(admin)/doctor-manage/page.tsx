@@ -133,13 +133,14 @@ export default function DoctorManagePage() {
     <div className="container mx-auto p-6">
       {renderForm()}
       <AdminTableLayout
-        searchProps={{ placeholder: "Tìm kiếm bác sĩ", onSearch: (term) => setSearchTerm(term) }}
-        dropdownProps={{ onItemSelected: (type) => handleAction(type) }}
+        searchProps={{placeholder: "Tìm kiếm bác sĩ", onSearch: (term) => setSearchTerm(term)}}
+        dropdownProps={{onItemSelected: (type) => handleAction(type)}}
         tableProps={{
           headers: HEADER_TABLE_DOCTOR,
           items: displayedDoctors,
-          action: { type: selectedAction, onClick: (item) => handleSelectedId(item as string) },
+          action: {type: selectedAction, onClick: (item) => handleSelectedId(item as string)},
         }}
+        paginationProps={undefined}
       />
     </div>
   );

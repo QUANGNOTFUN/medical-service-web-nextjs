@@ -16,7 +16,6 @@ const ProtectedLayout = ({ children }: { children: ReactNode }) => {
 
     return (
         <div className='bg-gray-100  items-center justify-center'>
-            <Header />
             {children}
         </div>
     )
