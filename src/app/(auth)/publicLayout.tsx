@@ -12,7 +12,7 @@ const PublicLayout = ({ children }: { children: ReactNode }) => {
         return null;
     }
     return (
-        <div className="bg-gray-100 flex items-center justify-center min-h-screen">
+        <div>
             {children}
         </div>
     )

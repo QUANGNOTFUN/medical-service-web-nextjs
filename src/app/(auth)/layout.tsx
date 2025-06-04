@@ -4,6 +4,7 @@ import Providers from "../../../providers";
 import GlobalLoading from "@/components/loadings/globalLoading";
 import React from "react";
 import Header from "@/components/header/Header";
+import PublicLayout from "@/app/(auth)/publicLayout";
 
 export const metadata = {
     title: 'Medical Service',
@@ -12,11 +13,11 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
         <Providers>
-            <LoadingProvider>
+            <PublicLayout>
                 <GlobalLoading />
                 <Header />
                 { children }
-            </LoadingProvider>
+            </PublicLayout>
         </Providers>
     );
 }

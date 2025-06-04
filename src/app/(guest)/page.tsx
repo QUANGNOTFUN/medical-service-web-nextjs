@@ -1,6 +1,5 @@
 import type {Metadata} from "next";
 import ServiceCard from "@/components/cards/ServiceCard";
-import { useSession } from "next-auth/react";
 
 export const metadata: Metadata = {
     title: "Trang Chủ - Y Tế Thông Minh",
@@ -12,8 +11,6 @@ const services = [
     { icon: '🧪', title: 'Xét nghiệm', description: 'Phân tích mẫu nhanh chóng, chính xác với thiết bị hiện đại.' },
     { icon: '💻', title: 'Tư vấn online', description: 'Kết nối với bác sĩ mọi lúc, mọi nơi.' },
 ];
-
-
 
 export default function HomePage() {
     return (
@@ -43,7 +40,6 @@ export default function HomePage() {
                     </div>
                 </div>
             </section>
-
 
             {/* Call to Action Section */}
             <section className="bg-blue-600 text-white py-12">
