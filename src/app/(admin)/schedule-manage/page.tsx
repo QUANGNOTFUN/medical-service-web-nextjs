@@ -8,10 +8,10 @@ export default function AdminSchedulePage() {
 				{ key: "morning", label: "1"},
 				{ key: "morning", label: "2"},
 				{ key: "morning", label: "3"},
-				
 				{ key: "morning", label: "4"},
-				
-				{ key: "afternoon", label: "2"},
+				{ key: "morning", label: "5"},
+				{ key: "morning", label: "6"},
+				{ key: "morning", label: "7"},
 				]} />
 		</>
 	);

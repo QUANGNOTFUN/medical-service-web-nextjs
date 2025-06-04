@@ -7,6 +7,6 @@ export const ADMIN_SIDEBAR_ITEMS: SidebarItem[] = [
 	{ title: 'Danh sách bệnh nhân', href: '/patient-manage', icon: Users },
 	{ title: 'Danh sách thuốc', href: '/medication-manage', icon: Pill },
 	{ title: 'Danh sách tài liệu', href: '/management/documents', icon: BookMarked },
-	{ title: 'Lịch làm việc', href: '/ScheduleManage', icon: Clock },
+	{ title: 'Lịch làm việc', href: '/schedule-manage', icon: Clock },
 	{ title: 'Cài đặt', href: '/management/settings', icon: Wrench },
 ];
