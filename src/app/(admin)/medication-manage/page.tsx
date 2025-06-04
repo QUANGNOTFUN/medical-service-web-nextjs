@@ -18,12 +18,19 @@ import {useUpdateMedication} from "@/libs/hooks/medications/useUpdateMedication"
 import {useDeleteMedication} from "@/libs/hooks/medications/useDeleteMedication";
 import ConfirmationDialog from "@/app/(admin)/_components/dialog/ConfirmationDialog";
 import {toast} from "react-toastify";
+import {PaginationInput} from "@/types/pagination";
 
 export default function MedicationPage() {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [selectedAction, setSelectedAction] = useState<ActionAdminTable["type"]>('view');
   const [selectedId, setSelectedId] = useState<number | null>(null);
-  const { medications: medications, loading: initLoading, error: errorMedications, refetch: refetchMedications } = useGetMedications();
+  const [paginationInput, setPaginationInput] = useState<PaginationInput>({
+    page: 1,
+    limit: 5,
+  });
+  const { medications: medications, page, pageSize, totalPage, loading: initLoading, error: errorMedications, refetch: refetchMedications } = useGetMedications(
+    paginationInput.page, paginationInput.limit
+  );
   const { medications: searchMedications, loading: searchLoading, } = useSearchMedications(searchTerm);
   const { create: createMedication, loading: createLoading, error: errorCreate } = useCreateMedication();
   const { update: updateMedication, loading: updateLoading, error: errorUpdate } = useUpdateMedication();
@@ -131,6 +138,11 @@ export default function MedicationPage() {
           items: displayedMedications,
           action: { type: selectedAction, onClick: (item) => handleSelectedId(item as number) }
           }}
+        paginationProps={{
+          page: paginationInput,
+          limit: 10,
+          total: totalPage,
+        }}
       />
     </>
   );

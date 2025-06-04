@@ -13,13 +13,19 @@ export const SEARCH_MEDICATIONS = gql`
 `;
 
 export const GET_MEDICATIONS = gql`
-  query GetMedications {
-    medications {
-      id
-      acronym
-      name
-      price
-      available_quantity
+  query GetMedications($input: PaginationInput!) {
+    medications(input: $input) {
+      items {
+        id
+	      acronym
+	      name
+	      price
+	      available_quantity
+      }
+      total
+      page
+      pageSize
+      totalPages
     }
   }
 `;

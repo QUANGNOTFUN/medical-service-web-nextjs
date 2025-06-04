@@ -1,7 +1,6 @@
-"use client";
 import React, { ComponentType } from 'react';
 import Link from 'next/link';
-import { LucideProps } from 'lucide-react';
+import {LockIcon, LockKeyhole, LockKeyholeOpen, LucideProps} from 'lucide-react';
 
 export interface SidebarItem {
   title: string;
@@ -12,15 +11,30 @@ export interface SidebarItem {
 interface AdminSidebarProps {
   title: string;
   items: SidebarItem[];
+  isLocked?: boolean;
+  onLockButton?: (isLocked: boolean) => void;
 }
 
-export function AdminSidebar({ title, items }: AdminSidebarProps) {
+export function AdminSidebar({ title, items, isLocked, onLockButton }: AdminSidebarProps) {
+  const lockHiddenButton = (isLocked: boolean) => {
+    return (
+      <button
+        className={"absolute top-0 right-0 m-4 p-1 rounded-full shadow-lg outline outline-gray-500 dark:outline-gray-600 " +
+          "bg-white dark:bg-zinc-800/10 hover:bg-violet-300 dark:hover:bg-slate-500/30 "}
+        onClick={() => onLockButton?.(!isLocked)}
+      >
+        {isLocked ? <LockKeyhole className="w-4 h-4" /> : <LockKeyholeOpen className="w-4 h-4" />}
+      </button>
+    );
+  }
+  
   return (
     <aside className={`h-screen bg-gray-50/60 dark:bg-zinc-900 text-gray-800 dark:text-gray-100 ${title}`}>
       <div className="p-4 border-b border-gray-300 dark:border-gray-700">
         <h2 className="text-center text-xl font-bold">
           Admin Panel
         </h2>
+        {lockHiddenButton(isLocked)}
       </div>
       <nav className="p-4">
         <ul>

@@ -45,7 +45,7 @@ export default function TableDropdownActions(
 			</button>
 			{isOpen && (
 				<div
-					className={"absolute right-0 w-48 p-2 mt-2 outline outline-black/20 shadow-lg rounded-md " +
+					className={"absolute right-0 w-48 p-2 mt-2 outline outline-black/20 shadow-lg rounded-md z-50 " +
 					"bg-gray-50 dark:bg-gray-700 dark:text-gray-200 "}
 				>
 					{items.map((item, index) => (

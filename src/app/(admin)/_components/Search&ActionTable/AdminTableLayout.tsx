@@ -3,16 +3,18 @@ import TableDropdownActions, {
 	TableDropdownActionsProps
 } from "@/app/(admin)/_components/Search&ActionTable/TableDropdownActions";
 import AdminTable, {AdminTableProps} from "@/app/(admin)/_components/Search&ActionTable/AdminTable";
-import DarkModeToggle from "@/components/toggles/DarkModeToogle";
 import React from "react";
+import {TablePagination, TablePaginationProps} from "./TablePagination";
+import DarkModeToggle from "@/components/toggles/DarkModeToogle";
 
 interface AdminTableLayoutProps {
 	searchProps: TableSearchProps;
 	dropdownProps: TableDropdownActionsProps;
 	tableProps: AdminTableProps<unknown>;
+	paginationProps: TablePaginationProps;
 }
 export default function AdminTableLayout(
-	{ searchProps, dropdownProps, tableProps }: AdminTableLayoutProps
+	{ searchProps, dropdownProps, tableProps, paginationProps }: AdminTableLayoutProps
 ){
 	return (
 			<div className={"flex flex-col"}>
@@ -23,6 +25,12 @@ export default function AdminTableLayout(
 				</div>
 
 				<AdminTable headers={tableProps.headers} items={tableProps.items} action={tableProps.action} />
+				<TablePagination state={{
+            page: 0,
+            limit: 0,
+					total: 0,
+        } } />
+			
 			</div>
 	);
 }
