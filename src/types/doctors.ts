@@ -14,18 +14,23 @@ export interface DoctorCardProps {
 }
 
 export interface CreateDoctorInput{
+
     qualifications?: string | null;
     work_seniority?: number | null;
     specialty?: string | null;
     hospital?: string | null;
 }
 
-export interface UpdateDoctorInput{
+export interface UpdateDoctorInput {
+    full_name?: string | null;
+    email?: string | null;
+    gender?: "MALE" | "FEMALE" | "OTHER" | null;
     qualifications?: string | null;
     work_seniority?: number | null;
     specialty?: string | null;
     hospital?: string | null;
 }
+
 export interface DeleteDoctorInput{
     id: string;
 }

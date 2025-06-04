@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
+import {UpdateDoctorInput} from "@/types/doctors";
 
-// Lấy danh sách tất cả bác sĩ
 export const GET_DOCTORS = gql`
     query GetDoctors {
         doctors {
@@ -27,7 +27,6 @@ export const GET_DOCTOR = gql`
     query GetDoctor($id: String!) {
         doctor(id: $id) {
             id
-            user_id
             qualifications
             work_seniority
             specialty
@@ -40,32 +39,40 @@ export const GET_DOCTOR = gql`
 
 // Tạo mới 1 bác sĩ
 export const CREATE_DOCTOR = gql`
-    mutation CreateDoctor($doctorData: CreateDoctorDto!) {
-        createDoctor(doctorData: $doctorData) {
+    mutation RegisterDoctor($input: RegisterDoctorInput!) {
+        createDoctorAndUser(input: $input) {
             id
-            user_id
+            user {
+                id
+                email
+                full_name
+                gender
+                role
+            }
             qualifications
             work_seniority
             specialty
             hospital
-            created_at
-            updated_at
         }
     }
 `;
 
+
 // Cập nhật thông tin bác sĩ
 export const UPDATE_DOCTOR = gql`
-    mutation UpdateDoctor($id: String!, $doctorData: CreateDoctorDto!) {
+    mutation UpdateDoctor($id: String!, $doctorData: UpdateDoctorInput!) {
         updateDoctor(id: $id, doctorData: $doctorData) {
             id
-            user_id
+            user {
+                id
+                email
+                full_name
+                gender
+            }
             qualifications
             work_seniority
             specialty
             hospital
-            created_at
-            updated_at
         }
     }
 `;

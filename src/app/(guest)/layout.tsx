@@ -7,9 +7,9 @@ import React from "react";
 export default function HomeLayout({ children }: { children: React.ReactNode }) {
     return (
         <>
-            <Header />
-            <PosterCarousel />
-            <main className="flex-grow">{children}</main>
+        <Header />
+        <PosterCarousel />
+        <main className="flex-grow">{children}</main>
         </>
     );
 }
