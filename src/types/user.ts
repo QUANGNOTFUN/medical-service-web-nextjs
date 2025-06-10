@@ -4,5 +4,6 @@ export type User = {
 	full_name: string;
 	phone: string;
 	address: string;
+	avatar:  string;
 	date_of_birth: string;
 }
