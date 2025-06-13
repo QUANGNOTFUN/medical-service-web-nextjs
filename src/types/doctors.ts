@@ -9,10 +9,6 @@ export interface Doctor {
     hospital?: string | null;
 }
 
-export interface DoctorCardProps {
-    doctor: Doctor;
-}
-
 export interface CreateDoctorInput{
 
     qualifications?: string | null;

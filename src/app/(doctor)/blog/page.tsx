@@ -16,6 +16,8 @@ const settings =[
         action: () => alert("Xóa")
     }
 ]
+
+
 export default function BlogPage() {
     return (
         <div className="min-h-screen flex flex-col gap-6 p-6 bg-gray-100">

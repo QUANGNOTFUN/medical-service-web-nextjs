@@ -7,7 +7,6 @@ export function useDeleteDoctor() {
         { doctor: Doctor },
         { id: number }
     >(DELETE_DOCTOR, {
-        // Tùy chọn: Cập nhật cache sau khi mutation
         update(cache, { data }) {
             if (data?.doctor) {
                 cache.modify({

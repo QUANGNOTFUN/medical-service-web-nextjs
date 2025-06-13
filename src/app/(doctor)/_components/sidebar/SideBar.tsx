@@ -4,13 +4,12 @@ import Link from 'next/link'
 import { Calendar, Users, MessageSquare, Home, LayoutDashboard, CreditCard, HelpCircle, Settings, LogOut } from 'lucide-react'
 import {SIDEBAR_TABLE} from "@/app/(doctor)/m_resource/FormData";
 
-export interface DoctorSidebar {
-    title: string
-    href: string
-    icon?: string
+export interface SideBarDoctor {
+    label: string;
+    href: string;
+    icon: string;
 }
 
-// Hàm ánh xạ chuỗi icon thành thành phần biểu tượng
 const getIconComponent = (icon: string) => {
     switch (icon) {
         case 'dashboard':
