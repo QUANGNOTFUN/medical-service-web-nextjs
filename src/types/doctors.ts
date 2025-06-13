@@ -1,16 +1,16 @@
 import {User} from "@/types/user";
 
 export interface Doctor {
-    id: string;
+    id: string | null;
     user: User;
     qualifications?: string | null;
     work_seniority?: number | null;
+    gender?: string | null;
     specialty?: string | null;
     hospital?: string | null;
 }
 
 export interface CreateDoctorInput{
-
     qualifications?: string | null;
     work_seniority?: number | null;
     specialty?: string | null;

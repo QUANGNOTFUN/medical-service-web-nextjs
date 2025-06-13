@@ -1,18 +1,16 @@
 import { gql } from "@apollo/client";
-import {UpdateDoctorInput} from "@/types/doctors";
 
 export const GET_DOCTORS = gql`
     query GetDoctors {
         doctors {
-            id
             user {
               id
               email
               full_name
               phone
               address
-              gender
               date_of_birth
+              avatar 
             }
             qualifications
             work_seniority
@@ -33,6 +31,13 @@ export const GET_DOCTOR = gql`
             hospital
             created_at
             updated_at
+            user {
+              full_name
+              email
+              phone
+              id
+              avatar
+            }
         }
     }
 `;
