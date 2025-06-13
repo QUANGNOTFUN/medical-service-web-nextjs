@@ -20,11 +20,11 @@ export interface CreateAppointmentInput {
 
 export interface UpdateAppointmentInput {
     id: string;
-    patient_id: string;
-    schedule_id: string;
-    appointment_type: string;
-    appointment_date: string;
-    status: string;
+    patient_id?: string;
+    schedule_id?: string;
+    appointment_type?: string;
+    appointment_date?: string;
+    status?: string;
 }
 
 export interface _UpdateAppointmentInput {

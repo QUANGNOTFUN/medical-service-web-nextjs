@@ -8,19 +8,19 @@ export interface Post {
     updated_at: Date;
 }
 
-export interface createPost{
+export interface CreatePostInput{
     title: string;
     content: string;
     category: string;
 
 }
-export interface updatePost{
-    id: number;
-    title: string;
-    content: string;
-    category: string;
+export interface UpdatePostInput{
+    id?: number;
+    title?: string;
+    content?: string;
+    category?: string;
 }
 
-export interface deletePost{
+export interface DeletePostInput{
     id: number;
 }
