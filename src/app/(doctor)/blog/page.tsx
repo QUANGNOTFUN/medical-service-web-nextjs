@@ -1,13 +1,41 @@
 "use client";
 
 import { useState } from "react";
-import { Loader } from "lucide-react";
-import DoctorTableLayout from "@/app/(doctor)/_components/Layout/DoctorTableLayout";
-import { View, BadgePlus, Pencil, Trash2 } from "lucide-react";
-import { useQuery, useMutation } from "@apollo/client";
+import { Loader, View, BadgePlus, Pencil, Trash2 } from "lucide-react";
+import { useMutation } from "@apollo/client";
 import { INIT_BLOG_TABLE } from "@/app/(doctor)/blog/m_resource/constants";
-import { DELETE_POST, GET_POSTS, UPDATE_POST } from "@/libs/graphqls/post";
+import { DELETE_POST, UPDATE_POST } from "@/libs/graphqls/post";
 import { useCreatePost } from "@/libs/hooks/posts/useCreatePost";
+import ActionIconMenu from "@/app/(doctor)/_components/setting/ActionIconMenu";
+import ConfirmationDialog from "@/app/(admin)/_components/dialog/ConfirmationDialog";
+
+// Dữ liệu mẫu
+const mockPosts = [
+    {
+        id: "1",
+        title: "Bài viết về chính trị",
+        content: "Nội dung về chính trị hiện nay...",
+        author_id: "AUTH001",
+        category: "Chính trị",
+        created_at: "2025-06-14T10:00:00Z",
+    },
+    {
+        id: "2",
+        title: "Khám phá khoa học mới",
+        content: "Những phát hiện khoa học gần đây...",
+        author_id: "AUTH002",
+        category: "Khoa học",
+        created_at: "2025-06-13T14:30:00Z",
+    },
+    {
+        id: "3",
+        title: "Tương lai giáo dục",
+        content: "Xu hướng giáo dục trong tương lai...",
+        author_id: "AUTH003",
+        category: "Giáo dục",
+        created_at: "2025-06-12T09:00:00Z",
+    },
+];
 
 export default function BlogPage() {
     const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -18,45 +46,45 @@ export default function BlogPage() {
         category: "",
     });
 
-    // Lấy danh sách bài viết
-    const { data, loading: initLoading, error: errorPosts, refetch: refetchPosts } = useQuery(GET_POSTS, {
-        variables: { input: { page: 1, pageSize: 10 } },
-    });
+    // Mock dữ liệu bài viết
+    const displayedPosts = mockPosts;
+    const initLoading = false;
+    const errorPosts = null;
+    const refetchPosts = async () => console.log("Mock refetch");
 
     const { create: createPostInput, loading: createLoading, error: errorCreate } = useCreatePost();
-
-    // Mutation để cập nhật bài viết
     const [updatePost, { loading: updateLoading, error: errorUpdate }] = useMutation(UPDATE_POST);
-
-    // Mutation để xóa bài viết
     const [deletePost, { loading: deleteLoading, error: errorDelete }] = useMutation(DELETE_POST);
-
-    // Sử dụng trực tiếp posts từ API
-    const displayedPosts = data?.posts?.items || [];
 
     const loading = initLoading || createLoading || updateLoading || deleteLoading;
     const error = errorPosts || errorCreate || errorUpdate || errorDelete;
 
-    // Xử lý hành động
     function handleAction(action: "view" | "create" | "update" | "delete", id?: string) {
         setSelectedAction(action);
         setSelectedId(id || null);
+        if (action === "update" && id) {
+            const selectedPost = displayedPosts.find(post => post.id === id);
+            if (selectedPost) {
+                setFormData({
+                    title: selectedPost.title,
+                    content: selectedPost.content,
+                    category: selectedPost.category,
+                });
+            }
+        }
     }
 
-    // Xử lý chọn ID
     function handleSelectedId(id: string | null) {
         if (id !== null) {
             setSelectedId(id);
         }
     }
 
-    // Xử lý thay đổi input
     function handleInputChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
     }
 
-    // Xử lý tạo bài viết
     async function handleCreateSubmit() {
         if (!formData.title || !formData.content || !formData.category) {
             alert("Vui lòng điền đầy đủ thông tin!");
@@ -67,15 +95,36 @@ export default function BlogPage() {
                 title: formData.title,
                 content: formData.content,
                 category: formData.category,
+                author_id: "q",
             });
             await refetchPosts();
-            setFormData({ title: "", content: "", category: "" }); // Reset form
+            setFormData({ title: "", content: "", category: "" });
         } catch (error) {
             console.error("Create post error:", error);
         }
     }
 
-    // Xử lý xóa bài viết
+    async function handleUpdateSubmit() {
+        if (selectedId === null) return;
+        try {
+            await updatePost({
+                variables: {
+                    id: parseInt(selectedId),
+                    input: {
+                        title: formData.title,
+                        content: formData.content,
+                        category: formData.category,
+                    },
+                },
+            });
+            await refetchPosts();
+            handleAction("view");
+            setFormData({ title: "", content: "", category: "" });
+        } catch (error) {
+            console.error("Update post error:", error);
+        }
+    }
+
     async function handleDeleteSubmit() {
         if (selectedId === null) return;
         try {
@@ -86,8 +135,6 @@ export default function BlogPage() {
             console.error("Delete post error:", error);
         }
     }
-
-    // Render cột hành động
     const renderActions = (post: any) => (
         <div className="flex space-x-2">
             <button
@@ -96,13 +143,6 @@ export default function BlogPage() {
                 title="Xem"
             >
                 <View className="w-5 h-5" />
-            </button>
-            <button
-                className="p-1 text-green-500 hover:text-green-700"
-                onClick={() => handleAction("create")}
-                title="Thêm"
-            >
-                <BadgePlus className="w-5 h-5" />
             </button>
             <button
                 className="p-1 text-yellow-500 hover:text-yellow-700"
@@ -139,31 +179,97 @@ export default function BlogPage() {
             author_id: "--",
             category: "--",
             created_at: "--",
-            action: "--"
-        }
+            action: "--",
+        },
     ];
 
+    const renderForm = () => {
+        switch (selectedAction) {
+            case "delete":
+                if (selectedId === null) return null;
+                return (
+                    <ConfirmationDialog
+                        isOpen={selectedAction === "delete"}
+                        message={"Bạn có chắc chắn muốn xóa bài viết này không?"}
+                        onClose={() => handleAction("view")}
+                        onConfirm={handleDeleteSubmit}
+                        title={"Xác nhận xóa bài viết"}
+                        confirmText="Chắc chắn"
+                        cancelText="Hủy"
+                    />
+                );
+            case "update":
+                if (selectedId === null) return null;
+                return (
+                    <ConfirmationDialog
+                        isOpen={selectedAction === "update"}
+                        message={
+                            <div className="flex flex-col gap-4">
+                                <div>
+                                    <label className="block text-gray-700">Tiêu đề</label>
+                                    <input
+                                        type="text"
+                                        name="title"
+                                        value={formData.title}
+                                        onChange={handleInputChange}
+                                        className="p-2 border border-gray-300 rounded-lg w-full"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-gray-700">Nội dung</label>
+                                    <input
+                                        type="text"
+                                        name="content"
+                                        value={formData.content}
+                                        onChange={handleInputChange}
+                                        className="p-2 border border-gray-300 rounded-lg w-full"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-gray-700">Danh mục</label>
+                                    <select
+                                        name="category"
+                                        value={formData.category}
+                                        onChange={handleInputChange}
+                                        className="p-2 border border-gray-300 rounded-lg w-full"
+                                    >
+                                        <option value="">-- Chọn loại --</option>
+                                        <option value="Chính trị">Chính trị</option>
+                                        <option value="Khoa học">Khoa học</option>
+                                        <option value="Giáo dục">Giáo dục</option>
+                                    </select>
+                                </div>
+                            </div>
+                        }
+                        onClose={() => handleAction("view")}
+                        onConfirm={handleUpdateSubmit}
+                        title={"Cập nhật bài viết"}
+                        confirmText="Chắc chắn"
+                        cancelText="Hủy"
+                    />
+                );
+            default:
+                return null;
+        }
+    };
+
     if (loading) return <Loader className="w-8 h-8 animate-spin mx-auto mt-10" />;
-    // if (error)
-    //     return (
-    //         <div className="text-red-500 text-center mt-10">
-    //             {error.name}: {error.message}
-    //         </div>
-    //     );
+    if (error)
+        return (
+            <div className="text-red-500 text-center mt-10">
+                {error.name}: {error.message}
+            </div>
+        );
 
     return (
         <div className="min-h-screen flex flex-col gap-6 p-6 bg-gray-100">
             <div className="bg-white shadow-lg rounded-xl p-6">
-                <h2 className="text-2xl font-bold mb-6 text-gray-800">
-                    📝 Tạo bài viết mới
-                </h2>
-
+                <h2 className="text-2xl font-bold mb-6 text-gray-800">📝 Tạo bài viết mới</h2>
                 <div className="grid grid-cols-3 gap-3 bg-gray-100 p-3 rounded-lg font-medium text-gray-700">
                     <p>Tiêu đề</p>
                     <p>Mô tả</p>
                     <p>Thuộc loại</p>
                 </div>
-
                 <div className="grid grid-cols-3 gap-3 mt-3 items-center">
                     <input
                         type="text"
@@ -193,7 +299,6 @@ export default function BlogPage() {
                         <option value="Giáo dục">Giáo dục</option>
                     </select>
                 </div>
-
                 <div className="mt-6 flex justify-end">
                     <button
                         onClick={handleCreateSubmit}
@@ -207,14 +312,41 @@ export default function BlogPage() {
 
             {/* Danh sách bài viết */}
             <div className="container mx-auto p-6">
-                <DoctorTableLayout
-                    tableProps={{
-                        headers: INIT_BLOG_TABLE,
-                        items: tableItems,
-                        action: { type: selectedAction, onClick: (item) => handleSelectedId(item as string) },
-                    }}
-                    paginationProps={undefined}
-                />
+                <div className="bg-white shadow-lg rounded-xl overflow-hidden">
+                    {renderForm()}
+                    <table className="w-full">
+                        <thead>
+                        <tr className="bg-gray-100 text-gray-700">
+                            {INIT_BLOG_TABLE.map((header, index) => (
+                                <th key={index} className="p-4 text-left font-medium">
+                                    {header.label}
+                                </th>
+                            ))}
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {tableItems.map((item, rowIndex) => (
+                            <tr
+                                key={rowIndex}
+                                className="border-t hover:bg-gray-50"
+                                onClick={() => typeof item.id === "string" && handleSelectedId(item.id)}
+                            >
+                                {INIT_BLOG_TABLE.map((header, colIndex) => (
+                                    <td key={colIndex} className="p-4 text-gray-600">
+                                        {item[header.key] === "--" && colIndex === 0 ? (
+                                            <span className="text-gray-400">{item[header.key]}</span>
+                                        ) : header.key === "action" ? (
+                                            item[header.key]
+                                        ) : (
+                                            <span>{item[header.key]}</span>
+                                        )}
+                                    </td>
+                                ))}
+                            </tr>
+                        ))}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     );

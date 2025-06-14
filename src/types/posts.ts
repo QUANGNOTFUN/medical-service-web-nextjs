@@ -12,6 +12,8 @@ export interface CreatePostInput{
     title: string;
     content: string;
     category: string;
+    author_id: string;
+
 
 }
 export interface UpdatePostInput{
@@ -19,6 +21,7 @@ export interface UpdatePostInput{
     title?: string;
     content?: string;
     category?: string;
+
 }
 
 export interface DeletePostInput{

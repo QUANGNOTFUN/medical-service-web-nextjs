@@ -25,3 +25,4 @@ export const INIT_UPDATE_APPOINMENTS_FORM: DoctorFormProps<UpdateAppointmentInpu
     ],
     submitLabel:"Cập nhật"
 }
+

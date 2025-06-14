@@ -9,4 +9,5 @@ export const INIT_BLOG_TABLE: HeaderDoctorTable[] = [
     {label:"Ngày tạo bài viết", key: 'published_at', type: 'date' },
     {label:"Ngày đăng bài", key: 'create_at', type: 'date' },
     {label:"Ngày update", key: 'updated_at', type: 'date' },
+    {label:"Hành động", key: 'action', type: 'text' },
 ]
