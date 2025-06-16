@@ -1,5 +1,5 @@
 export interface Appointment {
-    id: number;
+    appointment_id: number;
     patient_id: number;
     doctor_id: number;
     schedule_id: number;
@@ -7,8 +7,24 @@ export interface Appointment {
     appointment_date: string;
     status: string;
     is_anonymous: boolean;
-
+    notes: string;
 }
+
+export interface PaginationAppointmentInput{
+    doctor_id: string;
+    page: number;
+    pageSize: number;
+}
+
+
+export interface PaginatedAppointment {
+    items: Appointment[];
+    total: number;
+    page: number;
+    pageSize: number;
+    totalPages: number;
+}
+
 
 export interface CreateAppointmentInput {
     doctor_id: string;
@@ -19,15 +35,10 @@ export interface CreateAppointmentInput {
 }
 
 export interface UpdateAppointmentInput {
-    id: string;
-    patient_id?: string;
-    schedule_id?: string;
+    appointment_id: number;
     appointment_type?: string;
     appointment_date?: string;
     status?: string;
 }
 
-export interface _UpdateAppointmentInput {
-    status: string;
-}
 

@@ -1,20 +1,16 @@
-import {Appointment, UpdateAppointmentInput} from "@/types/appoitment";
-import {useMutation} from "@apollo/client";
-import {UPDATE_APPOINTMENT} from "@/libs/graphqls/appointment";
+import { useMutation } from "@apollo/client";
+import { UPDATE_APPOINTMENT } from "@/libs/graphqls/appointment";
 
 export function useUpdateAppointment() {
-    const [updateAppointment, { data, loading, error }] = useMutation<
-        {appointment: Appointment},
-        {input : UpdateAppointmentInput}
-    >(UPDATE_APPOINTMENT)
+    const [UpdateAppointment, { loading, error }] = useMutation(UPDATE_APPOINTMENT);
 
-    const update = (input: { id: string; data: UpdateAppointmentInput }) =>
-        updateAppointment({variables: {input}});
+    const update = async (input: { appointment_id: number; status: string }) => {
+        await UpdateAppointment({
+            variables: {
+                input,
+            },
+        });
+    };
 
-    return {
-        update,
-        data: data?.appointment ?? null,
-        loading,
-        error
-    }
+    return { update, loading, error };
 }

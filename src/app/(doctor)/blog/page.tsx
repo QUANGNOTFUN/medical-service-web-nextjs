@@ -350,7 +350,6 @@ export default function BlogPage() {
                     Trang sau →
                 </button>
             </div>
-
         </div>
     );
 }

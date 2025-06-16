@@ -1,14 +1,25 @@
-import {useQuery} from "@apollo/client";
+import { useQuery } from "@apollo/client";
+import { GET_APPOINTMENTS } from "@/libs/graphqls/appointment";
+import { PaginatedAppointment } from "@/types/appoitment";
 
-import {GET_APPOINTMENT} from "@/libs/graphqls/appointment";
-import {Appointment} from "@/types/appoitment";
+export function useGetAppointments(input: { doctor_id: string, page: number; pageSize: number }) {
+    const { data, loading, error, refetch } = useQuery<{ getAppointmentsByDoctor: PaginatedAppointment }>(
+        GET_APPOINTMENTS,
+        {
+            variables: { input },
+            fetchPolicy: "cache-and-network",
+        }
+    );
 
-export function useGetAppointments() {
-    const { data, loading, error, refetch } = useQuery<{ input: Appointment[] }>(GET_APPOINTMENT);
     return {
-        appointments: data?.input || [],
+        appointments: data?.getAppointmentsByDoctor.items || [],
+        total: data?.getAppointmentsByDoctor.total || 0,
+        page: data?.getAppointmentsByDoctor.page || 1,
+        pageSize: data?.getAppointmentsByDoctor.pageSize || 10,
+        totalPages: data?.getAppointmentsByDoctor.totalPages || 1,
         loading,
         error,
         refetch,
     };
 }
+

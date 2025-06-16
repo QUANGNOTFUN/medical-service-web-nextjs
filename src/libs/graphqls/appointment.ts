@@ -1,10 +1,10 @@
 import { gql } from "@apollo/client";
 
 export const GET_APPOINTMENTS = gql`
-    query GetAppointments($input: PaginationInput!) {
-        appointments(input: $input) {
+    query GetAppointments($input: PaginationAppointmentInput!) {
+        getAppointmentsByDoctor(input: $input) {
             items {
-                id
+                appointment_id
                 patient_id
                 doctor_id
                 schedule_id
@@ -12,6 +12,7 @@ export const GET_APPOINTMENTS = gql`
                 appointment_date
                 status
                 is_anonymous
+                notes
             }
             total
             page
@@ -20,6 +21,7 @@ export const GET_APPOINTMENTS = gql`
         }
     }
 `;
+
 export const SEARCH_APPOINTMENTS = gql`
     query SearchAppointments($input: SearchAppointmentsInput!) {
         searchAppointments(input: $input) {
@@ -62,20 +64,13 @@ export const CREATE_APPOINTMENT = gql`
         }
     }
 `;
+
 export const UPDATE_APPOINTMENT = gql`
-    mutation UpdateAppointment($id: Int!, $input: UpdateAppointmentInput!) {
-        updateAppointment(id: $id, input: $input) {
-            id
-            patient_id
-            doctor_id
-            schedule_id
-            appointment_type
-            appointment_date
-            status
-            is_anonymous
-        }
+    mutation UpdateAppointment($input: UpdateAppointmentInput!) {
+        updateAppointment(input: $input)
     }
 `;
+
 export const DELETE_APPOINTMENT = gql`
     mutation DeleteAppointment($id: Int!) {
         deleteAppointment(id: $id) {
