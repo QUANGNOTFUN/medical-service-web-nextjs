@@ -1,65 +1,49 @@
 "use client";
 
 import { useState } from "react";
-import { Loader, View, BadgePlus, Pencil, Trash2 } from "lucide-react";
+import { Loader, View, Pencil, Trash2 } from "lucide-react";
 import { useMutation } from "@apollo/client";
 import { INIT_BLOG_TABLE } from "@/app/(doctor)/blog/m_resource/constants";
-import { DELETE_POST, UPDATE_POST } from "@/libs/graphqls/post";
+import { UPDATE_POST} from "@/libs/graphqls/post";
 import { useCreatePost } from "@/libs/hooks/posts/useCreatePost";
-import ActionIconMenu from "@/app/(doctor)/_components/setting/ActionIconMenu";
 import ConfirmationDialog from "@/app/(admin)/_components/dialog/ConfirmationDialog";
-
-// Dữ liệu mẫu
-const mockPosts = [
-    {
-        id: "1",
-        title: "Bài viết về chính trị",
-        content: "Nội dung về chính trị hiện nay...",
-        author_id: "AUTH001",
-        category: "Chính trị",
-        created_at: "2025-06-14T10:00:00Z",
-    },
-    {
-        id: "2",
-        title: "Khám phá khoa học mới",
-        content: "Những phát hiện khoa học gần đây...",
-        author_id: "AUTH002",
-        category: "Khoa học",
-        created_at: "2025-06-13T14:30:00Z",
-    },
-    {
-        id: "3",
-        title: "Tương lai giáo dục",
-        content: "Xu hướng giáo dục trong tương lai...",
-        author_id: "AUTH003",
-        category: "Giáo dục",
-        created_at: "2025-06-12T09:00:00Z",
-    },
-];
+import {useGetAllPost} from "@/libs/hooks/posts/useGetPost";
+import {useDeletePost} from "@/libs/hooks/posts/useDeletePost";
+import {Post} from "@/types/posts";
 
 export default function BlogPage() {
-    const [selectedId, setSelectedId] = useState<string | null>(null);
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const [selectedAction, setSelectedAction] = useState<"view" | "create" | "update" | "delete">("view");
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(5);
     const [formData, setFormData] = useState({
         title: "",
         content: "",
         category: "",
     });
 
-    // Mock dữ liệu bài viết
-    const displayedPosts = mockPosts;
-    const initLoading = false;
-    const errorPosts = null;
-    const refetchPosts = async () => console.log("Mock refetch");
+    const {
+        posts,
+        total,
+        loading: getLoading,
+        error: getError,
+        refetch: refetchPosts,
+    } = useGetAllPost({ page, pageSize });
 
-    const { create: createPostInput, loading: createLoading, error: errorCreate } = useCreatePost();
-    const [updatePost, { loading: updateLoading, error: errorUpdate }] = useMutation(UPDATE_POST);
-    const [deletePost, { loading: deleteLoading, error: errorDelete }] = useMutation(DELETE_POST);
+    const { create: createPostInput, loading: createLoading, error: createError } = useCreatePost();
+    const [updatePost, { loading: updateLoading, error: updateError }] = useMutation<
+        { updatePost: Post },
+        { id: number; input: { title: string; content: string; category: string } }
+    >(UPDATE_POST);
+    const { delete: deletePost, loading: deleteLoading, error: deleteError } = useDeletePost();
 
-    const loading = initLoading || createLoading || updateLoading || deleteLoading;
-    const error = errorPosts || errorCreate || errorUpdate || errorDelete;
+    const loading = getLoading || createLoading || updateLoading || deleteLoading;
+    const error = getError || createError || updateError || deleteError;
 
-    function handleAction(action: "view" | "create" | "update" | "delete", id?: string) {
+
+    const displayedPosts = posts;
+
+    function handleAction(action: "view" | "create" | "update" | "delete", id?: number) {
         setSelectedAction(action);
         setSelectedId(id || null);
         if (action === "update" && id) {
@@ -74,7 +58,7 @@ export default function BlogPage() {
         }
     }
 
-    function handleSelectedId(id: string | null) {
+    function handleSelectedId(id: number | null) {
         if (id !== null) {
             setSelectedId(id);
         }
@@ -91,16 +75,17 @@ export default function BlogPage() {
             return;
         }
         try {
+            const authorId = "f131d16a-5fd5-4a5c-ae7d-c7471c7e8c52";
             await createPostInput({
                 title: formData.title,
                 content: formData.content,
                 category: formData.category,
-                author_id: "q",
+                author_id: authorId,
             });
             await refetchPosts();
             setFormData({ title: "", content: "", category: "" });
         } catch (error) {
-            console.error("Create post error:", error);
+            console.error("Create post error:", error.message, error.graphQLErrors, error.networkError?.result);
         }
     }
 
@@ -109,7 +94,7 @@ export default function BlogPage() {
         try {
             await updatePost({
                 variables: {
-                    id: parseInt(selectedId),
+                    id: Number(selectedId),
                     input: {
                         title: formData.title,
                         content: formData.content,
@@ -121,14 +106,15 @@ export default function BlogPage() {
             handleAction("view");
             setFormData({ title: "", content: "", category: "" });
         } catch (error) {
-            console.error("Update post error:", error);
+            console.error("Create post error:", error.message, error.graphQLErrors, error.networkError?.result);
         }
+
     }
 
     async function handleDeleteSubmit() {
         if (selectedId === null) return;
         try {
-            await deletePost({ variables: { id: parseInt(selectedId) } });
+            await deletePost(Number(selectedId));
             await refetchPosts();
             handleAction("view");
         } catch (error) {
@@ -310,7 +296,6 @@ export default function BlogPage() {
                 </div>
             </div>
 
-            {/* Danh sách bài viết */}
             <div className="container mx-auto p-6">
                 <div className="bg-white shadow-lg rounded-xl overflow-hidden">
                     {renderForm()}
@@ -348,6 +333,24 @@ export default function BlogPage() {
                     </table>
                 </div>
             </div>
+            <div className="flex justify-between items-center mt-4">
+                <button
+                    onClick={() => setPage(prev => Math.max(1, prev - 1))}
+                    disabled={page === 1}
+                    className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
+                >
+                    ← Trang trước
+                </button>
+                <span>Trang {page}</span>
+                <button
+                    onClick={() => setPage(prev => (prev * pageSize < total ? prev + 1 : prev))}
+                    disabled={page * pageSize >= total}
+                    className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
+                >
+                    Trang sau →
+                </button>
+            </div>
+
         </div>
     );
 }

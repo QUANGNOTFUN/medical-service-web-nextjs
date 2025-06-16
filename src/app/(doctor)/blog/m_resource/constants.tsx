@@ -2,7 +2,7 @@ import {HeaderDoctorTable} from "@/app/(doctor)/_components/Layout/DoctorTable";
 
 
 export const INIT_BLOG_TABLE: HeaderDoctorTable[] = [
-    {label:"ID", key: "id", type: 'text'},
+    {label:"ID", key: "id", type: 'number'},
     {label:"Title", key: 'title', type: 'text' },
     {label:"Description", key: 'content', type: 'text' },
     {label:"Loại", key: "category", type: 'text' },

@@ -1,21 +1,20 @@
-import {useMutation} from "@apollo/client";
-import {CREATE_POST} from "@/libs/graphqls/post";
-import {CreatePostInput, Post} from "@/types/posts";
-
+import { useMutation } from "@apollo/client";
+import { CREATE_POST } from "@/libs/graphqls/post";
+import {CreateBlogPostInput, Post} from "@/types/posts";
 
 export function useCreatePost() {
-    const [createPost, { data, loading, error }] = useMutation<
-        {post: Post},
-        {input : CreatePostInput}
-    >(CREATE_POST)
+    const [createBlogPost, { data, loading, error }] = useMutation<
+        { createBlogPost: Post },
+        { input: CreateBlogPostInput  }
+    >(CREATE_POST);
 
-    const create = (input: CreatePostInput) =>
-        createPost({variables: {input}});
+    const create = (input: CreateBlogPostInput ) =>
+        createBlogPost({ variables: { input } });
 
     return {
         create,
-        data: data?.post ?? null,
+        data: data?.createBlogPost ?? null,
         loading,
-        error
-    }
+        error,
+    };
 }

@@ -1,7 +1,8 @@
 import { gql } from "@apollo/client";
+import {DeletePostInput} from "@/types/posts";
 
 export const GET_POSTS = gql`
-    query GetPosts($input: PaginationInput!) {
+    query GetPosts($input: PaginationBlogInput!) {
         posts(input: $input) {
             items {
                 id
@@ -49,43 +50,29 @@ export const GET_POST = gql`
 `;
 
 export const CREATE_POST = gql`
-    mutation CreatePost($input: CreatePostInput!) {
-        createPost(input: $input) {
-            id
+    mutation CreatePost($input: CreateBlogPostInput !) {
+        createBlogPost(input: $input) {
             title
             content
             author_id
             category
-            created_at
-            updated_at
         }
     }
 `;
 
 export const UPDATE_POST = gql`
-    mutation UpdatePost($id: Int!, $input: UpdatePostInput!) {
-        updatePost(id: $id, input: $input) {
+    mutation UpdatePost($id: Int!, $input: UpdateBlogPostInput!) {
+        updateBlogPost(id: $id, input: $input) {
             id
             title
             content
-            author_id
             category
-            created_at
-            updated_at
         }
     }
 `;
 
 export const DELETE_POST = gql`
     mutation DeletePost($id: Int!) {
-        deletePost(id: $id) {
-            id
-            title
-            content
-            author_id
-            category
-            created_at
-            updated_at
-        }
+        deleteBlogPost(id :$id)
     }
 `;

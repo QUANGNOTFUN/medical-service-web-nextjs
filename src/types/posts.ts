@@ -5,25 +5,25 @@ export interface Post {
     author_id: string;
     category: string;
     created_at: Date;
-    updated_at: Date;
+    updated_at?: Date;
+    publisher_id?: Date;
 }
 
-export interface CreatePostInput{
+export interface PaginationBlogInput{
+    page: number;
+    pageSize: number;
+}
+
+export interface CreateBlogPostInput {
     title: string;
     content: string;
     category: string;
     author_id: string;
-
+    published_at?: string;
 
 }
-export interface UpdatePostInput{
-    id?: number;
+export interface UpdateBlogPostInput{
     title?: string;
     content?: string;
     category?: string;
-
-}
-
-export interface DeletePostInput{
-    id: number;
 }
