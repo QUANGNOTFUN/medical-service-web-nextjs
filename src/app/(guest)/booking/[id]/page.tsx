@@ -1,29 +1,48 @@
 'use client';
+
 import { useParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-import { GET_DOCTOR } from '@/libs/graphqls/doctors';
-import { useQuery } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
+import { useSession } from 'next-auth/react';
 import { useLoading } from '@/app/context/loadingContext';
 
-export default function BookingPage() {
-    const params = useParams();
-    const { id } = params;
-    const { setLoading } = useLoading();
-    // Truy vấn GraphQL
-    const { loading, error, data } = useQuery(GET_DOCTOR, {
-        variables: { id: id },
-        fetchPolicy: 'no-cache',
-        onCompleted: (result) => {
-            console.log('Doctor Data:', result);
-        },
-        onError: (err) => {
-            console.error('Error fetching doctor:', err);
-        },
-    });
+import { GET_DOCTOR } from '@/libs/graphqls/doctors';
+import { CREATE_APPOINTMENT } from '@/libs/graphqls/mutations/appointments';
+import { GET_SCHEDULE_DATES, GET_SCHEDULES_BY_DATE } from '@/libs/graphqls/queries/doctor-schedules';
+import { GET_SLOTS_BY_SCHEDULE } from '@/libs/graphqls/queries/appointment-slot';
 
-    // State cho form đặt lịch
+import DoctorCard from './components/DoctorCard';
+import DateSelector from './components/DateSelector';
+import TimeSlotSelector from './components/TimeSlotSelector';
+import PatientForm from './components/PatientForm';
+
+interface Slot {
+    id: number;
+    start_time: string;
+    end_time: string;
+    max_patients: number;
+    booked_count: number;
+}
+
+interface Doctor {
+    id: string;
+    qualifications: string;
+    specialty: string;
+    hospital: string;
+    work_seniority: number;
+    user: {
+        full_name: string;
+        avatar: string;
+    };
+}
+
+export default function BookingPage() {
+    const { id } = useParams();
+    const { data: session } = useSession();
+    const { setLoading } = useLoading();
+
     const [form, setForm] = useState({
-        fullName: '',
+        fullName: session.user.email,
         gender: '',
         dob: '',
         phone: '',
@@ -33,282 +52,177 @@ export default function BookingPage() {
         symptoms: '',
     });
 
-    // Xử lý loading state
-    useEffect(() => {
-        setLoading(loading);
-    }, [loading, setLoading]);
+    const [selectedDate, setSelectedDate] = useState<string>('');
+    const [selectedScheduleId, setSelectedScheduleId] = useState<number | null>(null);
+    const [slots, setSlots] = useState<Slot[]>([]);
+    const [selectedSlotId, setSelectedSlotId] = useState<number | null>(null);
 
-    // Xử lý thay đổi form
-    const handleChange = (e) => {
+    const { loading, error, data } = useQuery<{ doctor: Doctor }>(GET_DOCTOR, {
+        variables: { id },
+        fetchPolicy: 'no-cache',
+    });
+
+    const { data: scheduleDatesData } = useQuery(GET_SCHEDULE_DATES, {
+        variables: { doctor_id: id },
+    });
+
+    const { data: schedulesByDate } = useQuery(GET_SCHEDULES_BY_DATE, {
+        variables: { doctor_id: id, date: selectedDate },
+        skip: !selectedDate,
+    });
+
+    const { data: slotData } = useQuery(GET_SLOTS_BY_SCHEDULE, {
+        variables: { id: selectedScheduleId },
+        skip: !selectedScheduleId,
+    });
+
+    const [createAppointment, { loading: mutationLoading, error: mutationError }] = useMutation(CREATE_APPOINTMENT, {
+        onCompleted: () => {
+            alert('Đặt lịch thành công!');
+            setForm({
+                fullName: '',
+                gender: '',
+                dob: '',
+                phone: '',
+                province: '',
+                district: '',
+                ward: '',
+                symptoms: '',
+            });
+            setSelectedScheduleId(null);
+            setSlots([]);
+        },
+    });
+
+    useEffect(() => {
+        setLoading(loading || mutationLoading);
+    }, [loading, mutationLoading]);
+
+    useEffect(() => {
+        if (schedulesByDate?.getDoctorSchedulesIdByDate?.length > 0) {
+            const firstScheduleId = schedulesByDate.getDoctorSchedulesIdByDate[0].id;
+            setSelectedScheduleId(firstScheduleId);
+            setSelectedSlotId(null);
+        }
+    }, [schedulesByDate]);
+
+
+    useEffect(() => {
+        if (slotData?.getAppointmentSlotByScheduleId) {
+            setSlots(slotData.getAppointmentSlotByScheduleId);
+        } else {
+            setSlots([]);
+        }
+    }, [slotData]);
+
+    const handleDateChange = (date: string) => {
+        setSelectedDate(date);
+        setSelectedScheduleId(null);
+        setSelectedSlotId(null);  // reset slot khi chọn ngày khác
+        setSlots([]);
+    };
+
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     };
 
-    // Xử lý submit form
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        alert('Đặt lịch thành công! Thư ký y khoa sẽ liên hệ bạn sớm.');
-        // TODO: Gửi dữ liệu form lên server
+        if (!selectedSlotId || !selectedScheduleId || !session?.user?.id) return;
+
+        const selectedSlot = slots.find((s) => s.id === selectedSlotId);
+        if (!selectedSlot) return;
+
+        await createAppointment({
+            variables: {
+                input: {
+                    patient_id: session.user.id,
+                    doctor_id: id as string,
+                    schedule_id: selectedScheduleId,
+                    appointment_date: new Date(selectedSlot.start_time).toISOString(),
+                    appointment_type: 'consultation',
+                    is_anonymous: false,
+                    notes: JSON.stringify(form),
+                },
+            },
+        });
+
     };
 
-    // Nếu có lỗi
-    if (error) {
-        return (
-            <div className="max-w-4xl mx-auto p-6">
-                <p className="text-red-500">Lỗi khi tải thông tin bác sĩ: {error.message}</p>
-            </div>
-        );
-    }
+    if (error) return <p className="text-red-500">Lỗi: {error.message}</p>;
+    if (loading) return <p>Đang tải...</p>;
 
-    // Nếu đang loading
-    if (loading) {
-        return (
-            <div className="max-w-4xl mx-auto p-6">
-                <p>Đang tải thông tin bác sĩ...</p>
-            </div>
-        );
-    }
-
-    // Dữ liệu bác sĩ
     const doctor = data?.doctor;
+    if (!doctor) return <p>Không tìm thấy bác sĩ.</p>;
 
-    // Nếu không tìm thấy bác sĩ
-    if (!doctor) {
-        return (
-            <div className="max-w-4xl mx-auto p-6">
-                <p className="text-red-500">Không tìm thấy bác sĩ với ID này.</p>
-            </div>
-        );
-    }
+    const availableDates = scheduleDatesData?.getAvailableScheduleDates || [];
 
     return (
         <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg my-8">
-            {/* Header */}
-            <div className="flex flex-col md:flex-row gap-6">
-                {/* Avatar và info */}
-                <div className="flex-shrink-0">
-                    <img
-                        src={data.doctor.user.avatar || '/default-doctor.jpg'} // Thêm avatar từ user hoặc mặc định
-                        alt={data.doctor.full_name || 'Bác sĩ'}
-                        className="w-48 h-48 rounded-lg object-cover shadow-md"
+            <DoctorCard
+                avatar={doctor.user.avatar}
+                fullName={doctor.user.full_name}
+                qualifications={doctor.qualifications}
+                specialty={doctor.specialty}
+                hospital={doctor.hospital}
+                workSeniority={doctor.work_seniority}
+            />
+
+            <hr className="my-8" />
+
+            <div className="flex flex-col md:flex-row gap-8">
+                <div className="bg-blue-50 border border-blue-300 p-4 rounded-md w-full md:w-1/2">
+                    <h2 className="text-lg font-semibold mb-4">Ngày khám</h2>
+                    <DateSelector
+                        doctorId={id as string}
+                        selectedDate={selectedDate}
+                        onDateChange={handleDateChange}
+                        availableDates={availableDates}
                     />
+
+                    <h2 className="text-lg font-semibold mb-4">Giờ khám</h2>
+                    <TimeSlotSelector
+                        slots={slots.map((slot) => ({
+                            id: slot.id,
+                            time: slot.start_time.slice(11, 16),
+                            max_patients: slot.max_patients,
+                            booked_count: slot.booked_count,
+                        }))}
+                        selectedSlotId={selectedSlotId}
+                        onSelect={setSelectedSlotId}
+                    />
+
                 </div>
 
-                <div>
-                    <h1 className="text-3xl font-bold mb-2">
-                        {doctor.qualifications || ''} {data.doctor.user.full_name || 'Bác sĩ'}
-                    </h1>
-                    <p className="text-blue-600 font-semibold mb-1">
-                        Chuyên khoa: {doctor.specialty || 'Chưa xác định'}
-                    </p>
-                    <p className="mb-1">{doctor.hospital || 'Chưa xác định'}</p>
-                    <p className="mb-1 text-gray-700">
-                        {doctor.work_seniority
-                            ? `Gần ${doctor.work_seniority} năm kinh nghiệm`
-                            : 'Chưa có thông tin kinh nghiệm'}
-                    </p>
-
-                    <div className="mt-4">
-                        <h2 className="font-semibold text-lg mb-1">Lịch khám</h2>
-                        {doctor.schedule ? (
-                            <ul className="list-disc list-inside text-gray-700">
-                                {/* Giả sử schedule có trường days và time */}
-                                <li>
-                                    {doctor.schedule.days || 'Thứ 2 – Thứ 6'}: {doctor.schedule.time || 'Sáng 8h00 – 12h00, Chiều 13h00 – 17h00'}
-                                </li>
-                                {/* Thêm logic nếu schedule có nhiều khung giờ */}
-                            </ul>
-                        ) : (
-                            <p>Chưa có thông tin lịch khám.</p>
-                        )}
-                    </div>
+                <div className="w-full md:w-1/2">
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                        <h2 className="text-2xl font-bold mb-4">Thông tin bệnh nhân</h2>
+                        {mutationError && <p className="text-red-500">Lỗi: {mutationError.message}</p>}
+                        <PatientForm form={form} onChange={handleChange} />
+                        <button
+                            type="submit"
+                            disabled={mutationLoading}
+                            className={`w-full bg-blue-600 text-white font-semibold px-6 py-3 rounded-md hover:bg-blue-700 transition ${
+                                mutationLoading ? 'opacity-50 cursor-not-allowed' : ''
+                            }`}
+                        >
+                            {mutationLoading ? 'Đang xử lý...' : 'Đặt lịch'}
+                        </button>
+                    </form>
                 </div>
             </div>
 
-            {/* Divider */}
             <hr className="my-8" />
 
-            {/* Đặt lịch form */}
-            <form onSubmit={handleSubmit} className="space-y-6">
-                <h2 className="text-2xl font-bold mb-4">Đặt lịch khám</h2>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label className="block font-semibold mb-1" htmlFor="fullName">
-                            Họ và tên <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                            type="text"
-                            id="fullName"
-                            name="fullName"
-                            value={form.fullName}
-                            onChange={handleChange}
-                            required
-                            className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            placeholder="Nhập họ và tên"
-                        />
-                    </div>
-
-                    <div>
-                        <label className="block font-semibold mb-1" htmlFor="gender">
-                            Giới tính <span className="text-red-500">*</span>
-                        </label>
-                        <select
-                            id="gender"
-                            name="gender"
-                            value={form.gender}
-                            onChange={handleChange}
-                            required
-                            className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        >
-                            <option value="">Chọn giới tính</option>
-                            <option value="male">Nam</option>
-                            <option value="female">Nữ</option>
-                            <option value="other">Khác</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label className="block font-semibold mb-1" htmlFor="dob">
-                            Ngày sinh <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                            type="date"
-                            id="dob"
-                            name="dob"
-                            value={form.dob}
-                            onChange={handleChange}
-                            required
-                            className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                    </div>
-
-                    <div>
-                        <label className="block font-semibold mb-1" htmlFor="phone">
-                            Số điện thoại <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                            type="tel"
-                            id="phone"
-                            name="phone"
-                            value={form.phone}
-                            onChange={handleChange}
-                            required
-                            className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            placeholder="Nhập số điện thoại"
-                        />
-                    </div>
-
-                    <div>
-                        <label className="block font-semibold mb-1" htmlFor="province">
-                            Tỉnh/Thành phố
-                        </label>
-                        <input
-                            type="text"
-                            id="province"
-                            name="province"
-                            value={form.province}
-                            onChange={handleChange}
-                            className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            placeholder="Ví dụ: TP.HCM"
-                        />
-                    </div>
-
-                    <div>
-                        <label className="block font-semibold mb-1" htmlFor="district">
-                            Quận/Huyện
-                        </label>
-                        <input
-                            type="text"
-                            id="district"
-                            name="district"
-                            value={form.district}
-                            onChange={handleChange}
-                            className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            placeholder="Ví dụ: Quận 7"
-                        />
-                    </div>
-
-                    <div>
-                        <label className="block font-semibold mb-1" htmlFor="ward">
-                            Phường/Xã
-                        </label>
-                        <input
-                            type="text"
-                            id="ward"
-                            name="ward"
-                            value={form.ward}
-                            onChange={handleChange}
-                            className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            placeholder="Ví dụ: Tân Phú"
-                        />
-                    </div>
-                </div>
-
-                <div>
-                    <label className="block font-semibold mb-1" htmlFor="symptoms">
-                        Mô tả triệu chứng (nếu có)
-                    </label>
-                    <textarea
-                        id="symptoms"
-                        name="symptoms"
-                        value={form.symptoms}
-                        onChange={handleChange}
-                        rows={4}
-                        className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        placeholder="Mô tả triệu chứng..."
-                    />
-                </div>
-
-                <button
-                    type="submit"
-                    className="bg-blue-600 text-white font-semibold px-6 py-3 rounded-md hover:bg-blue-700 transition"
-                >
-                    Đặt lịch
-                </button>
-            </form>
-
-            {/* Divider */}
-            <hr className="my-8" />
-
-            {/* Thông tin thêm */}
             <div className="space-y-4 text-gray-700">
                 <h2 className="text-2xl font-semibold">Thông tin thêm</h2>
-
-                <div>
-                    <h3 className="font-semibold mb-1">Quy trình thăm khám</h3>
-                    <ul className="list-disc list-inside">
-                        <li>Đăng ký khám và nhận tư vấn ban đầu</li>
-                        <li>Bác sĩ khám lâm sàng và chỉ định cần thiết</li>
-                        <li>Bác sĩ đưa kết luận và kê đơn thuốc sau khi tổng hợp kết quả</li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h3 className="font-semibold mb-1">Các dịch vụ khám</h3>
-                    <ul className="list-disc list-inside">
-                        <li>Chẩn đoán sớm ung thư dạ dày</li>
-                        <li>Nội soi tiêu hóa</li>
-                        <li>Nội soi mật tụy ngược dòng (ERCP)</li>
-                        <li>Siêu âm nội soi (EUS)</li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h3 className="font-semibold mb-1">Đánh giá từ người bệnh</h3>
-                    <p>Thái độ phục vụ: ⭐⭐⭐⭐⭐</p>
-                    <p>Thời gian chờ đợi: ⭐⭐⭐⭐⭐</p>
-                    <p>Vệ sinh, sạch sẽ: ⭐⭐⭐⭐⭐</p>
-                    <p>Được giới thiệu: 80% (972 lượt đánh giá)</p>
-                </div>
-
-                <div>
-                    <h3 className="font-semibold mb-1">Địa chỉ liên hệ</h3>
-                    <p>{doctor.hospital || 'Bệnh viện FV – Bệnh viện Pháp Việt'}</p>
-                    <p>6 Nguyễn Lương Bằng, Phường Tân Phú, Quận 7, TP.HCM</p>
-                    <p>
-                        Hotline: <a href="tel:0941298865" className="text-blue-600 underline">0941 298 865</a>
-                    </p>
-                </div>
+                <ul className="list-disc list-inside">
+                    <li>Đăng ký khám và nhận tư vấn ban đầu</li>
+                    <li>Bác sĩ khám lâm sàng và chỉ định cần thiết</li>
+                    <li>Bác sĩ đưa kết luận và kê đơn thuốc sau khi tổng hợp kết quả</li>
+                </ul>
+                <p>Hotline: <a href="tel:0941298865" className="text-blue-600 underline">0941 298 865</a></p>
             </div>
         </div>
     );
