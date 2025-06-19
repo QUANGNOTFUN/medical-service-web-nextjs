@@ -1,4 +1,4 @@
-import {Appointment, CreateAppointmentInput} from "@/types/appoitment";
+import {Appointment, CreateAppointmentInput} from "@/types/appointment";
 import {useMutation} from "@apollo/client";
 import {CREATE_APPOINTMENT} from "@/libs/graphqls/appointment";
 

@@ -5,7 +5,6 @@ import { useState } from 'react';
 import { Menu, UserCircle, X } from 'lucide-react';
 import { useSession, signOut } from 'next-auth/react';
 
-
 export default function Header() {
     const [isOpen, setIsOpen] = useState(false);
     const { data: session } = useSession();
