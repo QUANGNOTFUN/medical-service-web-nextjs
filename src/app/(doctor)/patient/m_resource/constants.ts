@@ -18,17 +18,5 @@ export const INIT_PATIENT_TABLE: HeaderDoctorTable[] = [
     {label:"Hành động", key: 'action', type: 'text' },
 ]
 
-export const UPUPDATE_PATIENT_TABLE: PatientTable[] = [
-    {name:"Tên", label:"Name", type: "text"},
-    {name:"Giới tính", label:"gender", type:"text", options:["Nam","Nữ"]},
-    {name: "Tuổi", label:"tuoi", type: "text"},
-    {name:"Địa chỉ", label:"address", type: "text"},
-    {name:"Sổ điện thoại",label:"phone", type: "text"},
-    {name:"Ngày khám",label:"date1",type:"date"},
-    {name:"Ngày tái khám",label:"date2",type:"date"},
-    {name:"Chuẩn đoán",label:"chuandoan", type: "text"},
-    {name:"Ghi chú", label:"Notes", type: "text"},
-    {name:"Sơ đồ điều trị",label:"treatment", type:"text"},
-    {name:"Tên thuốc",label:"thuoc",type:"text"},
 
-]
+

@@ -1,5 +1,4 @@
 import { gql } from "@apollo/client";
-import {DeletePostInput} from "@/types/posts";
 
 export const GET_POSTS = gql`
     query GetPosts($input: PaginationBlogInput!) {

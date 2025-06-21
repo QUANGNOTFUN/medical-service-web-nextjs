@@ -50,6 +50,21 @@ export const GET_APPOINTMENT = gql`
         }
     }
 `;
+
+export const GET_APPOINTMENT_BY_DATE = gql`
+    query GetAppointment($id: Int!) {
+        appointment(id: $id) {
+            id
+            patient_id
+            doctor_id
+            schedule_id
+            appointment_type
+            appointment_date
+            status
+            is_anonymous
+        }
+    }
+`;
 export const CREATE_APPOINTMENT = gql`
     mutation CreateAppointment($input: CreateAppointmentInput!) {
         createAppointment(input: $input) {
