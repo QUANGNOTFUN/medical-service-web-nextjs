@@ -143,7 +143,7 @@ export default function AppointmentManage() {
     const tableItems = appointments.map(app => ({
         appointment_id: app.appointment_id,
         patient_id: app.patient_id || "N/A",
-        schedule_id: app.schedule_id || "N/A",
+        schedule_id: app.slot_id || "N/A",
         appointment_type: app.appointment_type || "N/A",
         appointment_date: app.appointment_date
             ? new Date(app.appointment_date).toLocaleString()

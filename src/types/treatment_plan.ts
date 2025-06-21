@@ -10,10 +10,10 @@ export interface TreatmentPlan{
     updated_at?: Date;
 }
 
-export interface CreateTreatmentPlanInput {
-    name: string;
-    hiv_diagnosis_date?: Date;
-    start_date?: Date;
-    end_date?: Date;
-    notes?: string;
-}
+    export interface CreateTreatmentPlanInput {
+        name: string;
+        hiv_diagnosis_date?: Date;
+        start_date?: Date;
+        end_date?: Date;
+        notes?: string;
+    }

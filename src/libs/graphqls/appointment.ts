@@ -7,7 +7,7 @@ export const GET_APPOINTMENTS = gql`
                 appointment_id
                 patient_id
                 doctor_id
-                schedule_id
+                slot_id
                 appointment_type
                 appointment_date
                 status
@@ -28,7 +28,7 @@ export const SEARCH_APPOINTMENTS = gql`
             id
             patient_id
             doctor_id
-            schedule_id
+            slot_id
             appointment_type
             appointment_date
             status
@@ -42,7 +42,7 @@ export const GET_APPOINTMENT = gql`
             id
             patient_id
             doctor_id
-            schedule_id
+            slot_id
             appointment_type
             appointment_date
             status
@@ -57,7 +57,7 @@ export const GET_APPOINTMENT_BY_DATE = gql`
             id
             patient_id
             doctor_id
-            schedule_id
+            slot_id
             appointment_type
             appointment_date
             status
@@ -71,7 +71,7 @@ export const CREATE_APPOINTMENT = gql`
             id
             patient_id
             doctor_id
-            schedule_id
+            slot_id
             appointment_type
             appointment_date
             status

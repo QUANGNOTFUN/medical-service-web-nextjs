@@ -146,29 +146,7 @@ export default function BlogPage() {
             </button>
         </div>
     );
-
-    // Chuẩn bị dữ liệu cho bảng
-    const tableItems = [
-        ...displayedPosts.map((post: any) => ({
-            id: post.id,
-            title: post.title || "N/A",
-            content: post.content || "N/A",
-            author_id: post.author_id || "N/A",
-            category: post.category || "N/A",
-            created_at: post.created_at ? new Date(post.created_at).toLocaleString() : "N/A",
-            action: renderActions(post),
-        })),
-        {
-            id: "--",
-            title: "--",
-            content: "--",
-            author_id: "--",
-            category: "--",
-            created_at: "--",
-            action: "--",
-        },
-    ];
-
+    
     const renderForm = () => {
         switch (selectedAction) {
             case "delete":
@@ -310,7 +288,7 @@ export default function BlogPage() {
                         </tr>
                         </thead>
                         <tbody>
-                        {tableItems.map((item, rowIndex) => (
+                        {displayedPosts.map((item, rowIndex) => (
                             <tr
                                 key={rowIndex}
                                 className="border-t hover:bg-gray-50"
