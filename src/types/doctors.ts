@@ -27,6 +27,7 @@ export interface UpdateDoctorInput {
     hospital?: string | null;
 }
 
+
 export interface DeleteDoctorInput{
     id: string;
 }

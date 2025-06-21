@@ -1,135 +1,61 @@
 'use client';
 
-import { useParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-import { useQuery, useMutation } from '@apollo/client';
+import { useParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import { useQuery, useMutation } from '@apollo/client';
 import { useLoading } from '@/app/context/loadingContext';
 
-import { GET_DOCTOR } from '@/libs/graphqls/doctors';
+import { GET_USER_BY_ID } from '@/libs/graphqls/queries/profile';
 import { CREATE_APPOINTMENT } from '@/libs/graphqls/mutations/appointments';
-import { GET_SCHEDULE_DATES, GET_SCHEDULES_BY_DATE } from '@/libs/graphqls/queries/doctor-schedules';
-import { GET_SLOTS_BY_SCHEDULE } from '@/libs/graphqls/queries/appointment-slot';
+
+import { useBookingForm } from '@/libs/hooks/appoiment/useBookingForm';
+import { useBookingData } from '@/libs/hooks/appoiment/useBookingData';
 
 import DoctorCard from './components/DoctorCard';
 import DateSelector from './components/DateSelector';
 import TimeSlotSelector from './components/TimeSlotSelector';
 import PatientForm from './components/PatientForm';
 
-interface Slot {
-    id: number;
-    start_time: string;
-    end_time: string;
-    max_patients: number;
-    booked_count: number;
-}
-
-interface Doctor {
-    id: string;
-    qualifications: string;
-    specialty: string;
-    hospital: string;
-    work_seniority: number;
-    user: {
-        full_name: string;
-        avatar: string;
-    };
-}
-
 export default function BookingPage() {
     const { id } = useParams();
+    const doctorId = id as string;
     const { data: session } = useSession();
     const { setLoading } = useLoading();
 
-    const [form, setForm] = useState({
-        fullName: session.user.email,
-        gender: '',
-        dob: '',
-        phone: '',
-        province: '',
-        district: '',
-        ward: '',
-        symptoms: '',
-    });
-
-    const [selectedDate, setSelectedDate] = useState<string>('');
+    const [selectedDate, setSelectedDate] = useState('');
     const [selectedScheduleId, setSelectedScheduleId] = useState<number | null>(null);
-    const [slots, setSlots] = useState<Slot[]>([]);
     const [selectedSlotId, setSelectedSlotId] = useState<number | null>(null);
 
-    const { loading, error, data } = useQuery<{ doctor: Doctor }>(GET_DOCTOR, {
-        variables: { id },
-        fetchPolicy: 'no-cache',
+    const { data: userData } = useQuery(GET_USER_BY_ID, {
+        variables: { input: { id: session?.user?.id } },
+        skip: !session?.user?.id,
     });
 
-    const { data: scheduleDatesData } = useQuery(GET_SCHEDULE_DATES, {
-        variables: { doctor_id: id },
-    });
+    const user = userData?.getUserById;
+    const { form, handleChange, resetForm } = useBookingForm(user);
 
-    const { data: schedulesByDate } = useQuery(GET_SCHEDULES_BY_DATE, {
-        variables: { doctor_id: id, date: selectedDate },
-        skip: !selectedDate,
-    });
-
-    const { data: slotData } = useQuery(GET_SLOTS_BY_SCHEDULE, {
-        variables: { id: selectedScheduleId },
-        skip: !selectedScheduleId,
-    });
+    const {
+        doctor,
+        doctorLoading,
+        doctorError,
+        availableDates,
+        schedulesByDate,
+        slots,
+    } = useBookingData(doctorId, selectedDate, selectedScheduleId);
 
     const [createAppointment, { loading: mutationLoading, error: mutationError }] = useMutation(CREATE_APPOINTMENT, {
         onCompleted: () => {
             alert('Đặt lịch thành công!');
-            setForm({
-                fullName: '',
-                gender: '',
-                dob: '',
-                phone: '',
-                province: '',
-                district: '',
-                ward: '',
-                symptoms: '',
-            });
+            resetForm();
             setSelectedScheduleId(null);
-            setSlots([]);
+            setSelectedSlotId(null);
         },
     });
 
-    useEffect(() => {
-        setLoading(loading || mutationLoading);
-    }, [loading, mutationLoading]);
-
-    useEffect(() => {
-        if (schedulesByDate?.getDoctorSchedulesIdByDate?.length > 0) {
-            const firstScheduleId = schedulesByDate.getDoctorSchedulesIdByDate[0].id;
-            setSelectedScheduleId(firstScheduleId);
-            setSelectedSlotId(null);
-        }
-    }, [schedulesByDate]);
-
-
-    useEffect(() => {
-        if (slotData?.getAppointmentSlotByScheduleId) {
-            setSlots(slotData.getAppointmentSlotByScheduleId);
-        } else {
-            setSlots([]);
-        }
-    }, [slotData]);
-
-    const handleDateChange = (date: string) => {
-        setSelectedDate(date);
-        setSelectedScheduleId(null);
-        setSelectedSlotId(null);  // reset slot khi chọn ngày khác
-        setSlots([]);
-    };
-
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-        setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-    };
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!selectedSlotId || !selectedScheduleId || !session?.user?.id) return;
+        if (!selectedSlotId || !session?.user?.id) return;
 
         const selectedSlot = slots.find((s) => s.id === selectedSlotId);
         if (!selectedSlot) return;
@@ -137,9 +63,10 @@ export default function BookingPage() {
         await createAppointment({
             variables: {
                 input: {
+                    doctor_id: doctorId,
                     patient_id: session.user.id,
-                    doctor_id: id as string,
-                    schedule_id: selectedScheduleId,
+                    slot_id: selectedSlotId,
+                    status: 'PENDING',
                     appointment_date: new Date(selectedSlot.start_time).toISOString(),
                     appointment_type: 'consultation',
                     is_anonymous: false,
@@ -147,27 +74,32 @@ export default function BookingPage() {
                 },
             },
         });
-
     };
 
-    if (error) return <p className="text-red-500">Lỗi: {error.message}</p>;
-    if (loading) return <p>Đang tải...</p>;
+    useEffect(() => {
+        setLoading(doctorLoading || mutationLoading);
+    }, [doctorLoading, mutationLoading]);
 
-    const doctor = data?.doctor;
+    useEffect(() => {
+        if (schedulesByDate.length > 0) {
+            setSelectedScheduleId(schedulesByDate[0].id);
+            setSelectedSlotId(null);
+        }
+    }, [schedulesByDate]);
+
+    const handleDateChange = (date: string) => {
+        setSelectedDate(date);
+        setSelectedScheduleId(null);
+        setSelectedSlotId(null);
+    };
+
+    if (doctorError) return <p className="text-red-500">Lỗi: {doctorError.message}</p>;
+    if (doctorLoading) return <p>Đang tải...</p>;
     if (!doctor) return <p>Không tìm thấy bác sĩ.</p>;
-
-    const availableDates = scheduleDatesData?.getAvailableScheduleDates || [];
 
     return (
         <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg my-8">
-            <DoctorCard
-                avatar={doctor.user.avatar}
-                fullName={doctor.user.full_name}
-                qualifications={doctor.qualifications}
-                specialty={doctor.specialty}
-                hospital={doctor.hospital}
-                workSeniority={doctor.work_seniority}
-            />
+            <DoctorCard {...doctor.user} {...doctor} />
 
             <hr className="my-8" />
 
@@ -175,7 +107,7 @@ export default function BookingPage() {
                 <div className="bg-blue-50 border border-blue-300 p-4 rounded-md w-full md:w-1/2">
                     <h2 className="text-lg font-semibold mb-4">Ngày khám</h2>
                     <DateSelector
-                        doctorId={id as string}
+                        doctorId={doctorId}
                         selectedDate={selectedDate}
                         onDateChange={handleDateChange}
                         availableDates={availableDates}
@@ -192,7 +124,6 @@ export default function BookingPage() {
                         selectedSlotId={selectedSlotId}
                         onSelect={setSelectedSlotId}
                     />
-
                 </div>
 
                 <div className="w-full md:w-1/2">
@@ -211,18 +142,6 @@ export default function BookingPage() {
                         </button>
                     </form>
                 </div>
-            </div>
-
-            <hr className="my-8" />
-
-            <div className="space-y-4 text-gray-700">
-                <h2 className="text-2xl font-semibold">Thông tin thêm</h2>
-                <ul className="list-disc list-inside">
-                    <li>Đăng ký khám và nhận tư vấn ban đầu</li>
-                    <li>Bác sĩ khám lâm sàng và chỉ định cần thiết</li>
-                    <li>Bác sĩ đưa kết luận và kê đơn thuốc sau khi tổng hợp kết quả</li>
-                </ul>
-                <p>Hotline: <a href="tel:0941298865" className="text-blue-600 underline">0941 298 865</a></p>
             </div>
         </div>
     );

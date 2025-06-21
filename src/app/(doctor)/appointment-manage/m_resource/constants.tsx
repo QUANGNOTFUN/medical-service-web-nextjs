@@ -1,5 +1,5 @@
 import {DoctorFormProps} from "@/app/(doctor)/types/DoctorDashBoard";
-import { UpdateAppointmentInput} from "@/types/appoitment";
+import { UpdateAppointmentInput} from "@/types/appointment";
 import {HeaderDoctorTable} from "@/app/(doctor)/_components/Layout/DoctorTable";
 
 export const HEADER_APPOINMENTS_TABLE: HeaderDoctorTable[] = [

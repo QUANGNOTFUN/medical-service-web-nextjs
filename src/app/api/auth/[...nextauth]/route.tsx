@@ -17,7 +17,7 @@ const authOptions: NextAuthOptions = {
                 email: { label: "Email", type: "email" },
                 password: { label: "Password", type: "password" }
             },
-            async authorize(credentials,req) {
+            async authorize(credentials, req) {
                 if (!credentials?.email || !credentials?.password) return null;
 
                 const mutation = gql`
@@ -33,7 +33,7 @@ const authOptions: NextAuthOptions = {
                 `;
 
                 try {
-                    const { data, errors } = await client.mutate({
+                    const { data } = await client.mutate({
                         mutation,
                         variables: {
                             email: credentials.email,
@@ -45,12 +45,12 @@ const authOptions: NextAuthOptions = {
                         const decoded: any = jwtDecode(data.login.accessToken);
 
                         return {
+                            id: decoded.sub, // 👈 lấy id từ JWT
                             email: credentials.email,
                             accessToken: data.login.accessToken,
                             role: decoded.role,
-                        } as any;
+                        };
                     }
-
                 } catch (error: any) {
                     console.error("GraphQL Login error:", error?.networkError?.result?.errors);
                     return null;
@@ -65,6 +65,7 @@ const authOptions: NextAuthOptions = {
     callbacks: {
         async jwt({ token, user }) {
             if (user) {
+                token.id = user.id; // 👈 lưu id vào token
                 token.email = user.email;
                 token.accessToken = user.accessToken;
                 token.role = user.role;
@@ -74,6 +75,7 @@ const authOptions: NextAuthOptions = {
 
         async session({ session, token }) {
             session.user = {
+                id: token.id, // ✅ sửa ở đây
                 email: token.email,
                 accessToken: token.accessToken,
                 role: token.role,

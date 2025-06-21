@@ -2,7 +2,7 @@ export interface Appointment {
     appointment_id: number;
     patient_id: number;
     doctor_id: number;
-    schedule_id: number;
+    slot_id: number;
     appointment_type: string;
     appointment_date: string;
     status: string;

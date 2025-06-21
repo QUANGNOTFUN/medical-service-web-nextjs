@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client";
 import { GET_APPOINTMENTS } from "@/libs/graphqls/appointment";
-import { PaginatedAppointment } from "@/types/appoitment";
+import { PaginatedAppointment } from "@/types/appointment";
 
 export function useGetAppointments(input: { doctor_id: string, page: number; pageSize: number }) {
     const { data, loading, error, refetch } = useQuery<{ getAppointmentsByDoctor: PaginatedAppointment }>(
