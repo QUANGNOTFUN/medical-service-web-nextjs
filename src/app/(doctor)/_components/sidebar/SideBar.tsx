@@ -52,7 +52,7 @@ export default function SidebarDoctor() {
                     <Menu />
                 </button>
 
-                <h2 className={`text-xl font-bold mb-6 transition-opacity ${isOpen ? 'opacity-100' : 'opacity-0 hidden'}`}>
+                <h2 className={`text-xl font-bold mb-6  ${isOpen ? 'opacity-100' : 'opacity-0 hidden'}`}>
                     Doctor Panel
                 </h2>
 

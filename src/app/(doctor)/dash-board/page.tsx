@@ -71,7 +71,6 @@ export default function DoctorDashboardPage() {
 
     return (
         <div className="h-screen flex flex-col p-6 bg-gray-100">
-            <h1 className="text-2xl font-bold mb-6 text-gray-800">Bảng điều khiển bác sĩ</h1>
             <div className="flex flex-1 space-x-6">
                 {/* Tổng quan hôm nay */}
                 <div className="w-1/2 p-4 bg-gray-50 rounded-xl shadow">

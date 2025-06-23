@@ -1,9 +1,7 @@
-import {gql} from "@apollo/client";
+import { gql } from "@apollo/client";
 
 export const CREATE_EXAMINATION = gql`
-    mutation makeMedicalExamination($input : MedicalExaminationInput!){
-        makeMedicalExamination(input: $input){
-            
-        }
+    mutation makeMedicalExamination($input: MedicalExaminationInput!) {
+        makeMedicalExamination(input: $input)
     }
-`
+`;

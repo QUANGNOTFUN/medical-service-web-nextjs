@@ -75,7 +75,7 @@ export default function BlogPage() {
             return;
         }
         try {
-            const authorId = "f131d16a-5fd5-4a5c-ae7d-c7471c7e8c52";
+            const authorId = "6eaa03f7-dc9c-415b-8066-cb72d936d1d2";
             await createPostInput({
                 title: formData.title,
                 content: formData.content,

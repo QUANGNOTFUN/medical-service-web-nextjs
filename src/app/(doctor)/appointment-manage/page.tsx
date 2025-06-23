@@ -12,7 +12,7 @@ export default function AppointmentManage() {
     const [selectedAction, setSelectedAction] = useState<"view" | "create" | "update" | "delete" | "detail">("view");
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(5);
-    const doctorId = "f131d16a-5fd5-4a5c-ae7d-c7471c7e8c52";
+    const doctorId = "6eaa03f7-dc9c-415b-8066-cb72d936d1d2";
 
     const {
         appointments,
