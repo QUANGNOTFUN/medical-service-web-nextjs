@@ -13,3 +13,38 @@ export const GET_USER_BY_ID = gql`
     }
   }
 `;
+
+export const GET_PATIENT_BY_ID = gql`
+query GetPatientWithUser($input: GetPatientByIdInput!) {
+  findOnePatient(input: $input) {
+    gender
+    created_at
+    updated_at
+    user {
+      email
+      full_name
+      phone
+      address
+      role 
+      avatar
+      date_of_birth
+    }
+  }
+}
+`;
+
+export const UPDATE_PATIENT_BY_ID = gql`
+mutation UpdatePatient($input: UpdatePatientInput!) {
+  updatePatient(input: $input) {
+    gender
+    created_at
+    user {
+      id
+      full_name
+      email
+      phone
+      date_of_birth
+    }
+  }
+}
+`

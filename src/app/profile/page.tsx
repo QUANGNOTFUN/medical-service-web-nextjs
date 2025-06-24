@@ -1,94 +1,258 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
-import { useQuery } from '@apollo/client';
-import { useSession } from 'next-auth/react';
-import { GET_USER_BY_ID } from '@/libs/graphqls/queries/profile';
+import React, { useState } from "react";
+import { useMutation, useQuery } from "@apollo/client";
+import { useSession } from "next-auth/react";
+import { GET_PATIENT_BY_ID, UPDATE_PATIENT_BY_ID } from "@/libs/graphqls/queries/profile";
+import Image from "next/image"; // ⬅️ thêm dòng này
 
 export default function ProfilePage() {
-    const { data: session, status } = useSession();
+    const { data: session } = useSession();
 
-    const { data, loading, error } = useQuery(GET_USER_BY_ID, {
-        variables: {
-            input: { id: session?.user?.id }, // dùng optional chaining
-        },
-        skip: !session?.user?.id, // bỏ qua nếu chưa có id
+    const { data, loading, error } = useQuery(GET_PATIENT_BY_ID, {
+        variables: { input: { patient_id: session?.user?.id } },
+        skip: !session?.user?.id,
     });
 
-    const user = data?.getUserById;
+    const [form, setForm] = useState({
+        full_name: "",
+        date_of_birth: "",
+        address: "",
+        gender: "",
+        phone: "",
+        avatarFile: null as File | null,
+        avatarPreview: "",
+    });
+
+    const [editMode, setEditMode] = useState(false);
+
+    const [updatePatient, { loading: updating }] = useMutation(UPDATE_PATIENT_BY_ID, {
+        refetchQueries: [{
+            query: GET_PATIENT_BY_ID,
+            variables: { input: { patient_id: session?.user?.id } },
+        }],
+        awaitRefetchQueries: true,
+        onCompleted: () => {
+            alert("Cập nhật thành công!");
+            setEditMode(false);
+        },
+        onError: (err) => {
+            alert(`Cập nhật thất bại: ${err.message}`);
+        },
+    });
+
+    const patient = data?.findOnePatient;
+    const user = patient?.user;
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const { name, value } = e.target;
+        setForm((prev) => ({ ...prev, [name]: value }));
+    };
+
+    const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setForm((prev) => ({
+                    ...prev,
+                    avatarFile: file,
+                    avatarPreview: reader.result as string,
+                }));
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const uploadAvatar = async (file: File): Promise<string> => {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const res = await fetch("http://localhost:3000/upload", {
+            method: "POST",
+            body: formData,
+        });
+
+        if (!res.ok) {
+            throw new Error("Upload ảnh thất bại");
+        }
+
+        const data = await res.json();
+
+        if (!data?.url) {
+            throw new Error("Dữ liệu phản hồi không hợp lệ");
+        }
+
+        return data.url;
+    };
+
+    const handleEditClick = () => {
+        if (user && patient) {
+            setForm({
+                full_name: user.full_name || "",
+                date_of_birth: user.date_of_birth?.slice(0, 10) || "",
+                address: user.address || "",
+                gender: patient.gender || "",
+                phone: user.phone || "",
+                avatarFile: null,
+                avatarPreview: "",
+            });
+        }
+        setEditMode(true);
+    };
+
+    const handleCancelClick = () => {
+        setEditMode(false);
+        setForm({
+            full_name: "",
+            date_of_birth: "",
+            address: "",
+            gender: "",
+            phone: "",
+            avatarFile: null,
+            avatarPreview: "",
+        });
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        let avatarUrl = user?.avatar || "";
+        if (form.avatarFile) {
+            avatarUrl = await uploadAvatar(form.avatarFile);
+        }
+
+        await updatePatient({
+            variables: {
+                input: {
+                    patient_id: session?.user?.id,
+                    gender: form.gender || undefined,
+                    user: {
+                        full_name: form.full_name || undefined,
+                        date_of_birth: form.date_of_birth || undefined,
+                        address: form.address || undefined,
+                        phone: form.phone || undefined,
+                        avatar: avatarUrl,
+                    },
+                },
+            },
+        });
+    };
+
+    const translateGender = (gender: string) => {
+        switch (gender?.toUpperCase()) {
+            case "MALE": return "Nam";
+            case "FEMALE": return "Nữ";
+            case "OTHER": return "Khác";
+            default: return "N/A";
+        }
+    };
 
     if (loading) return <p className="p-4">Đang tải thông tin...</p>;
-    if (error) return <p className="text-red-500 p-4">Lỗi: {error.message}</p>;
+    if (error) return <p className="text-red-600 p-4">Lỗi: {error.message}</p>;
     if (!user) return <p className="p-4">Không tìm thấy người dùng.</p>;
 
     return (
-        <div className="min-h-screen flex bg-gray-50">
-            <main className="flex-1 p-8">
-                <h1 className="text-2xl font-bold text-gray-800 mb-6">Hồ sơ khám</h1>
-
-                <div className="bg-white p-6 rounded shadow space-y-4">
-
-                    {/* Avatar nếu có */}
-                    {user.avatar && (
-                        <div className="mt-6">
-                            <label className="block text-sm font-medium text-gray-700">Ảnh đại diện</label>
-                            <img
-                                src={user.avatar}
-                                alt="Avatar"
-                                className="mt-2 w-32 h-32 object-cover rounded-full border"
-                            />
+        <div className="min-h-screen bg-gray-100 p-6">
+            <div className="max-w-6xl mx-auto">
+                <div className="flex justify-between items-center mb-6">
+                    <h1 className="text-3xl font-bold text-gray-800">Thông tin bệnh nhân</h1>
+                    {!editMode ? (
+                        <button onClick={handleEditClick}>
+                            <img src="/icons8-edit.gif" alt="Edit" className="w-6 h-6 hover:opacity-80" />
+                        </button>
+                    ) : (
+                        <div className="space-x-2">
+                            <button
+                                type="submit"
+                                form="edit-form"
+                                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                                disabled={updating}
+                            >
+                                {updating ? "Đang lưu..." : "Lưu"}
+                            </button>
+                            <button
+                                onClick={handleCancelClick}
+                                className="border border-gray-400 px-4 py-2 rounded hover:bg-gray-100"
+                            >
+                                Hủy
+                            </button>
                         </div>
                     )}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Họ và tên</label>
-                            <input
-                                type="text"
-                                value={user.full_name || ''}
-                                readOnly
-                                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm bg-gray-100"
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="bg-white p-6 rounded-xl shadow text-center relative">
+                        <div className="relative w-32 h-32 mx-auto">
+                            <Image
+                                src={form.avatarPreview || user.avatar || "/default-avatar.png"}
+                                alt="Avatar"
+                                width={128}
+                                height={128}
+                                className="w-full h-full object-cover rounded-full border"
                             />
+                            {editMode && (
+                                <>
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleAvatarChange}
+                                        className="absolute inset-0 opacity-0 cursor-pointer"
+                                    />
+                                    <div className="absolute -top-0.5 -right-0.5 bg-blue-600 text-white rounded-3xl p-2 text-xs">
+                                        🖊
+                                    </div>
+                                </>
+                            )}
                         </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Email</label>
-                            <input
-                                type="email"
-                                value={user.email || ''}
-                                readOnly
-                                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm bg-gray-100"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Số điện thoại</label>
-                            <input
-                                type="tel"
-                                value={user.phone || ''}
-                                readOnly
-                                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm bg-gray-100"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Ngày sinh</label>
-                            <input
-                                type="date"
-                                value={user.date_of_birth?.slice(0, 10) || ''}
-                                readOnly
-                                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm bg-gray-100"
-                            />
-                        </div>
-                        <div className="sm:col-span-2">
-                            <label className="block text-sm font-medium text-gray-700">Địa chỉ</label>
-                            <input
-                                type="text"
-                                value={user.address || ''}
-                                readOnly
-                                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm bg-gray-100"
-                            />
-                        </div>
+                        <h2 className="text-xl font-semibold mt-4">{user.full_name}</h2>
+                        <p className="text-blue-600 mt-1">{user.phone}</p>
+                        <p className="text-gray-500 text-sm">{user.email}</p>
                     </div>
 
+                    <div className="col-span-2 space-y-6">
+                        {editMode ? (
+                            <form id="edit-form" onSubmit={handleSubmit} className="bg-white p-6 rounded-xl shadow space-y-4">
+                                <h3 className="text-lg font-semibold text-gray-700">Chỉnh sửa thông tin</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <input type="text" name="full_name" value={form.full_name} onChange={handleInputChange} placeholder="Họ và tên" className="border p-2 rounded w-full" required />
+                                    <input type="date" name="date_of_birth" value={form.date_of_birth} onChange={handleInputChange} className="border p-2 rounded w-full" />
+                                    <input type="text" name="address" value={form.address} onChange={handleInputChange} placeholder="Địa chỉ" className="border p-2 rounded w-full" />
+                                    <input type="tel" name="phone" value={form.phone} onChange={handleInputChange} placeholder="Số điện thoại" className="border p-2 rounded w-full" />
+                                    <select name="gender" value={form.gender} onChange={handleInputChange} className="border p-2 rounded w-full" required>
+                                        <option value="">Chọn giới tính</option>
+                                        <option value="MALE">Nam</option>
+                                        <option value="FEMALE">Nữ</option>
+                                        <option value="OTHER">Khác</option>
+                                    </select>
+                                </div>
+                            </form>
+                        ) : (
+                            <div className="bg-white p-6 rounded-xl shadow space-y-4">
+                                <h3 className="text-lg font-semibold text-gray-700">Thông tin cơ bản</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-800">
+                                    <div>
+                                        <span className="text-sm text-gray-500">Ngày sinh</span>
+                                        <p>{user.date_of_birth?.slice(0, 10) || "N/A"}</p>
+                                    </div>
+                                    <div>
+                                        <span className="text-sm text-gray-500">Địa chỉ</span>
+                                        <p>{user.address || "N/A"}</p>
+                                    </div>
+                                    <div>
+                                        <span className="text-sm text-gray-500">Giới tính</span>
+                                        <p>{translateGender(patient.gender)}</p>
+                                    </div>
+                                    <div>
+                                        <span className="text-sm text-gray-500">Số điện thoại</span>
+                                        <p>{user.phone || "N/A"}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
                 </div>
-            </main>
+            </div>
         </div>
     );
 }
