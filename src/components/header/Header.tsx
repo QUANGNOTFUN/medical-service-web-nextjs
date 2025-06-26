@@ -64,7 +64,7 @@ export default function Header() {
                                     Hồ sơ khám
                                 </Link>
                                 <Link
-                                    href="/booking"
+                                    href="/profile/appointment"
                                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                                 >
                                     Lịch hẹn của tôi

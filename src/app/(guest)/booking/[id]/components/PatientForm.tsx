@@ -11,7 +11,7 @@ const PatientForm: React.FC<PatientFormProps> = ({ form, onChange }) => {
             {/* Các input như fullName, gender, dob, phone, province, district, ward */}
             {[
                 { label: 'Họ và tên', name: 'fullName', required: true },
-                { label: 'Giới tính', name: 'gender', type: 'select', options: ['male', 'female', 'other'], required: true },
+                { label: 'Giới tính', name: 'gender', type: 'select', options: ['MALE', 'FEMALE', 'OTHER'], required: true },
                 { label: 'Ngày sinh', name: 'dob', type: 'date', required: true },
                 { label: 'Số điện thoại', name: 'phone', required: true },
                 { label: 'Tỉnh/Thành phố', name: 'province' },
@@ -30,7 +30,7 @@ const PatientForm: React.FC<PatientFormProps> = ({ form, onChange }) => {
                         >
                             <option value="">Chọn giới tính</option>
                             {field.options?.map((opt) => (
-                                <option key={opt} value={opt}>{opt === 'male' ? 'Nam' : opt === 'female' ? 'Nữ' : 'Khác'}</option>
+                                <option key={opt} value={opt}>{opt === 'MALE' ? 'Nam' : opt === 'FEMALE' ? 'Nữ' : 'Khác'}</option>
                             ))}
                         </select>
                     </div>
