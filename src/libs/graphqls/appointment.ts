@@ -1,4 +1,5 @@
 import { gql } from "@apollo/client";
+import {DeleteAppointmentInput} from "@/types/appointment";
 
 export const GET_APPOINTMENTS = gql`
     query GetAppointments($input: PaginationAppointmentInput!) {
@@ -99,16 +100,7 @@ export const UPDATE_APPOINTMENT = gql`
 `;
 
 export const DELETE_APPOINTMENT = gql`
-    mutation DeleteAppointment($id: Int!) {
-        deleteAppointment(id: $id) {
-            id
-            patient_id
-            doctor_id
-            schedule_id
-            appointment_type
-            appointment_date
-            status
-            is_anonymous
-        }
+    mutation DeleteAppointment($input: DeleteAppointmentInput!) {
+        deleteAppointment(input: $input)
     }
 `;

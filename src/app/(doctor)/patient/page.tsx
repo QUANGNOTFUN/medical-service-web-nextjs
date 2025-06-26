@@ -7,9 +7,10 @@ import MedicalExaminationForm from "@/app/(doctor)/patient/m_resource/MedicalExa
 import { MedicalExaminationInput } from "@/types/examination_report";
 import {useGetAppointments} from "@/libs/hooks/appoiment/useGetAppointment";
 import {useCreateExamination} from "@/libs/hooks/a/useCreateExaminationReport";
-import { useGetTreatmentPlan } from "@/libs/hooks/treatmentPlan/useGetTreatmentPlan";
 import {useUpdateAppointment} from "@/libs/hooks/appoiment/useUpdateAppointment";
 import {useSession} from "next-auth/react";
+import ConfirmationDialog from "@/app/(admin)/_components/dialog/ConfirmationDialog";
+import {useDeleteAppointment} from "@/libs/hooks/appoiment/useDeleteAppointment";
 
 export default function PatientPage() {
     const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -21,13 +22,14 @@ export default function PatientPage() {
     const doctorId = session.user.id;
 
     const {appointments, total, loading: loadingAppointments, error: errorAppointments, refetch: refetchAppointments,} = useGetAppointments({ doctor_id: doctorId, page, pageSize });
-
     const {update: updateAppointment, loading: loadingUpdate, error: errorUpdate,} = useUpdateAppointment();
+    const { delete: deleteAppointment, loading: loadingApp, error: errorDelete } = useDeleteAppointment()
+
 
     const {create, loading: loadingCreateExam, error: errorCreate,} = useCreateExamination();
 
-    const isLoading = loadingAppointments || loadingCreateExam || loadingUpdate;
-    const error = errorAppointments || errorCreate || errorUpdate;
+    const isLoading = loadingAppointments || loadingCreateExam || loadingUpdate || loadingApp;
+    const error = errorAppointments || errorCreate || errorUpdate || errorDelete;
 
     const dataAppointments = appointments.filter((appointment) => appointment.is_done === true);
     const Appointments = appointments.filter((appointment) => appointment.is_done === false);
@@ -58,6 +60,20 @@ export default function PatientPage() {
         }
     };
 
+    const handleDelete = async () => {
+        if (selectedAppointment === null) return;
+        const success = await deleteAppointment(Number(selectedAppointment));
+        if (success) {
+            await refetchAppointments();
+            handleAction("view");
+        }else {
+            console.log(success);
+        }
+
+    };
+
+
+
     const handleUpdate = async (is_done: boolean) => {
         if(selectedAppointment === null) return;
         try {
@@ -87,9 +103,53 @@ export default function PatientPage() {
             case "update":
                 return null
             case "delete":
-                return null
+                return (
+                    <ConfirmationDialog
+                        isOpen={true}
+                        title="Xác nhận xóa lịch hẹn"
+                        message="Bạn có chắc chắn muốn xóa lịch hẹn này không?"
+                        onClose={() => setSelectedAction(null)}
+                        onConfirm={() => {
+                            if (selectedAppointment !== null) {
+                                handleDelete(selectedAppointment);
+                                setSelectedAction(null);
+                            }
+                        }}
+                        confirmText="Xóa"
+                        cancelText="Hủy"
+                    />
+                );
+
             case "view":
-                return null
+                const appointment = appointments.find(app => app.appointment_id === selectedAppointment);
+                if (!appointment) return null;
+
+                return (
+                    <ConfirmationDialog
+                        isOpen={true}
+                        title="Chi tiết lịch hẹn"
+                        message={
+                            <div className="space-y-2">
+                                <div><strong>Tên bệnh nhân:</strong> {appointment.patient?.user?.full_name || "Không rõ"}</div>
+                                <div><strong>Tuổi:</strong> {
+                                    (() => {
+                                        const dob = appointment.patient?.user?.date_of_birth;
+                                        if (!dob) return "Không rõ";
+                                        const birth = new Date(dob);
+                                        return `${new Date().getFullYear() - birth.getFullYear()} tuổi`;
+                                    })()
+                                }</div>
+                                <div><strong>Giới tính:</strong> {appointment.patient?.user.phone || "Không rõ"}</div>
+                                <div><strong>Ngày hẹn:</strong> {new Date(appointment.appointment_date).toLocaleString()}</div>
+                                <div><strong>Ghi chú:</strong> {appointment.notes || "Không có"}</div>
+                                <div><strong>Trạng thái:</strong> {appointment.is_done ? "Đã khám" : "Chưa khám"}</div>
+                            </div>
+                        }
+                        onClose={() => setSelectedAction(null)}
+                        confirmText="Đóng"
+                        hideCancel
+                    />
+                );
             default:return null
 
         }

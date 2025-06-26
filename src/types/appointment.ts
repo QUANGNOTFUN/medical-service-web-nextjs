@@ -46,4 +46,8 @@ export interface UpdateAppointmentInput {
     is_done?: boolean;
 }
 
+export class DeleteAppointmentInput {
+    appointment_id: number;
+}
+
 

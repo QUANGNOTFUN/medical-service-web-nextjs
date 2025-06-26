@@ -43,7 +43,7 @@ export default function AppointmentManage() {
 
         try {
             await updateAppointment({
-                appointment_id: selectedId,
+                appointment_id: Number(selectedId),
                 status,
             });
             await refetchAppointments();
