@@ -10,9 +10,9 @@ export default function ProfilePage() {
 
     const { data, loading, error } = useQuery(GET_USER_BY_ID, {
         variables: {
-            input: { id: session?.user?.id }, // dùng optional chaining
+            input: { id: session?.user?.id },
         },
-        skip: !session?.user?.id, // bỏ qua nếu chưa có id
+        skip: !session?.user?.id,
     });
 
     const user = data?.getUserById;

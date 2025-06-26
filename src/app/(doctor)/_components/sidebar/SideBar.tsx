@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { signOut } from 'next-auth/react'; // ✅ Import signOut
 import {
     Calendar, Users, MessageSquare, Home,
     LayoutDashboard, CreditCard, HelpCircle,
@@ -13,6 +14,7 @@ export interface SideBarDoctor {
     href: string;
     icon: string;
 }
+
 const mainItems: SideBarDoctor[] = [
     { label: "Dashboard", href: "/dash-board", icon: "dashboard" },
     { label: "Appointment", href: "/appointment-manage", icon: "calendar" },
@@ -45,18 +47,13 @@ export default function SidebarDoctor() {
 
     return (
         <aside className={`transition-all duration-300 ${isOpen ? 'w-64' : 'w-16'} bg-white border-r shadow-sm p-4 h-screen flex flex-col justify-between`}>
-
-            {/* Toggle */}
             <div>
                 <button onClick={() => setIsOpen(!isOpen)} className="mb-6">
                     <Menu />
                 </button>
 
-                <h2 className={`text-xl font-bold mb-6  ${isOpen ? 'opacity-100' : 'opacity-0 hidden'}`}>
-                    Doctor Panel
-                </h2>
+                <h2 className={`text-xl font-bold mb-6 ${isOpen ? '' : 'hidden'}`}>Doctor Panel</h2>
 
-                {/* Main Nav */}
                 <nav className="space-y-3">
                     {mainItems.map((item) => (
                         <Link key={item.label} href={item.href}>
@@ -69,16 +66,30 @@ export default function SidebarDoctor() {
                 </nav>
             </div>
 
-            {/* Bottom Nav */}
             <nav className="space-y-3">
-                {bottomItems.map((item) => (
-                    <Link key={item.label} href={item.href}>
-                        <div className="flex items-center gap-3 p-2 hover:bg-gray-100 rounded cursor-pointer">
-                            {getIconComponent(item.icon)}
-                            {isOpen && <span>{item.label}</span>}
-                        </div>
-                    </Link>
-                ))}
+                {bottomItems.map((item) => {
+                    if (item.icon === "logout") {
+                        return (
+                            <button
+                                key={item.label}
+                                onClick={() => signOut()}
+                                className="w-full flex items-center gap-3 p-2 hover:bg-gray-100 rounded text-left"
+                            >
+                                {getIconComponent(item.icon)}
+                                {isOpen && <span>{item.label}</span>}
+                            </button>
+                        );
+                    }
+
+                    return (
+                        <Link key={item.label} href={item.href}>
+                            <div className="flex items-center gap-3 p-2 hover:bg-gray-100 rounded cursor-pointer">
+                                {getIconComponent(item.icon)}
+                                {isOpen && <span>{item.label}</span>}
+                            </div>
+                        </Link>
+                    );
+                })}
             </nav>
         </aside>
     );
