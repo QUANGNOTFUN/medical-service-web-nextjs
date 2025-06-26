@@ -10,12 +10,15 @@ import ConfirmationDialog from "@/app/(admin)/_components/dialog/ConfirmationDia
 import {useGetAllPost} from "@/libs/hooks/posts/useGetPost";
 import {useDeletePost} from "@/libs/hooks/posts/useDeletePost";
 import {Post} from "@/types/posts";
+import {useSession} from "next-auth/react";
 
 export default function BlogPage() {
     const [selectedId, setSelectedId] = useState<number | null>(null);
     const [selectedAction, setSelectedAction] = useState<"view" | "create" | "update" | "delete">("view");
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(5);
+    const { data: session } = useSession();
+    const authorId = session.user.id;
     const [formData, setFormData] = useState({
         title: "",
         content: "",
@@ -42,6 +45,17 @@ export default function BlogPage() {
 
 
     const displayedPosts = posts;
+
+    function formatDate(dateString: string): string {
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) return "--";
+        return date.toLocaleDateString("vi-VN", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+        });
+    }
+
 
     function handleAction(action: "view" | "create" | "update" | "delete", id?: number) {
         setSelectedAction(action);
@@ -75,7 +89,6 @@ export default function BlogPage() {
             return;
         }
         try {
-            const authorId = "6eaa03f7-dc9c-415b-8066-cb72d936d1d2";
             await createPostInput({
                 title: formData.title,
                 content: formData.content,
@@ -296,18 +309,19 @@ export default function BlogPage() {
                             >
                                 {INIT_BLOG_TABLE.map((header, colIndex) => (
                                     <td key={colIndex} className="p-4 text-gray-600">
-                                        {item[header.key] === "--" && colIndex === 0 ? (
-                                            <span className="text-gray-400">{item[header.key]}</span>
-                                        ) : header.key === "action" ? (
-                                            item[header.key]
+                                        {header.key === "action" ? (
+                                            renderActions(item)
+                                        ) : header.type === "date" && item[header.key] ? (
+                                            <span>{formatDate(item[header.key])}</span>
                                         ) : (
-                                            <span>{item[header.key]}</span>
+                                            <span>{item[header.key] || "--"}</span>
                                         )}
                                     </td>
                                 ))}
                             </tr>
                         ))}
                         </tbody>
+
                     </table>
                 </div>
             </div>

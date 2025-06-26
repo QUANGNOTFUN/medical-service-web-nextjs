@@ -5,9 +5,21 @@ export const GET_APPOINTMENTS = gql`
         getAppointmentsByDoctor(input: $input) {
             items {
                 appointment_id
-                patient_id
-                doctor_id
-                slot_id
+                patient {
+                    patient_id
+                    gender
+                    plan_id
+                    user {
+                        full_name
+                        email
+                        phone
+                        address
+                        avatar
+                        date_of_birth
+                        created_at
+                        updated_at
+                    }
+                }
                 appointment_type
                 appointment_date
                 status

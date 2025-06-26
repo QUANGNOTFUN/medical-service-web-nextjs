@@ -1,3 +1,5 @@
+import {Patient} from "@/types/patient";
+
 export interface Appointment {
     appointment_id: number;
     patient_id: string;
@@ -9,6 +11,7 @@ export interface Appointment {
     is_done?: boolean;
     is_anonymous: boolean;
     notes: string;
+    patient:Patient;
 }
 
 export interface PaginationAppointmentInput{

@@ -2,7 +2,6 @@
 
 import useAuth from "@/libs/hooks/auth/useAuth";
 import { ReactNode } from "react";
-import Header from "@/components/header/Header";
 
 const ProtectedLayout = ({ children }: { children: ReactNode }) => {
     const {session, status} = useAuth();

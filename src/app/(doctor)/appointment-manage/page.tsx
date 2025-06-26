@@ -6,13 +6,15 @@ import { Check, Loader, X } from "lucide-react";
 import { HEADER_APPOINMENTS_TABLE } from "@/app/(doctor)/appointment-manage/m_resource/constants";
 import { useUpdateAppointment } from "@/libs/hooks/appoiment/useUpdateAppointment";
 import { useGetAppointments } from "@/libs/hooks/appoiment/useGetAppointment";
+import {useSession} from "next-auth/react";
 
 export default function AppointmentManage() {
     const [selectedId, setSelectedId] = useState<number | null>(null);
     const [selectedAction, setSelectedAction] = useState<"view" | "create" | "update" | "delete" | "detail">("view");
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(5);
-    const doctorId = "6eaa03f7-dc9c-415b-8066-cb72d936d1d2";
+    const { data: session } = useSession();
+    const doctorId = session.user.id;
 
     const {
         appointments,
@@ -65,7 +67,7 @@ export default function AppointmentManage() {
                 >
                     👁
                 </button>
-                {status === "pending" && (
+                {status === "PENDING" && (
                     <>
                         <button
                             className="p-1 text-green-600 hover:text-green-800"
@@ -142,7 +144,7 @@ export default function AppointmentManage() {
 
     const tableItems = appointments.map(app => ({
         appointment_id: app.appointment_id,
-        patient_id: app.patient_id || "N/A",
+        "patient.user.full_name": app.patient?.user?.full_name || "Không rõ",
         schedule_id: app.slot_id || "N/A",
         appointment_type: app.appointment_type || "N/A",
         appointment_date: app.appointment_date

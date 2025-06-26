@@ -112,7 +112,8 @@ export default function MedicalExaminationForm({ onSubmit, onClose, patient_id,d
                         <div>
                             <label className="block font-medium mb-1">Tên kế hoạch</label>
                             <input
-                                className={`input w-full ${errors.treatmentPlan_name ? "border-red-500" : ""}`}
+                                className={`input border-2 w-full ${errors.treatmentPlan_name ? "border-red-500" : ""}`}
+                                placeholder={"Nhập tên kế hoạch"}
                                 value={treatmentPlan.name}
                                 onChange={(e) => setTreatmentPlan({ ...treatmentPlan, name: e.target.value })}
                             />
