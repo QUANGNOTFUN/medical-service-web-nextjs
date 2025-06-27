@@ -1,6 +1,6 @@
-import {HeaderAdminTable} from "@/app/(admin)/_components/Search&ActionTable/AdminTable";
+import {HeaderAdminTable} from "@/app/(admin)/_components/organisms/adminManagerTable/AdminTable";
 import {CreateMedicationInput, UpdateMedicationInput} from "@/types/medications";
-import {AdminFormProps} from "@/app/(admin)/_components/Create&UpdateForm/AdminForm";
+import {AdminFormProps} from "@/app/(admin)/_components/organisms/create&UpdateForm/AdminForm";
 
 export const HEADER_TABLE_MEDICATION: HeaderAdminTable[] = [
 	{ label: "ID", key: "id", type: "number" },

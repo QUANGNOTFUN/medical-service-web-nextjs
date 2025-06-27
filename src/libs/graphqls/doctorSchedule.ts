@@ -1,17 +1,20 @@
 import { gql } from "@apollo/client";
 
 // Lấy danh sách tất cả lịch bác sĩ
-export const GET_DOCTOR_SCHEDULES = gql`
-    query GetDoctorSchedules {
-        doctorSchedules {
-            schedule_id
-            doctor_id
-            start_time
-            end_time
-            is_available
-            create_at
-        }
-    }
+export const GET_DOCTOR_SCHEDULES_BY_WEEK_DATE = gql`
+    query GetDoctorScheduleByWeekDate($input: WeekDateInput!) {
+			getDoctorScheduleByWeekDate(weekDate: $input) {
+			  doctor_id
+		    doctor {
+		      user {
+		        full_name
+		      }
+		    }
+		    day
+		    shift
+		    is_available
+			}
+		}
 `;
 
 // Lấy một lịch bác sĩ theo schedule_id
@@ -30,14 +33,14 @@ export const GET_DOCTOR_SCHEDULE = gql`
 
 // Tạo mới một lịch bác sĩ
 export const CREATE_DOCTOR_SCHEDULE = gql`
-    mutation CreateDoctorSchedule($doctorData: CreateDoctorDto_Schedules!) {
-        createDoctorSchedule(doctorData: $doctorData) {
-            schedule_id
-            doctor_id
-            start_time
-            end_time
-            is_available
-            create_at
+    mutation CreateDoctorSchedule($input: CreateDoctorScheduleInput!) {
+        createDoctorSchedule(input: $input) {
+          doctor_id
+          day
+          shift
+          start_time
+          end_time
+          is_available
         }
     }
 `;

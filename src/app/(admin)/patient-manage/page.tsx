@@ -1,8 +1,8 @@
 "use client"
 
-import AdminTable from "@/app/(admin)/_components/Search&ActionTable/AdminTable";
-import TableSearch from "@/app/(admin)/_components/Search&ActionTable/TableSearch";
-import TableDropdownActions from "@/app/(admin)/_components/Search&ActionTable/TableDropdownActions";
+import AdminTable from "@/app/(admin)/_components/organisms/adminManagerTable/AdminTable";
+import TableSearch from "@/app/(admin)/_components/organisms/adminManagerTable/TableSearch";
+import TableDropdownActions from "@/app/(admin)/_components/organisms/adminManagerTable/TableDropdownActions";
 import {CircleEllipsis} from "lucide-react";
 
 const headers = [

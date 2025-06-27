@@ -1,8 +1,8 @@
-import TableSearch, {TableSearchProps} from "@/app/(admin)/_components/Search&ActionTable/TableSearch";
+import TableSearch, {TableSearchProps} from "@/app/(admin)/_components/organisms/adminManagerTable/TableSearch";
 import TableDropdownActions, {
 	TableDropdownActionsProps
-} from "@/app/(admin)/_components/Search&ActionTable/TableDropdownActions";
-import AdminTable, {AdminTableProps} from "@/app/(admin)/_components/Search&ActionTable/AdminTable";
+} from "@/app/(admin)/_components/organisms/adminManagerTable/TableDropdownActions";
+import AdminTable, {AdminTableProps} from "@/app/(admin)/_components/organisms/adminManagerTable/AdminTable";
 import React from "react";
 import {TablePagination, TablePaginationProps} from "./TablePagination";
 import DarkModeToggle from "@/components/toggles/DarkModeToogle";

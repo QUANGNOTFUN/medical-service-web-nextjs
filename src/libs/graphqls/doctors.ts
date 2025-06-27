@@ -3,19 +3,19 @@ import { gql } from "@apollo/client";
 export const GET_DOCTORS = gql`
     query GetDoctors {
         doctors {
-            user {
-              id
-              email
-              full_name
-              phone
-              address
-              date_of_birth
-              avatar 
-            }
-            qualifications
-            work_seniority
-            specialty
-            hospital
+          id
+          user {
+            email
+            full_name
+            phone
+            address
+            date_of_birth
+            avatar
+          }
+          qualifications
+          work_seniority
+          specialty
+          hospital
         }
     }
 `;
@@ -44,8 +44,8 @@ export const GET_DOCTOR = gql`
 
 // Tạo mới 1 bác sĩ
 export const CREATE_DOCTOR = gql`
-    mutation RegisterDoctor($input: RegisterDoctorInput!) {
-        createDoctorAndUser(input: $input) {
+    mutation CreateDoctor($doctorData: CreateDoctorDto!) {
+        createDoctor(doctorData: $doctorData) {
             id
             user {
                 id
