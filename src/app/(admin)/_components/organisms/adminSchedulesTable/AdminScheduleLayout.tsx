@@ -9,26 +9,36 @@ import {CreateDoctorScheduleData, DoctorSchedule} from "@/types/doctorSchedule";
 export type AdminScheduleLayoutProps = {
 	doctors: DoctorDisplay[];
 	schedules?: DoctorSchedule[];
+	dateProps?: { date: Date, onSelected: (date: Date) => void };
 	onCreateButton: ( isOpen: boolean, createData: CreateDoctorScheduleData) => void;
 }
 
 export default function AdminScheduleLayout(
-	{ doctors, schedules, onCreateButton }: AdminScheduleLayoutProps
+	props : AdminScheduleLayoutProps
 ) {
+	const { doctors, schedules, dateProps, onCreateButton } = props;
 	const [selectedDoctors, setSelectedDoctors] = useState<DoctorDisplay>()
-	const [selectedDate, setSelectedDate] = useState<Date>()
 	
 	return (
 		<div className={"flex flex-col"}>
 			<div className={"w-full mb-4 flex justify-between items-center"}>
-				<DoctorScheduleFilter doctors={doctors} onSelected={(doctor) => setSelectedDoctors(doctor)} />
-				<ScheduleDatePicker onSelected={(date) => setSelectedDate(date)} />
+				<DoctorScheduleFilter
+					doctors={doctors}
+					onSelected={(doctor) => setSelectedDoctors(doctor)}
+				/>
+				
+				<ScheduleDatePicker
+					currentDate={dateProps.date}
+					onSelected={(date) => {
+						dateProps.onSelected(date);
+				}} />
 			</div>
 			
 			<AdminSchedulesTable
-				selectedDate={selectedDate}
+				selectedDate={dateProps.date}
 				onCreateButton={onCreateButton}
-				initialItems={schedules} />
+				initialItems={schedules}
+			/>
 		</div>
 	)
 }
