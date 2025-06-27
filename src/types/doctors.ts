@@ -10,6 +10,21 @@ export interface Doctor {
     hospital?: string | null;
 }
 
+export interface DoctorDisplay {
+    id: string | null;
+    email: string;
+    full_name: string;
+    phone: string;
+    address: string;
+    avatar:  string;
+    date_of_birth: string;
+    qualifications?: string | null;
+    work_seniority?: number | null;
+    gender?: string | null;
+    specialty?: string | null;
+    hospital?: string | null;
+}
+
 export interface CreateDoctorInput{
     qualifications?: string | null;
     work_seniority?: number | null;

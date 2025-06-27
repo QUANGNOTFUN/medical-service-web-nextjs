@@ -9,14 +9,14 @@ import {
   INIT_CREATE_MEDICATION_FORM,
   INIT_UPDATE_MEDICATION_FORM
 } from "@/app/(admin)/medication-manage/values/constants";
-import AdminTableLayout from "@/app/(admin)/_components/Search&ActionTable/AdminTableLayout";
-import {ActionAdminTable} from "@/app/(admin)/_components/Search&ActionTable/AdminTable";
+import AdminTableLayout from "@/app/(admin)/_components/organisms/adminManagerTable/AdminTableLayout";
+import {ActionAdminTable} from "@/app/(admin)/_components/organisms/adminManagerTable/AdminTable";
 import {CreateMedicationInput, UpdateMedicationInput} from "@/types/medications";
-import AdminForm from "@/app/(admin)/_components/Create&UpdateForm/AdminForm";
+import AdminForm from "@/app/(admin)/_components/organisms/create&UpdateForm/AdminForm";
 import {useCreateMedication} from "@/libs/hooks/medications/useCreateMedication";
 import {useUpdateMedication} from "@/libs/hooks/medications/useUpdateMedication";
 import {useDeleteMedication} from "@/libs/hooks/medications/useDeleteMedication";
-import ConfirmationDialog from "@/app/(admin)/_components/dialog/ConfirmationDialog";
+import ConfirmationDialog from "@/app/(admin)/_components/molecules/dialog/ConfirmationDialog";
 import {toast} from "react-toastify";
 import {PaginationInput} from "@/types/pagination";
 
@@ -52,10 +52,11 @@ export default function MedicationPage() {
 
   async function handleCreateSubmit(data: CreateMedicationInput) {
     try {
-      await createMedication(data)
-      await refetchMedications()
-      toast.success("Tạo thành công", {toastId: "create-medication-success"})
-      handleAction("view") // clear form after creation
+      if (await createMedication(data)) {
+        await refetchMedications()
+        toast.success("Tạo thành công", {toastId: "create-medication-success"})
+        handleAction("view") // clear form after creation
+      }
     } catch (error) {
       console.error("Create medication error:", error);
     }

@@ -5,7 +5,13 @@ import {toast} from "react-toastify";
 export interface AdminFormProps<T> {
 	initialData?: T;
 	title: string;
-	fields: { label: string; key: keyof T; type?: string; options?: string[]; required?: boolean }[];
+	fields: {
+		label: string;
+		key: keyof T;
+		type?: 'text' | 'number' | 'select' | 'password';
+		options?: { label: string; value: string | number; }[];
+		required?: boolean
+	}[];
 	onClose?: () => void;
 	onSubmit?: (data: T) => void;
 	submitLabel: string;
@@ -26,7 +32,29 @@ export default function AdminForm<T>({ initialData, title, fields, onClose, onSu
 		const field = fields.find((f) => f.key === key);
 		if (!field) { return; }
 		
-		const parsedValue = field?.type === "number" ? ( isNaN(parseInt(value, 10)) ? null : parseInt(value, 10) ) : ( value === "" ) ? null : value;
+		let parsedValue: string | number | null = null;
+		switch (field.type) {
+			case "number": {
+				parsedValue = isNaN(parseInt(value, 10)) ? null : parseInt(value, 10);
+				break;
+			}
+			
+			case "text": {
+				parsedValue = value === "" ? null : value;
+				break;
+			}
+			case "password": {
+				parsedValue = value === "" ? null : value;
+				break;
+			}
+			
+			case "select": {
+				const option = field.options?.find((option) => String(option.value) === value);
+				parsedValue = option ? option.value : null;
+				break;
+			}
+		}
+		
 		setFormData((prev) => ({ ...prev, [key]: parsedValue }));
 	};
 	
@@ -75,10 +103,10 @@ export default function AdminForm<T>({ initialData, title, fields, onClose, onSu
 				onChange={(e) => handleChange(field.key, e.target.value)}
 				className={"w-full px-4 py-2 outline outline-black/20 rounded-md bg-zinc-50 focus:outline-none focus:ring-2 focus:ring-violet-300 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"}
 			>
-				<option value="">Hãy chọn {field.label}</option>
+				<option value="">Chưa chọn</option>
 				{field.options?.map((option) => (
-					<option key={option} value={option}>
-						{option}
+					<option key={option.value} value={option.value}>
+						{option.label}
 					</option>
 				))}
 			</select>

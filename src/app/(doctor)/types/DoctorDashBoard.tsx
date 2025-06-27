@@ -3,7 +3,7 @@ import React, {FormEvent, useEffect, useRef, useState} from "react";
 import {XIcon} from "lucide-react";
 import {toast} from "react-toastify";
 
-export interface DoctorTable<T = any> {
+export interface DoctorTable<T> {
     label: string;
     key: string;
     type?: "text" | "number" | "date" | "boolean" |"checkbox";

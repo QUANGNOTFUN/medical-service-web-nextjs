@@ -4,9 +4,4 @@ export interface RegisterDoctorInput {
 	password: string;
 	gender: "MALE" | "FEMALE" | "OTHER";
 	role: "DOCTOR";
-
-	qualifications?: string | null;
-	work_seniority?: number | null;
-	specialty?: string | null;
-	hospital?: string | null;
 }

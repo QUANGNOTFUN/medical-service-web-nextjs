@@ -1,4 +1,4 @@
-import {SidebarItem} from "@/app/(admin)/_components/sidebar/AdminSidebar";
+import {SidebarItem} from "@/app/(admin)/_components/organisms/sidebar/AdminSidebar";
 import {BookMarked, ChartBar, Clock, Pill, UserRound, Users, Wrench} from "lucide-react";
 
 export const ADMIN_SIDEBAR_ITEMS: SidebarItem[] = [

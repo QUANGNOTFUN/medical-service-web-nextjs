@@ -1,6 +1,6 @@
 "use client";
 
-import TableDropdownActions, {DropdownItem} from "@/app/(admin)/_components/Search&ActionTable/TableDropdownActions";
+import TableDropdownActions, {DropdownItem} from "@/app/(admin)/_components/organisms/adminManagerTable/TableDropdownActions";
 import * as Icons from "lucide-react";
 import {CircleEllipsis} from "lucide-react";
 

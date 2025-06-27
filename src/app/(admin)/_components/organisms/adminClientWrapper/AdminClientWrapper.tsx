@@ -1,6 +1,6 @@
 "use client";
 import React, {useEffect, useState} from "react";
-import AdminSidebar from "@/app/(admin)/_components/sidebar/AdminSidebar";
+import AdminSidebar from "@/app/(admin)/_components/organisms/sidebar/AdminSidebar";
 import {ADMIN_SIDEBAR_ITEMS} from "@/app/(admin)/_values/constants";
 import ApolloWrapper from "@/components/apollo/ApolloWrapper";
 import {ArrowLeftFromLine, ArrowRightFromLine} from "lucide-react";
@@ -39,7 +39,8 @@ export default function AdminClientWrapper({ children }: AdminClientWrapperProps
 						<AdminSidebar title={"Quản lí phòng khám"} items={ADMIN_SIDEBAR_ITEMS} isLocked={isLockedSidebar} onLockButton={setIsLockedSidebar}/>
 					)}
 					{!isLockedSidebar && (
-						<button className={`absolute ${isOpen ? "inset-64" : "inset-0" } top-0 bottom-0 w-8 rounded-r-lg shadow-lg cursor-pointer bg-gray-50 dark:bg-zinc-800 text-gray-500 dark:text-gray-300 hover:text-black dark:hover:text-gray-400`} onClick={() => setIsOpen(!isOpen)}>
+						<button
+							className={`absolute ${isOpen ? "inset-64" : "inset-0" } top-0 bottom-0 w-8 rounded-r-lg shadow-lg cursor-pointer bg-gray-50 dark:bg-zinc-800 text-gray-500 dark:text-gray-300 hover:text-black dark:hover:text-gray-400`} onClick={() => setIsOpen(!isOpen)}>
 							{isOpen && !isLockedSidebar
 								? <ArrowLeftFromLine className={"mx-auto"}/>
 								: <ArrowRightFromLine className={"mx-auto"}/>

@@ -2,9 +2,9 @@
 
 import { Loader } from "lucide-react";
 import { useState } from "react";
-import AdminTableLayout from "@/app/(admin)/_components/Search&ActionTable/AdminTableLayout";
-import { ActionAdminTable } from "@/app/(admin)/_components/Search&ActionTable/AdminTable";
-import ConfirmationDialog from "@/app/(admin)/_components/dialog/ConfirmationDialog";
+import AdminTableLayout from "@/app/(admin)/_components/organisms/adminManagerTable/AdminTableLayout";
+import { ActionAdminTable } from "@/app/(admin)/_components/organisms/adminManagerTable/AdminTable";
+import ConfirmationDialog from "@/app/(admin)/_components/molecules/dialog/ConfirmationDialog";
 import {
   HEADER_TABLE_DOCTOR,
   INIT_CREATE_DOCTOR_FORM,
@@ -14,7 +14,7 @@ import { useGetDoctors } from "@/libs/hooks/doctors/useGetDoctors";
 import { useRegisterDoctor } from "@/libs/hooks/doctors/useCreateDoctor";
 import { useUpdateDoctor } from "@/libs/hooks/doctors/useUpdateDoctor";
 import { useDeleteDoctor } from "@/libs/hooks/doctors/userDeleteDoctor";
-import AdminForm from "@/app/(admin)/_components/Create&UpdateForm/AdminForm";
+import AdminForm from "@/app/(admin)/_components/organisms/create&UpdateForm/AdminForm";
 import {RegisterDoctorInput} from "@/types/register";
 import {UpdateDoctorInput} from "@/types/doctors";
 
@@ -30,8 +30,8 @@ export default function DoctorManagePage() {
 
   const displayedDoctors = searchTerm
     ? doctors.filter(doctor =>
-        (doctor.user.full_name?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
-        (doctor.user.email?.toLowerCase() || "").includes(searchTerm.toLowerCase())
+        (doctor.full_name?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
+        (doctor.email?.toLowerCase() || "").includes(searchTerm.toLowerCase())
       )
     : doctors;
 
@@ -87,7 +87,7 @@ export default function DoctorManagePage() {
     switch (selectedAction) {
       case "create":
         return (
-          <AdminForm
+          <AdminForm<RegisterDoctorInput>
               {...INIT_CREATE_DOCTOR_FORM}
             onClose={() => handleAction("view")}
             onSubmit={handleCreateSubmit}
@@ -98,7 +98,7 @@ export default function DoctorManagePage() {
         const selectedDoctor = displayedDoctors.find(doctor => doctor.id === selectedId);
         if (!selectedDoctor) return null;
         return (
-            <AdminForm
+            <AdminForm<UpdateDoctorInput>
                 {...INIT_UPDATE_DOCTOR_FORM}
                 onClose={() => handleAction("view")}
                 onSubmit={handleUpdateSubmit}

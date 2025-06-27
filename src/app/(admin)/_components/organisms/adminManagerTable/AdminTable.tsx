@@ -38,7 +38,11 @@ const AdminTable = <T,>(
 			accessorKey: header.key,
 			cell: (info) => {
 				const value = info.getValue();
-				return renderCellValue(value, header.type);
+				return (
+					<span className={"truncate"}>
+						{renderCellValue(value, header.type)}
+					</span>
+				);
 			}
 		})),
 		...(isUpdate || isDelete
@@ -65,7 +69,7 @@ const AdminTable = <T,>(
 			return formatNumberWithCommas(String(value));
 		}
 		if (type === "date") {
-			return new Date(value as string).toLocaleDateString(); // hoặc dùng `dayjs`
+			return new Date(value as string).toLocaleDateString();
 		}
 		return String(value);
 	}
@@ -88,7 +92,7 @@ const AdminTable = <T,>(
 							{headerGroup.headers.map((header) => (
 								<th
 									key={header.id}
-									className="border-1 border-violet-200 w-fit py-3 px-2 text-center"
+									className="w-auto p-4 text-center truncate border-1 border-violet-200"
 								>
 									{flexRender(header.column.columnDef.header, header.getContext())}
 									{{

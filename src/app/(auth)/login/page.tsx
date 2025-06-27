@@ -7,10 +7,10 @@ import { useRouter } from "next/navigation";
 import { useSnackbar } from "notistack";
 import { useLoading } from "@/app/context/loadingContext";
 import Link from "next/link";
-import { LockClosedIcon } from "@heroicons/react/24/solid"; // Thay thế biểu tượng
+import { LockClosedIcon } from "@heroicons/react/24/solid";
+import {toast} from "react-toastify";
 
 const Login = () => {
-    const router = useRouter();
     const { enqueueSnackbar } = useSnackbar();
     const { setLoading } = useLoading();
     const { register, handleSubmit, formState: { errors } } = useForm();
@@ -29,7 +29,7 @@ const Login = () => {
         } else {
             const session = await getSession();
             const role = session?.user?.role;
-
+            toast.success("Đăng nhập thành công!", { toastId: "login-success"});
             if (role === "ADMIN") {
                 window.location.href =("/admin-dashboard");
             } else if (role === "DOCTOR") {
