@@ -117,7 +117,6 @@ export default function BookingPage() {
                 email={doctor.user.email}
                 phone={doctor.user.phone}
                 defaultFee={doctor.default_fee} // ← thêm dòng này
-
             />
 
             <hr className="my-8" />
