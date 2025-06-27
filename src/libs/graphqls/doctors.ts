@@ -1,4 +1,5 @@
 import { gql } from "@apollo/client";
+import {RegisterDoctorInput} from "@/types/doctors";
 
 export const GET_DOCTORS = gql`
     query GetDoctors {
@@ -44,22 +45,9 @@ export const GET_DOCTOR = gql`
 
 // Tạo mới 1 bác sĩ
 export const CREATE_DOCTOR = gql`
-    mutation CreateDoctor($doctorData: CreateDoctorDto!) {
-        createDoctor(doctorData: $doctorData) {
-            id
-            user {
-                id
-                email
-                full_name
-                gender
-                role
-            }
-            qualifications
-            work_seniority
-            specialty
-            hospital
+    mutation createDoctor($doctorData: RegisterDoctorInput!) {
+        createDoctor(doctorData: $doctorData)
         }
-    }
 `;
 
 
