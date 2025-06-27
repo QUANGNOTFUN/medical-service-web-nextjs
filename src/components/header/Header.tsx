@@ -43,7 +43,7 @@ export default function Header() {
                     {!session?.user ? (
                         <Link
                             href="/login"
-                            className="text-white/90 hover:text-white font-medium px-4 py-1 rounded-lg bg-white/10 hover:bg-white/20 backdrop-blur-md transition"
+                            className="text-teal-400 hover:text-blue-600 font-medium px-4 py-1 rounded-lg bg-white/10 hover:bg-white/20 backdrop-blur-md transition"
                         >
                             Đăng nhập
                         </Link>

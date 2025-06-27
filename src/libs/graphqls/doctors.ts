@@ -1,11 +1,11 @@
 import { gql } from "@apollo/client";
-import {RegisterDoctorInput} from "@/types/doctors";
 
 export const GET_DOCTORS = gql`
     query GetDoctors {
         doctors {
           id
           user {
+            id
             email
             full_name
             phone
@@ -25,13 +25,16 @@ export const GET_DOCTORS = gql`
 export const GET_DOCTOR = gql`
     query GetDoctor($id: String!) {
         doctor(id: $id) {
-            id
+           id
             qualifications
-            work_seniority
             specialty
             hospital
-            created_at
-            updated_at
+            work_seniority
+            default_fee
+            titles
+            positions
+            rating
+            gender
             user {
               full_name
               email
