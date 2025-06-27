@@ -112,8 +112,13 @@ export default function BookingPage() {
                 specialty={doctor.specialty}
                 hospital={doctor.hospital}
                 workSeniority={doctor.work_seniority}
-            />
+                rating={doctor.rating}
+                gender={doctor.gender}
+                email={doctor.user.email}
+                phone={doctor.user.phone}
+                defaultFee={doctor.default_fee} // ← thêm dòng này
 
+            />
 
             <hr className="my-8" />
 
