@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useQuery } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
 import { useSession } from 'next-auth/react';
 import {
     CalendarCheck,
@@ -11,19 +11,32 @@ import {
     XCircle,
 } from 'lucide-react';
 import { FIND_APPOINTMENT_BY_PATIENT_ID } from '@/libs/graphqls/queries/appointment';
-import AppointmentDetailModal from './AppointmentDetailModal'; // Import modal
+import { UPDATE_APPOINTMENT_STATUS } from '@/libs/graphqls/mutations/appointments';
+import AppointmentDetailModal from './AppointmentDetailModal';
+import { useSnackbar } from 'notistack';
 
 export default function AppointmentsPage() {
     const { data: session, status } = useSession();
+    const { enqueueSnackbar } = useSnackbar();
     const patientId = session?.user?.id;
 
-    const { data, loading, error } = useQuery(FIND_APPOINTMENT_BY_PATIENT_ID, {
+    const { data, loading, error, refetch } = useQuery(FIND_APPOINTMENT_BY_PATIENT_ID, {
         variables: { input: { patient_id: patientId } },
         skip: !patientId,
     });
 
     const [selectedAppointment, setSelectedAppointment] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const [updateStatus] = useMutation(UPDATE_APPOINTMENT_STATUS, {
+        onCompleted: () => {
+            enqueueSnackbar('Đã hủy lịch hẹn thành công!', { variant: 'success' });
+            refetch();
+        },
+        onError: (err) => {
+            enqueueSnackbar('Lỗi khi hủy lịch: ' + err.message, { variant: 'error' });
+        },
+    });
 
     const handleOpenModal = (appointment: any) => {
         setSelectedAppointment(appointment);
@@ -33,6 +46,17 @@ export default function AppointmentsPage() {
     const handleCloseModal = () => {
         setSelectedAppointment(null);
         setIsModalOpen(false);
+    };
+
+    const handleCancelAppointment = (appointmentId: string) => {
+        if (confirm('Bạn có chắc muốn hủy lịch hẹn này không?')) {
+            updateStatus({
+                variables: {
+                    appointmentId: parseInt(appointmentId),
+                    newStatus: 'CANCELLED',
+                },
+            });
+        }
     };
 
     const statusColor: Record<string, string> = {
@@ -105,10 +129,11 @@ export default function AppointmentsPage() {
 
                                 return (
                                     <div
-                                        key={appt.slot_id + appt.appointment_date}
+                                        key={`appt-${appt.appointment_id}`}
                                         className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-6 hover:bg-gray-50 transition-all duration-300 ease-in-out group"
                                     >
-                                        <div className="flex flex-col gap-3 w-full sm:w-auto">
+
+                                    <div className="flex flex-col gap-3 w-full sm:w-auto">
                                             <div className="flex items-center gap-3 text-gray-900 font-semibold">
                                                 <Clock className="h-5 w-5 text-indigo-600" />
                                                 <span>{formattedDate} lúc {formattedTime}</span>
@@ -134,6 +159,7 @@ export default function AppointmentsPage() {
                                         <div className="flex gap-4 mt-4 sm:mt-0">
                                             {(appt.status === 'Đang chờ' || appt.status === 'PENDING') && (
                                                 <button
+                                                    onClick={() => handleCancelAppointment(appt.appointment_id)}
                                                     className="flex items-center gap-2 text-sm font-medium text-red-600 hover:text-red-800 transition-colors duration-200 group-hover:scale-105"
                                                     title="Hủy lịch hẹn"
                                                 >

@@ -12,3 +12,12 @@ export const CREATE_APPOINTMENT = gql`
     }
   }
 `;
+
+export const UPDATE_APPOINTMENT_STATUS = gql`
+  mutation UpdateAppointmentStatus($appointmentId: Int!, $newStatus: String!) {
+    updateAppointmentStatus(appointmentId: $appointmentId, newStatus: $newStatus) {
+      appointment_id
+      status
+    }
+  }
+`;
