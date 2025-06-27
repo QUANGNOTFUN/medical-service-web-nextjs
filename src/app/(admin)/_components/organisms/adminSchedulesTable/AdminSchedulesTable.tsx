@@ -53,7 +53,7 @@ export default function AdminSchedulesTable(
 				acc[header.key] = items
 					?.map((item) => ({
 						id: item.doctor_id,
-						full_name: item.user.full_name
+						full_name: item.doctor.user.full_name
 					}))
 					.filter((doctor) => doctor !== null) || [];
 				return acc;
