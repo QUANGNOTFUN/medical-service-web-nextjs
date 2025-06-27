@@ -33,7 +33,7 @@ const Login = () => {
             if (role === "ADMIN") {
                 router.push("/doctor-manage");
             } else if (role === "DOCTOR") {
-                router.push("/doctor-manage");
+                router.push("/dash_board");
             } else {
                 window.location.href = "/";
             }
