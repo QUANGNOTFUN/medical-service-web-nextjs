@@ -6,11 +6,11 @@ import { useMutation } from "@apollo/client";
 import { INIT_BLOG_TABLE } from "@/app/(doctor)/blog/m_resource/constants";
 import { UPDATE_POST} from "@/libs/graphqls/post";
 import { useCreatePost } from "@/libs/hooks/posts/useCreatePost";
-import ConfirmationDialog from "@/app/(admin)/_components/dialog/ConfirmationDialog";
 import {useGetAllPost} from "@/libs/hooks/posts/useGetPost";
 import {useDeletePost} from "@/libs/hooks/posts/useDeletePost";
 import {Post} from "@/types/posts";
 import {useSession} from "next-auth/react";
+import ConfirmationDialog from "@/app/(admin)/_components/molecules/dialog/ConfirmationDialog";
 
 export default function BlogPage() {
     const [selectedId, setSelectedId] = useState<number | null>(null);
