@@ -31,9 +31,9 @@ const Login = () => {
             const role = session?.user?.role;
 
             if (role === "ADMIN") {
-                router.push("/doctor-manage");
+                window.location.href =("/admin-dashboard");
             } else if (role === "DOCTOR") {
-                router.push("/dash_board");
+                window.location.href =("/doctor-dashboard");
             } else {
                 window.location.href = "/";
             }
