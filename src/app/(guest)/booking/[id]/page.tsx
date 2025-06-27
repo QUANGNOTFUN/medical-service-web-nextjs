@@ -49,7 +49,7 @@ export default function BookingPage() {
 
     const [createAppointment, { loading: mutationLoading, error: mutationError }] = useMutation(CREATE_APPOINTMENT, {
         onCompleted: () => {
-            enqueueSnackbar('Đã gửi thông tin lịch khám về mail!', {
+            enqueueSnackbar('Đặt lịch thành công, đã gửi thông tin lịch khám về mail của bạn!', {
                 variant: 'success', // Loại thông báo (success, error, warning, info)
                 autoHideDuration: 3000, // Ẩn sau 3 giây
             });
@@ -104,8 +104,16 @@ export default function BookingPage() {
     if (!doctor) return <p>Không tìm thấy bác sĩ.</p>;
 
     return (
-        <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg my-8">
-            <DoctorCard {...doctor.user} {...doctor} />
+        <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg mt-[64px]">
+            <DoctorCard
+                avatar={doctor.user.avatar}
+                fullName={doctor.user.full_name}
+                qualifications={doctor.qualifications}
+                specialty={doctor.specialty}
+                hospital={doctor.hospital}
+                workSeniority={doctor.work_seniority}
+            />
+
 
             <hr className="my-8" />
 
