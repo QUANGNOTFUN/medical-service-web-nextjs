@@ -4,9 +4,10 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useQuery, useMutation } from '@apollo/client';
+import { useSnackbar } from 'notistack';
 import { useLoading } from '@/app/context/loadingContext';
 
-import { GET_USER_BY_ID } from '@/libs/graphqls/queries/profile';
+import { GET_PATIENT_BY_ID } from '@/libs/graphqls/queries/profile';
 import { CREATE_APPOINTMENT } from '@/libs/graphqls/mutations/appointments';
 
 import { useBookingForm } from '@/libs/hooks/appoiment/useBookingForm';
@@ -21,19 +22,21 @@ export default function BookingPage() {
     const { id } = useParams();
     const doctorId = id as string;
     const { data: session } = useSession();
+    const { enqueueSnackbar } = useSnackbar(); // Hook từ notistack
     const { setLoading } = useLoading();
 
     const [selectedDate, setSelectedDate] = useState('');
     const [selectedScheduleId, setSelectedScheduleId] = useState<number | null>(null);
     const [selectedSlotId, setSelectedSlotId] = useState<number | null>(null);
 
-    const { data: userData } = useQuery(GET_USER_BY_ID, {
-        variables: { input: { id: session?.user?.id } },
+    const { data } = useQuery(GET_PATIENT_BY_ID, {
+        variables: { input: { patient_id: session?.user?.id } },
         skip: !session?.user?.id,
     });
 
-    const user = userData?.getUserById;
-    const { form, handleChange, resetForm } = useBookingForm(user);
+    const patient = data?.findOnePatient;
+    const user = patient?.user;
+    const { form, handleChange, resetForm } = useBookingForm(user, patient);
 
     const {
         doctor,
@@ -46,7 +49,10 @@ export default function BookingPage() {
 
     const [createAppointment, { loading: mutationLoading, error: mutationError }] = useMutation(CREATE_APPOINTMENT, {
         onCompleted: () => {
-            alert('Đặt lịch thành công!');
+            enqueueSnackbar('Đã gửi thông tin lịch khám về mail!', {
+                variant: 'success', // Loại thông báo (success, error, warning, info)
+                autoHideDuration: 3000, // Ẩn sau 3 giây
+            });
             resetForm();
             setSelectedScheduleId(null);
             setSelectedSlotId(null);
@@ -81,11 +87,11 @@ export default function BookingPage() {
     }, [doctorLoading, mutationLoading]);
 
     useEffect(() => {
-        if (schedulesByDate.length > 0) {
+        if (schedulesByDate.length > 0 && !selectedScheduleId) {
             setSelectedScheduleId(schedulesByDate[0].id);
             setSelectedSlotId(null);
         }
-    }, [schedulesByDate]);
+    }, [schedulesByDate, selectedScheduleId]);
 
     const handleDateChange = (date: string) => {
         setSelectedDate(date);
