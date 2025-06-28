@@ -4,7 +4,6 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import {
     Bell,
-    Bookmark,
     Calendar,
     FileText,
     HelpCircle,
@@ -13,7 +12,6 @@ import {
 
 const navItems = [
     { href: "/profile", label: "Hồ sơ khám", icon: FileText },
-    { href: "/profile/bookmarks", label: "Ghi nhớ", icon: Bookmark },
     { href: "/profile/appointment", label: "Quản lý lịch hẹn", icon: Calendar },
     { href: "/profile/notifications", label: "Thông báo", icon: Bell },
 ];
