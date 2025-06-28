@@ -7,6 +7,8 @@ import { CreateRegimenInput } from "@/types/regimen";
 import { useGetTreatmentPlan } from "@/libs/hooks/treatmentPlan/useGetTreatmentPlan";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, AlertCircle } from "lucide-react";
+import MedicationSelector from "@/app/(doctor)/patient/m_resource/MedicationSelector";
+import {Medication} from "@/types/medications";
 
 interface Props {
     onSubmit: (input: MedicalExaminationInput) => void;
@@ -43,6 +45,8 @@ export default function MedicalExaminationForm({ onSubmit, onClose, patient_id, 
 
     const [errors, setErrors] = useState<Record<string, string>>({});
     const { plan, loading } = useGetTreatmentPlan(patient_id);
+    const [selectedMedications, setSelectedMedications] = useState<Medication[]>([]);
+
 
     // Sync existing plan data
     useEffect(() => {
@@ -64,6 +68,7 @@ export default function MedicalExaminationForm({ onSubmit, onClose, patient_id, 
 
     const handleSubmit = () => {
         const newErrors: Record<string, string> = {};
+        regimen.medication_list = selectedMedications.join(', ')
 
         // Validate treatmentPlan
         if (!treatmentPlan.name.trim()) newErrors.treatmentPlan_name = "Tên kế hoạch không được để trống";
@@ -288,19 +293,11 @@ export default function MedicalExaminationForm({ onSubmit, onClose, patient_id, 
 
                             <div>
                                 <label className="block font-medium mb-1 text-gray-700">Danh sách thuốc</label>
-                                <input
-                                    className={`w-full px-4 py-2 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
-                                        errors.regimen_medication ? "border-red-500" : "border-gray-300"
-                                    }`}
-                                    placeholder="Nhập danh sách thuốc"
-                                    value={regimen.medication_list}
-                                    onChange={(e) => setRegimen({ ...regimen, medication_list: e.target.value })}
+                                <MedicationSelector
+                                    selected={selectedMedications}
+                                    onChange={setSelectedMedications}
+                                    error={errors.regimen_medication}
                                 />
-                                {errors.regimen_medication && (
-                                    <p className="text-red-500 text-sm mt-1 flex items-center">
-                                        <AlertCircle className="w-4 h-4 mr-1" /> {errors.regimen_medication}
-                                    </p>
-                                )}
                             </div>
 
                             <div>
