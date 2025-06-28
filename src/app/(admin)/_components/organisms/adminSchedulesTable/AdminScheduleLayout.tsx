@@ -11,12 +11,13 @@ export type AdminScheduleLayoutProps = {
 	schedules?: DoctorSchedule[];
 	dateProps?: { date: Date, onSelected: (date: Date) => void };
 	onCreateButton: ( isOpen: boolean, createData: CreateDoctorScheduleData) => void;
+	onDeleteButton: (id: DoctorSchedule['id']) => void;
 }
 
 export default function AdminScheduleLayout(
 	props : AdminScheduleLayoutProps
 ) {
-	const { doctors, schedules, dateProps, onCreateButton } = props;
+	const { doctors, schedules, dateProps, onCreateButton, onDeleteButton } = props;
 	const [selectedDoctors, setSelectedDoctors] = useState<DoctorDisplay>()
 	
 	return (
@@ -38,6 +39,9 @@ export default function AdminScheduleLayout(
 				selectedDate={dateProps.date}
 				onCreateButton={onCreateButton}
 				initialItems={schedules}
+				editSchedule={{
+					onDeleteButton: onDeleteButton
+				}}
 			/>
 		</div>
 	)

@@ -8,6 +8,7 @@ export const useGetDoctorSchedulesByWeekDate = (weekDate: WeekDateInput) => {
 		{ weekDate: WeekDateInput }
 	>(GET_DOCTOR_SCHEDULES_BY_WEEK_DATE, {
 		variables: { weekDate: weekDate },
+		fetchPolicy: "cache-first",
 	});
 	
 	return {

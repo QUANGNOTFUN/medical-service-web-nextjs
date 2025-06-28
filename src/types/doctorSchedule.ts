@@ -1,4 +1,5 @@
 export type DoctorSchedule = {
+	id: number;
 	doctor_id: string;
 	doctor: {
 		user: {
