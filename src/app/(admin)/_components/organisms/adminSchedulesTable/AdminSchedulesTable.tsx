@@ -10,9 +10,7 @@ export interface AdminSchedulesTableProps {
 	onCreateButton: (isOpen: boolean, createData: CreateDoctorScheduleData) => void;
 	initialItems?: DoctorSchedule[];
 	editSchedule: {
-		status: "view" | "update" | "delete";
-		onUpdateButton?: (isOpen: boolean, updateData: CreateDoctorScheduleData) => void;
-		onDeleteButton?: (isOpen: boolean, deleteData: CreateDoctorScheduleData) => void;
+		onDeleteButton?: (id: DoctorSchedule["id"]) => void;
 	}
 }
 
@@ -28,11 +26,15 @@ type ScheduleItem = {
 	doctors: { [key: string]: DoctorSchedule[] | null };
 };
 
+type StatusButton = {
+	status: "view" | "delete"
+};
+
 export default function AdminSchedulesTable(
 	props: AdminSchedulesTableProps
 ) {
 	const { selectedDate, onCreateButton, initialItems, editSchedule } = props;
-	const [isStatus, setIsStatus] = useState<AdminSchedulesTableProps['editSchedule']['status']>();
+	const [isStatus, setIsStatus] = useState<StatusButton["status"]>('view');
 	const dates = getWeekDates(selectedDate || new Date());
 	
 	const headers: HeaderScheduleTableProps[] = [
@@ -114,7 +116,13 @@ export default function AdminSchedulesTable(
 							</button>
 							{/* REMOVE BUTTON */}
 							<button
-								onClick={() => handleRemoveDoctor(row.shiftKey, header.key)}
+								onClick={() => {
+									handleRemoveDoctor(row.shiftKey, header.key)
+									setIsStatus('delete')
+									setSelectedDateItem(() => header.date.toLocaleDateString())
+									setSelectedDoctors(doctors)
+									setIsViewOpen(true)
+								}}
 								className={"p-1.5 bg-zinc-100 hover:bg-red-300 rounded-md shadow-sm cursor-pointer"}
 							>
 								<UserMinus size={16} />
@@ -252,8 +260,14 @@ export default function AdminSchedulesTable(
 			{isViewOpen && (
 				<ViewDoctorListCard
 					label={`Danh sách bác sĩ (${selectedDateItem})`}
-					doctors={selectedDoctors}
-					// editSchedule={}
+					schedules={selectedDoctors}
+					editSchedule={{
+						status: isStatus,
+						onDelete: (id) => {
+							editSchedule.onDeleteButton(id)
+							setIsStatus('view')
+						}
+					}}
 					onClose={handleCloseView}
 				/>
 			)}

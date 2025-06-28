@@ -1,61 +1,41 @@
-import {Minimize2Icon, UserRoundCogIcon} from "lucide-react";
+import {Minimize2Icon, UserRoundCogIcon, UserRoundMinusIcon} from "lucide-react";
 import {DoctorSchedule} from "@/types/doctorSchedule";
-import {useState} from "react";
 
 type ViewDoctorListCardProps = {
 	label: string;
-	doctors: DoctorSchedule[];
+	schedules: DoctorSchedule[];
 	editSchedule?: {
-		status?: "view" | "update" | "delete";
-		onSelect?: (doctor: DoctorSchedule) => void;
-		onEdit?: (doctor: DoctorSchedule) => void;
-		onDelete?: (doctor: DoctorSchedule) => void;
+		status?: "view" | "delete";
+		onDelete?: (id: DoctorSchedule["id"]) => void;
 	};
 	onClose: () => void;
 };
 
 export function ViewDoctorListCard(props: ViewDoctorListCardProps) {
-	const { label, doctors, editSchedule, onClose } = props;
-	const [isOpened, setIsOpened] = useState(false);
+	const { label, schedules, editSchedule, onClose } = props;
 	
-	const handleSelect = (doctor: DoctorSchedule) => {
-		if (editSchedule?.onSelect) {
-			editSchedule.onSelect(doctor);
-		}
-		setIsOpenedEdit(false); // Đóng dropdown sau khi chọn
-	};
-	
-	const handleEdit = (doctor: DoctorSchedule) => {
-		if (editSchedule?.onEdit) {
-			editSchedule.onEdit(doctor);
-		}
-		setIsOpenedEdit(false);
-	};
-	
-	const handleDelete = (doctor: DoctorSchedule) => {
+	const handleDelete = (id: DoctorSchedule["id"]) => {
 		if (editSchedule?.onDelete) {
-			editSchedule.onDelete(doctor);
+			editSchedule.onDelete(id);
 		}
-		setIsOpenedEdit(false);
 	};
 	
-	const rowCount = Math.ceil(doctors.length / 8);
+	const rowCount = Math.ceil(schedules.length / 8);
 	
-	const triggerButton = () => {
+	const deleteButton = (id: DoctorSchedule['id']) => {
 		return (
 			<div className="absolute top-1/6 right-2 h-full">
 				<button
-					onClick={() => setIsOpened(!isOpened)}
+					onClick={editSchedule?.status === "delete" ? () => handleDelete(id) : () => {}}
 					className={
 						" p-1.5 outline outline-black/20 rounded-sm shadow-lg cursor-pointer " +
 						"text-xs sm:text-sm md:text-base " +
-						`bg-white hover:bg-violet-200 text-gray-700 hover:text-violet-500 ${isOpened ? "bg-violet-200 text-violet-500" : ""} ` +
-						`dark:bg-gray-800 dark:hover:bg-gray-600 dark:text-gray-500 dark:hover:text-white ${
-							isOpened ? "dark:bg-gray-600 dark:text-white" : ""
+						`bg-white hover:bg-violet-200 text-gray-700 hover:text-violet-500 ` +
+						`dark:bg-gray-800 dark:hover:bg-gray-600 dark:text-gray-500 dark:hover:text-white
 						}`
 					}
 				>
-					<UserRoundCogIcon className="w-3 h-3 md:w-4 md:h-4" />
+					<UserRoundMinusIcon className="w-3 h-3 md:w-4 md:h-4" />
 				</button>
 			</div>
 		);
@@ -77,25 +57,17 @@ export function ViewDoctorListCard(props: ViewDoctorListCardProps) {
 					<Minimize2Icon size={12} />
 				</button>
 				<div className={`grid grid-cols-${rowCount} gap-4 py-4 px-2`}>
-					{doctors.map((doctor, index) => (
+					{schedules.map((schedule, index) => (
 						<div
-							key={doctor.doctor_id + index}
+							key={schedule.doctor_id + index}
 							className={
 								"relative p-2 rounded-md shadow-md border border-gray-400 " +
 								"hover:bg-zinc-200 dark:hover:bg-gray-600 bg-zinc-50 dark:bg-gray-700 " +
 								"text-sm md:text-base wrap-break-word text-center text-black dark:text-white"
 							}
 						>
-							{doctor.doctor.user.full_name}
-							{triggerButton()}
-							{ isOpened  && (
-								<div
-									key={index}
-									className="absolute top-10 right-2 h-full"
-								>
-									{ isOpened.toString()  }
-								</div>
-							)}
+							{schedule.doctor.user.full_name}
+							{deleteButton(schedule.id)}
 						</div>
 					))}
 				</div>

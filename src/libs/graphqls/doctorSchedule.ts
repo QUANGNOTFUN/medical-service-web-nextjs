@@ -4,6 +4,7 @@ import { gql } from "@apollo/client";
 export const GET_DOCTOR_SCHEDULES_BY_WEEK_DATE = gql`
   query GetDoctorScheduleByWeekDate($weekDate: WeekDateInput!) {
     getDoctorScheduleByWeekDate(weekDate: $weekDate) {
+      id
       doctor_id
       doctor {
         user {
@@ -56,9 +57,7 @@ export const UPDATE_DOCTOR_SCHEDULE = gql`
 
 // Xóa lịch bác sĩ
 export const DELETE_DOCTOR_SCHEDULE = gql`
-    mutation DeleteDoctorSchedule($schedule_id: Int!) {
-        deleteDoctorSchedule(schedule_id: $schedule_id) {
-            schedule_id
-        }
-    }
+  mutation DeleteDoctorSchedule($schedule_id: Float!) {
+    deleteDoctorSchedule(schedule_id: $schedule_id)
+  }
 `;
