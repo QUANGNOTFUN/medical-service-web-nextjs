@@ -103,8 +103,6 @@ export default function AppointmentManage() {
                         message="Bạn chắc chắn muốn xác nhận lịch hẹn này?"
                         onClose={() => handleAction("view")}
                         onConfirm={() => handleUpdateStatus("CONFIRMED")}
-                        confirmText="Đồng ý"
-                        cancelText="Hủy"
                     />
                 );
             case "delete":
@@ -115,28 +113,31 @@ export default function AppointmentManage() {
                         message="Bạn chắc chắn muốn hủy lịch hẹn này?"
                         onClose={() => handleAction("view")}
                         onConfirm={() => handleUpdateStatus("CANCELLED")}
-                        confirmText="Từ chối"
-                        cancelText="Hủy"
                     />
                 );
             case "detail":
                 return (
-                    <ConfirmationDialog
-                        isOpen={true}
-                        title="Chi tiết lịch hẹn"
-                        message={
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+                        <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+                            <h2 className="text-xl font-semibold mb-4">Chi tiết lịch hẹn</h2>
                             <div className="space-y-2">
                                 <div><strong>Loại hẹn:</strong> {appointment.appointment_type}</div>
                                 <div><strong>Ngày hẹn:</strong> {new Date(appointment.appointment_date).toLocaleString()}</div>
                                 <div><strong>Trạng thái:</strong> {appointment.status}</div>
                                 <div><strong>Ghi chú:</strong> {appointment.notes || "Không có"}</div>
                             </div>
-                        }
-                        onClose={() => handleAction("view")}
-                        confirmText="Đóng"
-                        hideCancel
-                    />
+                            <div className="mt-6 text-right">
+                                <button
+                                    onClick={() => handleAction("view")}
+                                    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+                                >
+                                    Đóng
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 );
+
             default:
                 return null;
         }

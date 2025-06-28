@@ -4,12 +4,7 @@ import { useState } from "react";
 import { X, AlertCircle } from "lucide-react";
 import { useSearchMedications } from "@/libs/hooks/medications/useSearchMedications";
 import { useDebounce } from "use-debounce";
-
-interface Medication {
-    id: number;
-    name: string;
-    acronym?: string;
-}
+import {Medication} from "@/types/medications";
 
 interface Props {
     selected: Medication[];
