@@ -23,6 +23,10 @@ export default function ProfilePage() {
         avatarFile: null as File | null,
         avatarPreview: "",
     });
+    const isValidPhone = (phone: string): boolean => {
+        const phoneRegex = /^(?:\+84|0)(?:3[2-9]|5[6|8|9]|7[0|6-9]|8[1-5]|9[0-9])[0-9]{7}$/;
+        return phoneRegex.test(phone);
+    };
 
     const [editMode, setEditMode] = useState(false);
 
@@ -119,6 +123,11 @@ export default function ProfilePage() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
+        if (!isValidPhone(form.phone)) {
+            alert("Số điện thoại không hợp lệ. Vui lòng nhập đúng định dạng Việt Nam.");
+            return;
+        }
+
         let avatarUrl = user?.avatar || "";
         if (form.avatarFile) {
             avatarUrl = await uploadAvatar(form.avatarFile);
@@ -140,6 +149,7 @@ export default function ProfilePage() {
             },
         });
     };
+
 
     const translateGender = (gender: string) => {
         switch (gender?.toUpperCase()) {
