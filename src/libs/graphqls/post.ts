@@ -36,7 +36,7 @@ export const SEARCH_POSTS = gql`
 
 export const GET_POST = gql`
     query GetPost($id: Int!) {
-        post(id: $id) {
+        findOneBlogPost(id: $id) {
             id
             title
             content

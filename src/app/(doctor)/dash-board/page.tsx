@@ -20,13 +20,26 @@ export default function DoctorDashboardPage() {
 
     const appointmentList = appointments || [];
 
-    const todayAppointments = appointmentList.filter(a => isToday(new Date(a.time)));
-    const upcomingAppointments = appointmentList.filter(a => isAfter(new Date(a.time), new Date()));
+    const todayAppointments = appointmentList.filter(a => isToday(new Date(a.appointment_date)));
+    const upcomingAppointments = appointmentList.filter(a => isAfter(new Date(a.appointment_date), new Date()));
 
-    const confirmedAppointments = todayAppointments.filter(a => a.status === 'CONFIRM');
+    const confirmedAppointments = todayAppointments.filter(a => a.status === 'CONFIRMED');
     const pendingAppointments = todayAppointments.filter(a => a.status === 'PENDING');
-    const rejectedAppointments = todayAppointments.filter(a => a.status === 'CANCEL');
+    const rejectedAppointments = todayAppointments.filter(a => a.status === 'CANCELED');
     const finishedAppointments = todayAppointments.filter(a => a.is_done === true); // ✅ fixed
+
+    // Hàm format về định dạng yyyy-MM-dd HH:mm:ss.SSS
+    function formatDateTime(date: Date) {
+        const yyyy = date.getFullYear();
+        const MM = String(date.getMonth() + 1).padStart(2, '0');
+        const dd = String(date.getDate()).padStart(2, '0');
+        const hh = String(date.getHours()).padStart(2, '0');
+        const mm = String(date.getMinutes()).padStart(2, '0');
+        const ss = String(date.getSeconds()).padStart(2, '0');
+        const ms = String(date.getMilliseconds()).padStart(3, '0');
+
+        return `${yyyy}-${MM}-${dd} ${hh}:${mm}:${ss}.${ms}`;
+    }
 
     if (initLoading) {
         return (
@@ -82,8 +95,8 @@ export default function DoctorDashboardPage() {
                                     key={index}
                                     className="border border-gray-200 rounded-md p-3 shadow-sm hover:bg-gray-50"
                                 >
-                                    <div className="text-sm font-medium text-gray-800">{item.time}</div>
-                                    <div className="text-sm text-gray-600">{item.patient}</div>
+                                    <div className="text-sm font-medium text-gray-800">{item.patient.user.full_name}</div>
+                                    <div className="text-sm text-gray-600">{formatDateTime(new Date(item.appointment_date))}</div>
                                     <div
                                         className={`text-xs mt-1 ${
                                             item.status === 'CONFIRM'
@@ -115,8 +128,8 @@ export default function DoctorDashboardPage() {
                                     key={index}
                                     className="border border-gray-200 rounded-md p-3 shadow-sm hover:bg-gray-50"
                                 >
-                                    <div className="text-sm font-medium text-gray-800">{item.time}</div>
-                                    <div className="text-sm text-gray-600">{item.patient}</div>
+                                    <div className="text-sm font-medium text-gray-800">{item.patient.user.full_name}</div>
+                                    <div className="text-sm text-gray-600">{formatDateTime(new Date(item.appointment_date))}</div>
                                     <div className="text-xs mt-1 text-blue-600">Đã khám</div>
                                 </li>
                             ))}
