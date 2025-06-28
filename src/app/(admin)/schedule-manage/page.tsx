@@ -66,6 +66,7 @@ export default function AdminSchedulePage() {
 	if (getLoading) return <div>Loading fetch ...</div>;
 	if (deleteLoading) return <div>Loading delete ...</div>;
 	if (error) return <div>Error: {error.message}</div>;
+	
 	return (
 		<>
 			{isCreating && (

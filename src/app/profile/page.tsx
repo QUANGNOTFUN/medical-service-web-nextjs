@@ -74,7 +74,7 @@ export default function ProfilePage() {
         const formData = new FormData();
         formData.append("file", file);
 
-        const res = await fetch("http://localhost:3000/upload", {
+        const res = await fetch("http://localhost:3000/api/upload", {
             method: "POST",
             body: formData,
         });
@@ -197,7 +197,7 @@ export default function ProfilePage() {
                     <div className="bg-white p-6 rounded-xl shadow text-center">
                         <div className="relative w-32 h-32 mx-auto">
                             <Image
-                                src={form.avatarPreview || user.avatar || "/default-avatar.png"}
+                                src={form.avatarPreview || "http://localhost:3000" + user.avatar || "/default-avatar.png"}
                                 alt="Avatar"
                                 width={128}
                                 height={128}

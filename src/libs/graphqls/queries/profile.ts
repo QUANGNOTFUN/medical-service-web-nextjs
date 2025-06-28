@@ -28,6 +28,7 @@ query GetPatientWithUser($input: GetPatientByIdInput!) {
       role 
       avatar
       date_of_birth
+      avatar
     }
   }
 }
