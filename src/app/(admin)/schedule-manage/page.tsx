@@ -2,7 +2,7 @@
 import AdminScheduleLayout from "@/app/(admin)/_components/organisms/adminSchedulesTable/AdminScheduleLayout";
 import {useGetDoctors} from "@/libs/hooks/doctors/useGetDoctors";
 import {CreateDoctorScheduleData, WeekDateInput} from "@/types/doctorSchedule";
-import {useState} from "react";
+import {useCallback, useState} from "react";
 import AdminForm from "@/app/(admin)/_components/organisms/create&UpdateForm/AdminForm";
 import {CREATE_DOCTOR_SCHEDULE_INPUT} from "@/app/(admin)/schedule-manage/constant";
 import {useCreateDoctorSchedule} from "@/libs/hooks/doctorSchedules/useCreateDoctorSchedule";
@@ -21,41 +21,39 @@ export default function AdminSchedulePage() {
 		}
 	)
 	const { data: schedules, loading: getLoading, error, refetch } = useGetDoctorSchedulesByWeekDate(weekDateInput)
-	const { create: createSchedule, loading } = useCreateDoctorSchedule()
+	const { create: createSchedule, loading: createLoading } = useCreateDoctorSchedule()
 	
 	// INIT for components
 	const [createScheduleData, setCreateScheduleData] = useState<CreateDoctorScheduleData | null>(null);
 	const [isCreating, setIsCreating] = useState(false);
-	const [isSubmitting, setIsSubmitting] = useState(false);
 	const createInput = CREATE_DOCTOR_SCHEDULE_INPUT(doctors)
 	
-	const handSelectedDate = async (date: Date) => {
+	const handSelectedDate = (date: Date) => {
 		setSelectedDate(date)
+		const weekDates = getWeekDates(date)
 		setWeekDateInput({
-			start_week: getWeekDates(selectedDate)[0].toISOString(),
-			end_week: getWeekDates(selectedDate)[6].toISOString(),
+			start_week: weekDates[0].toISOString(),
+			end_week: weekDates[6].toISOString(),
 		})
-		await refetch()
 	}
 	
-	const handleCreateSubmit = async () => {
+	const handleCreateSubmit = useCallback(async (data: CreateDoctorScheduleData) => {
 		try {
-			await createSchedule(createScheduleData)
+			await createSchedule(data)
 			await refetch()
 			toast.success("Tạo lịch thành công", {toastId: "create-schedule-success"} )
-			setIsCreating(false)
-			setCreateScheduleData(null)
-			setIsSubmitting(false)
 		} catch (error: unknown) {
 			toast.error(`Tạo lịch thất bại: ${error instanceof Error ? error.message : String(error)}`, {toastId: "create-schedule-error"})
+		} finally {
+			setIsCreating(false)
+			setCreateScheduleData(null)
 		}
-	}
-	if (isSubmitting) {
-		 handleCreateSubmit()
-	}
+	}, [createSchedule, refetch])
 	
-	if (loading) return <div>Loading...</div>;
-	if (getLoading) return <div>Loading...</div>;
+	
+	if (createLoading) return <div>Loading create...</div>;
+	if (getLoading) return <div>Loading fetch ...</div>;
+	if (error) return <div>Error: {error.message}</div>;
 	
 	return (
 		<>
@@ -65,15 +63,11 @@ export default function AdminSchedulePage() {
 					fields={createInput.fields}
 					submitLabel={ createInput.submitLabel }
 					title={createInput.title + " - " + new Date(createScheduleData.date).toLocaleDateString() }
-					onSubmit={(input) => {
-						setCreateScheduleData({...createScheduleData, doctor_id: input.doctor_id, week_count: input.week_count})
-						setIsSubmitting(true)
-					}
-				}
+					onSubmit={(input) => handleCreateSubmit({...createScheduleData, ...input})}
 					onClose={() => {
 						setIsCreating(false)
 						setCreateScheduleData(null)
-					} }
+					}}
 				/>
 			)}
 			{createScheduleData?.week_count}

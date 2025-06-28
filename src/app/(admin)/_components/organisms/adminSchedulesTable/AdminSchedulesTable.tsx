@@ -9,6 +9,11 @@ export interface AdminSchedulesTableProps {
 	selectedDate?: Date;
 	onCreateButton: (isOpen: boolean, createData: CreateDoctorScheduleData) => void;
 	initialItems?: DoctorSchedule[];
+	editSchedule: {
+		status: "view" | "update" | "delete";
+		onUpdateButton?: (isOpen: boolean, updateData: CreateDoctorScheduleData) => void;
+		onDeleteButton?: (isOpen: boolean, deleteData: CreateDoctorScheduleData) => void;
+	}
 }
 
 type HeaderScheduleTableProps = {
@@ -20,13 +25,16 @@ type HeaderScheduleTableProps = {
 
 type ScheduleItem = {
 	shiftKey: string;
-	doctor: { [key: string]: { id: string; full_name: string }[] | null };
+	doctors: { [key: string]: DoctorSchedule[] | null };
 };
 
 export default function AdminSchedulesTable(
-	{ selectedDate, onCreateButton, initialItems }: AdminSchedulesTableProps
+	props: AdminSchedulesTableProps
 ) {
+	const { selectedDate, onCreateButton, initialItems, editSchedule } = props;
+	const [isStatus, setIsStatus] = useState<AdminSchedulesTableProps['editSchedule']['status']>();
 	const dates = getWeekDates(selectedDate || new Date());
+	
 	const headers: HeaderScheduleTableProps[] = [
 		{ key: "MONDAY", name: "Thứ 2", date: dates[0] },
 		{ key: "TUESDAY", name: "Thứ 3", date: dates[1] },
@@ -46,23 +54,19 @@ export default function AdminSchedulesTable(
 	const [scheduleData, setScheduleData] = useState<ScheduleItem[]>(() => {
 		return shifts.map((shift) => ({
 			shiftKey: shift.key,
-			doctor: headers.reduce((acc, header) => {
+			doctors: headers.reduce((acc, header) => {
 				const items = initialItems?.filter(
 					(item) => item.shift === shift.key && item.day === header.key
 				);
 				acc[header.key] = items
-					?.map((item) => ({
-						id: item.doctor_id,
-						full_name: item.doctor.user.full_name
-					}))
-					.filter((doctor) => doctor !== null) || [];
+					?.filter((item) => item !== null) || [];
 				return acc;
-			}, {} as { [key: string]: { id: string; full_name: string }[] | null }),
+			}, {} as { [key: string]: DoctorSchedule[] | null }),
 		}));
 	});
 	// View detail
 	const [isViewOpen, setIsViewOpen] = useState(false);
-	const [selectedDoctors, setSelectedDoctors] = useState<{ id: string; full_name: string }[]>([]);
+	const [selectedDoctors, setSelectedDoctors] = useState<DoctorSchedule[]>([]);
 	const [selectedDateItem, setSelectedDateItem] = useState<string>();
 	
 	// Định nghĩa các cột
@@ -92,7 +96,7 @@ export default function AdminSchedulesTable(
 			accessorKey: header.key,
 			cell: (info) => {
 				const row = info.row.original;
-				const doctors = row.doctor[info.column.id] || [];
+				const doctors = row.doctors[info.column.id] || [];
 				return (
 					<div className={"h-full w-full md:min-w-32 flex flex-col"}>
 						{/* BUTTON */}
@@ -139,7 +143,7 @@ export default function AdminSchedulesTable(
 										key={index}
 										className={"w-full p-1 bg-white border border-gray-300 rounded-md shadow-sm mt-2 truncate text-center max-h-24"}
 									>
-										{doctor.full_name}
+										{doctor.doctor.user.full_name}
 									</div>
 								))
 							) : (
@@ -188,9 +192,9 @@ export default function AdminSchedulesTable(
 					? {
 						...item,
 						doctor: {
-							...item.doctor,
-							[dayKey]: item.doctor[dayKey]?.length
-								? item.doctor[dayKey].slice(0, -1)
+							...item.doctors[dayKey],
+							[dayKey]: item.doctors[dayKey]?.length
+								? item.doctors[dayKey].slice(0, -1)
 								: null,
 						},
 					}
@@ -248,8 +252,8 @@ export default function AdminSchedulesTable(
 			{isViewOpen && (
 				<ViewDoctorListCard
 					label={`Danh sách bác sĩ (${selectedDateItem})`}
-					doctor={selectedDoctors}
-					onSelect={(doctor) => console.log("Selected:", doctor)} // Xử lý chọn doctor nếu cần
+					doctors={selectedDoctors}
+					// editSchedule={}
 					onClose={handleCloseView}
 				/>
 			)}
