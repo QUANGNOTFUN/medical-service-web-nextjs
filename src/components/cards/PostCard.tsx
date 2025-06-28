@@ -11,7 +11,7 @@ interface Props {
 }
 
 const PostCard: FC<Props> = ({ post }) => {
-    const formatDate = (date: string | null) => {
+    const formatDate = (date: Date) => {
         if (!date) return "Không rõ ngày";
         return new Date(date).toLocaleDateString("vi-VN", {
             month: "short",
@@ -38,7 +38,7 @@ const PostCard: FC<Props> = ({ post }) => {
                     <div className="flex flex-col space-y-2 text-sm text-gray-500">
                         <div className="flex items-center">
                             <User className="w-4 h-4 mr-2 text-blue-500" />
-                            <span>Tác giả: {post.author_id || "Ẩn danh"}</span>
+                            <span>Tác giả: {post.author?.user?.full_name || "Ẩn danh"}</span>
                         </div>
                         <div className="flex items-center">
                             <Tag className="w-4 h-4 mr-2 text-blue-500" />

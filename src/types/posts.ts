@@ -7,6 +7,11 @@ export interface Post {
     created_at: Date;
     updated_at?: Date;
     publisher_id?: Date;
+    author: {
+        user: {
+            full_name: string;
+        };
+    };
 }
 
 export interface PaginationBlogInput{

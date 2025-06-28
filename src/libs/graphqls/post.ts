@@ -11,6 +11,11 @@ export const GET_POSTS = gql`
                 category
                 created_at
                 updated_at
+                author{
+                    user{
+                        full_name
+                    }
+                }
             }
             total
             page
@@ -44,6 +49,11 @@ export const GET_POST = gql`
             category
             created_at
             updated_at
+            author{
+                user{
+                    full_name
+                }
+            }
         }
     }
 `;

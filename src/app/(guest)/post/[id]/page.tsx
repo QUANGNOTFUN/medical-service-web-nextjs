@@ -4,8 +4,8 @@ import { useGetOnePost } from "@/libs/hooks/posts/useGetOnePost";
 import { useEffect } from "react";
 import { use } from "react";
 import { motion } from "framer-motion";
-import { Calendar, Tag, User } from "lucide-react";
-import {router} from "next/client";
+import {ArrowLeft, Calendar, Tag, User } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface Props {
     params: Promise<{ id: string }>;
@@ -14,6 +14,8 @@ interface Props {
 export default function PostDetailPage({ params }: Props) {
     const { id } = use(params);
     const { getPostById, data, loading, error } = useGetOnePost();
+    const router = useRouter();
+
 
     useEffect(() => {
         if (id) {
@@ -74,6 +76,7 @@ export default function PostDetailPage({ params }: Props) {
                     className="text-center p-6 bg-gray-100 rounded-lg shadow-lg"
                 >
                     <p className="text-gray-600 text-lg font-semibold">Bài viết không tồn tại</p>
+                    {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
                     <a
                         href="/"
                         className="mt-4 inline-block px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
@@ -101,7 +104,7 @@ export default function PostDetailPage({ params }: Props) {
                         <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 mb-4 sm:mb-0">
                             <div className="flex items-center">
                                 <User className="w-4 h-4 mr-2 text-blue-500" />
-                                <span>Tác giả: {data.author_id || "Ẩn danh"}</span>
+                                <span>Tác giả: {data.author.user.full_name || "Ẩn danh"}</span>
                             </div>
                             <div className="flex items-center">
                                 <Tag className="w-4 h-4 mr-2 text-blue-500" />
@@ -132,25 +135,12 @@ export default function PostDetailPage({ params }: Props) {
                     </div>
                 </article>
 
-                <div className="mt-8 text-center">
+                <div className="mt-10 text-center">
                     <button
                         onClick={() => router.back()}
-                        className="inline-flex items-center px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-lg font-semibold"
+                        className="inline-flex items-center gap-2 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-base font-medium shadow-md"
                     >
-                        <svg
-                            className="w-5 h-5 mr-2"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M15 19l-7-7 7-7"
-                            />
-                        </svg>
+                        <ArrowLeft className="w-5 h-5" />
                         Quay lại
                     </button>
                 </div>

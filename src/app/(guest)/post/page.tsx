@@ -64,6 +64,7 @@ export default function Home() {
                     className="text-center p-6 bg-gray-100 rounded-lg shadow-lg"
                 >
                     <p className="text-gray-600 text-lg font-semibold">Chưa có bài viết nào</p>
+                    {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
                     <a
                         href="/"
                         className="mt-4 inline-block px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
