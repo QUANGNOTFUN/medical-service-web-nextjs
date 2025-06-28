@@ -17,7 +17,7 @@ export function useGetAllPost(input: PaginationBlogInput) {
         GET_POSTS,
         {
             variables: { input },
-            fetchPolicy: "network-only", // hoặc 'cache-first' nếu bạn muốn dùng cache
+            fetchPolicy: "network-only",
         }
     );
 

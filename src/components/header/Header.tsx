@@ -10,18 +10,20 @@ export default function Header() {
     const { data: session } = useSession();
 
     const navLinks = [
-        { label: 'Trang Chủ', href: '/doctor-dashboard' },
+        { label: 'Trang Chủ', href: '/admin-dashboard' },
         { label: 'Bác Sĩ', href: '/doctor' },
         { label: 'Đặt Lịch', href: '/booking' },
         { label: 'Liên Hệ', href: '/contact' },
         { label: 'Giới thiệu', href: '/about' },
-        { label: 'blog', href: '/post' }
+        { label: 'Blog', href: '/post' }
     ];
+
     return (
-        <header className="bg-white shadow-md fixed w-full top-0 z-50">
-            <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-                <Link href="/" className="text-2xl font-bold text-blue-700">
-                    🏥 Y Tế
+        <header className="fixed w-full top-0 z-50 bg-transparent backdrop-blur-md transition-all duration-300">
+            <div className="max-w-7xl mx-auto flex items-center justify-between px-4 py-3">
+                {/* Logo */}
+                <Link href="/" className="text-2xl font-bold text-blue-700 flex items-center gap-2">
+                    <span className="text-blue-600">+🩺</span> HolaDoctor
                 </Link>
 
                 {/* Desktop Menu */}
@@ -36,37 +38,28 @@ export default function Header() {
                         </Link>
                     ))}
 
+
+                    {/* Auth Section */}
                     {!session?.user ? (
                         <Link
                             href="/login"
-                            className="text-gray-700 hover:text-blue-600 font-medium"
+                            className="text-teal-400 hover:text-blue-600 font-medium px-4 py-1 rounded-lg bg-white/10 hover:bg-white/20 backdrop-blur-md transition"
                         >
                             Đăng nhập
                         </Link>
                     ) : (
-                        <div className="relative group">
-                            {/* Trigger */}
-                            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-white text-sm font-medium text-gray-700 hover:bg-gray-100 cursor-pointer">
-                                <UserCircle className="w-5 h-5 text-gray-600" />
+                        <div className="relative group ml-4">
+                            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-white/10 backdrop-blur-md text-sm font-medium text-gray-700 hover:bg-white/20 transition cursor-pointer">
+                                <UserCircle className="w-5 h-5 text-white/90" />
                                 {session.user.email}
                             </div>
 
-                            {/* Dropdown - MUST be direct child and not hidden with `display: none` */}
-                            <div
-                                className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black/5 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-150"
-                                onMouseEnter={() => setIsOpen(true)}
-                                onMouseLeave={() => setIsOpen(false)}
+                            <div   className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white/10 backdrop-blur-md ring-1 ring-white/20 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-150"
                             >
-                                <Link
-                                    href="/profile"
-                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                >
+                                <Link href="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                     Hồ sơ khám
                                 </Link>
-                                <Link
-                                    href="/booking"
-                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                >
+                                <Link href="/profile/appointment" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                     Lịch hẹn của tôi
                                 </Link>
                                 <button
@@ -77,16 +70,11 @@ export default function Header() {
                                 </button>
                             </div>
                         </div>
-
-
                     )}
                 </nav>
 
                 {/* Mobile Toggle */}
-                <button
-                    className="md:hidden text-gray-700"
-                    onClick={() => setIsOpen(!isOpen)}
-                >
+                <button className="md:hidden text-gray-700" onClick={() => setIsOpen(!isOpen)}>
                     {isOpen ? <X size={24} /> : <Menu size={24} />}
                 </button>
             </div>
@@ -125,7 +113,7 @@ export default function Header() {
                             <button
                                 onClick={() => {
                                     setIsOpen(false);
-                                    signOut()
+                                    signOut();
                                 }}
                                 className="w-full text-left text-gray-700 hover:text-blue-600 font-medium"
                             >

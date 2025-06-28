@@ -2,19 +2,19 @@
 
 import { useState } from "react";
 import ConfirmationDialog from "@/app/(admin)/_components/dialog/ConfirmationDialog";
-import {  Check, Loader, X } from "lucide-react";
+import { Check, Loader, X } from "lucide-react";
 import { HEADER_APPOINMENTS_TABLE } from "@/app/(doctor)/appointment-manage/m_resource/constants";
 import { useUpdateAppointment } from "@/libs/hooks/appoiment/useUpdateAppointment";
-import {useGetAppointments} from "@/libs/hooks/appoiment/useGetAppointment";
-
+import { useGetAppointments } from "@/libs/hooks/appoiment/useGetAppointment";
+import {useSession} from "next-auth/react";
 
 export default function AppointmentManage() {
     const [selectedId, setSelectedId] = useState<number | null>(null);
     const [selectedAction, setSelectedAction] = useState<"view" | "create" | "update" | "delete" | "detail">("view");
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(5);
-    const [isDisabled, setDisabled] = useState<boolean>(false);
-    const doctorId = "f131d16a-5fd5-4a5c-ae7d-c7471c7e8c52";
+    const { data: session } = useSession();
+    const doctorId = session.user.id;
 
     const {
         appointments,
@@ -24,20 +24,18 @@ export default function AppointmentManage() {
         refetch: refetchAppointments,
     } = useGetAppointments({ doctor_id: doctorId, page, pageSize });
 
-    const { update: updateAppointment, loading: updateLoading, error: errorUpdate } = useUpdateAppointment();
+    const {
+        update: updateAppointment,
+        loading: updateLoading,
+        error: errorUpdate,
+    } = useUpdateAppointment();
 
-    const loading = initLoading || updateLoading  ;
-    const error = errorAppointments || errorUpdate ;
+    const loading = initLoading || updateLoading;
+    const error = errorAppointments || errorUpdate;
 
-    function handleAction(action: "view" | "create" | "update" | "delete", id?: number) {
+    function handleAction(action: "view" | "create" | "update" | "delete" | "detail", id?: number) {
         setSelectedAction(action);
         setSelectedId(id || null);
-    }
-
-    function handleSelectedId(id: number | null) {
-        if (id !== null) {
-            setSelectedId(id);
-        }
     }
 
     async function handleUpdateStatus(status: "CONFIRMED" | "CANCELLED") {
@@ -48,7 +46,6 @@ export default function AppointmentManage() {
                 appointment_id: Number(selectedId),
                 status,
             });
-
             await refetchAppointments();
             setSelectedAction("view");
             setSelectedId(null);
@@ -61,11 +58,8 @@ export default function AppointmentManage() {
         const appointment = appointments.find(app => app.appointment_id === appointment_id);
         const status = appointment?.status;
 
-        if (!appointment) return null;
-
         return (
             <div className="flex space-x-2 justify-center">
-                {/* Luôn hiển thị nút "View" */}
                 <button
                     className="p-1 text-blue-500 hover:text-blue-700"
                     onClick={() => handleAction("detail", appointment_id)}
@@ -73,9 +67,7 @@ export default function AppointmentManage() {
                 >
                     👁
                 </button>
-
-                {/* Nếu là PENDING thì thêm Xác nhận & Hủy */}
-                {status === "pending" && (
+                {status === "PENDING" && (
                     <>
                         <button
                             className="p-1 text-green-600 hover:text-green-800"
@@ -97,19 +89,20 @@ export default function AppointmentManage() {
         );
     };
 
-
     const renderForm = () => {
         if (selectedId === null) return null;
+        const appointment = appointments.find(app => app.appointment_id === selectedId);
+        if (!appointment) return null;
 
         switch (selectedAction) {
             case "update":
                 return (
                     <ConfirmationDialog
                         isOpen={true}
+                        title="Xác nhận lịch hẹn"
                         message="Bạn chắc chắn muốn xác nhận lịch hẹn này?"
                         onClose={() => handleAction("view")}
                         onConfirm={() => handleUpdateStatus("CONFIRMED")}
-                        title="Xác nhận lịch hẹn"
                         confirmText="Đồng ý"
                         cancelText="Hủy"
                     />
@@ -118,18 +111,15 @@ export default function AppointmentManage() {
                 return (
                     <ConfirmationDialog
                         isOpen={true}
+                        title="Hủy lịch hẹn"
                         message="Bạn chắc chắn muốn hủy lịch hẹn này?"
                         onClose={() => handleAction("view")}
                         onConfirm={() => handleUpdateStatus("CANCELLED")}
-                        title="Hủy lịch hẹn"
                         confirmText="Từ chối"
                         cancelText="Hủy"
                     />
                 );
             case "detail":
-                const appointment = appointments.find(app => app.appointment_id === selectedId);
-                if (!appointment) return null;
-
                 return (
                     <ConfirmationDialog
                         isOpen={true}
@@ -147,7 +137,6 @@ export default function AppointmentManage() {
                         hideCancel
                     />
                 );
-
             default:
                 return null;
         }
@@ -155,8 +144,8 @@ export default function AppointmentManage() {
 
     const tableItems = appointments.map(app => ({
         appointment_id: app.appointment_id,
-        patient_id: app.patient_id || "N/A",
-        schedule_id: app.schedule_id || "N/A",
+        "patient.user.full_name": app.patient?.user?.full_name || "Không rõ",
+        schedule_id: app.slot_id || "N/A",
         appointment_type: app.appointment_type || "N/A",
         appointment_date: app.appointment_date
             ? new Date(app.appointment_date).toLocaleString()
@@ -164,7 +153,6 @@ export default function AppointmentManage() {
         status: app.status || "N/A",
         action: renderActions(app.appointment_id),
     }));
-
 
     if (loading) return <Loader className="w-8 h-8 animate-spin mx-auto mt-10" />;
     if (error)
@@ -190,20 +178,12 @@ export default function AppointmentManage() {
                     </thead>
                     <tbody>
                     {tableItems.map((item, rowIndex) => (
-                        <tr
-                            key={rowIndex}
-                            className="border-t hover:bg-gray-50"
-                            onClick={() => typeof item.appointment_id === "string" && handleSelectedId(item.appointment_id)}
-                        >
+                        <tr key={rowIndex} className="border-t hover:bg-gray-50">
                             {HEADER_APPOINMENTS_TABLE.map((header, colIndex) => (
                                 <td key={colIndex} className="p-4 text-gray-600">
-                                    {item[header.key] === "--" && colIndex === 0 ? (
-                                        <span className="text-gray-400">{item[header.key]}</span>
-                                    ) : header.key === "action" ? (
-                                        item[header.key]
-                                    ) : (
-                                        <span>{item[header.key]}</span>
-                                    )}
+                                    {header.key === "action"
+                                        ? item[header.key]
+                                        : <span>{item[header.key]}</span>}
                                 </td>
                             ))}
                         </tr>
@@ -216,14 +196,14 @@ export default function AppointmentManage() {
                     </div>
                     <div className="flex gap-2">
                         <button
-                            onClick={() => setPage((p) => Math.max(p - 1, 1))}
+                            onClick={() => setPage(p => Math.max(p - 1, 1))}
                             disabled={page === 1}
                             className="px-3 py-1 bg-blue-500 text-white rounded disabled:opacity-50"
                         >
                             Trước
                         </button>
                         <button
-                            onClick={() => setPage((p) => (p < Math.ceil(total / pageSize) ? p + 1 : p))}
+                            onClick={() => setPage(p => (p < Math.ceil(total / pageSize) ? p + 1 : p))}
                             disabled={page >= Math.ceil(total / pageSize)}
                             className="px-3 py-1 bg-blue-500 text-white rounded disabled:opacity-50"
                         >
@@ -231,7 +211,6 @@ export default function AppointmentManage() {
                         </button>
                     </div>
                 </div>
-
             </div>
         </div>
     );

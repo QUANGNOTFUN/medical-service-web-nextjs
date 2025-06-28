@@ -6,8 +6,7 @@ export const INIT_BLOG_TABLE: HeaderDoctorTable[] = [
     {label:"Title", key: 'title', type: 'text' },
     {label:"Description", key: 'content', type: 'text' },
     {label:"Loại", key: "category", type: 'text' },
-    {label:"Ngày tạo bài viết", key: 'published_at', type: 'date' },
-    {label:"Ngày đăng bài", key: 'create_at', type: 'date' },
+    {label:"Ngày tạo bài viết", key: 'created_at', type: 'date' },
     {label:"Ngày update", key: 'updated_at', type: 'date' },
     {label:"Hành động", key: 'action', type: 'text' },
 ]

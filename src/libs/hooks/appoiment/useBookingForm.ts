@@ -1,7 +1,7 @@
 // hooks/useBookingForm.ts
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
-export const useBookingForm = (user?: any) => {
+export const useBookingForm = (user?: any, patient?: any) => {
     const [form, setForm] = useState({
         fullName: '',
         gender: '',
@@ -17,7 +17,7 @@ export const useBookingForm = (user?: any) => {
         if (user) {
             setForm({
                 fullName: user.full_name || '',
-                gender: user.gender || 'OTHER',
+                gender: patient.gender || 'OTHER',
                 dob: user.date_of_birth?.slice(0, 10) || '',
                 phone: user.phone || '',
                 province: '',

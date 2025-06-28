@@ -5,6 +5,7 @@ export const GET_DOCTORS = gql`
         doctors {
           id
           user {
+            id
             email
             full_name
             phone
@@ -24,13 +25,16 @@ export const GET_DOCTORS = gql`
 export const GET_DOCTOR = gql`
     query GetDoctor($id: String!) {
         doctor(id: $id) {
-            id
+           id
             qualifications
-            work_seniority
             specialty
             hospital
-            created_at
-            updated_at
+            work_seniority
+            default_fee
+            titles
+            positions
+            rating
+            gender
             user {
               full_name
               email
@@ -44,22 +48,9 @@ export const GET_DOCTOR = gql`
 
 // Tạo mới 1 bác sĩ
 export const CREATE_DOCTOR = gql`
-    mutation CreateDoctor($doctorData: CreateDoctorDto!) {
-        createDoctor(doctorData: $doctorData) {
-            id
-            user {
-                id
-                email
-                full_name
-                gender
-                role
-            }
-            qualifications
-            work_seniority
-            specialty
-            hospital
+    mutation createDoctor($doctorData: RegisterDoctorInput!) {
+        createDoctor(doctorData: $doctorData)
         }
-    }
 `;
 
 

@@ -1,12 +1,23 @@
-import {mockPosts} from "@/components/datasame/mau";
+"use client"
+import {useGetAllPost} from "@/libs/hooks/posts/useGetPost";
+import {useState} from "react";
 
 interface Props {
     params: { id: string };
 }
 
 export default function PostDetailPage({ params }: Props) {
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(5);
+    const {
+        posts,
+        total,
+        loading: getLoading,
+        error: getError,
+        refetch: refetchPosts,
+    } = useGetAllPost({ page, pageSize });
     const postId = Number(params.id);
-    const post = mockPosts.find(p => p.id === postId);
+    const post = posts.find(p => p.id === postId);
 
     if (!post) {
         return <p>Bài viết không tồn tại</p>;

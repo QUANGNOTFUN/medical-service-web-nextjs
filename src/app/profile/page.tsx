@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useMutation, useQuery } from "@apollo/client";
 import { useSession } from "next-auth/react";
 import { GET_PATIENT_BY_ID, UPDATE_PATIENT_BY_ID } from "@/libs/graphqls/queries/profile";
-import Image from "next/image"; // ⬅️ thêm dòng này
+import Image from "next/image";
 
 export default function ProfilePage() {
     const { data: session } = useSession();
@@ -27,10 +27,12 @@ export default function ProfilePage() {
     const [editMode, setEditMode] = useState(false);
 
     const [updatePatient, { loading: updating }] = useMutation(UPDATE_PATIENT_BY_ID, {
-        refetchQueries: [{
-            query: GET_PATIENT_BY_ID,
-            variables: { input: { patient_id: session?.user?.id } },
-        }],
+        refetchQueries: [
+            {
+                query: GET_PATIENT_BY_ID,
+                variables: { input: { patient_id: session?.user?.id } },
+            },
+        ],
         awaitRefetchQueries: true,
         onCompleted: () => {
             alert("Cập nhật thành công!");
@@ -153,27 +155,27 @@ export default function ProfilePage() {
     if (!user) return <p className="p-4">Không tìm thấy người dùng.</p>;
 
     return (
-        <div className="min-h-screen bg-gray-100 p-6">
+        <div className="min-h-screen  p-6">
             <div className="max-w-6xl mx-auto">
                 <div className="flex justify-between items-center mb-6">
                     <h1 className="text-3xl font-bold text-gray-800">Thông tin bệnh nhân</h1>
                     {!editMode ? (
-                        <button onClick={handleEditClick}>
-                            <img src="/icons8-edit.gif" alt="Edit" className="w-6 h-6 hover:opacity-80" />
+                        <button onClick={handleEditClick} className="hover:opacity-80">
+                            <img src="/icons8-edit.gif" alt="Edit" className="w-6 h-6" />
                         </button>
                     ) : (
                         <div className="space-x-2">
                             <button
                                 type="submit"
                                 form="edit-form"
-                                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
                                 disabled={updating}
                             >
                                 {updating ? "Đang lưu..." : "Lưu"}
                             </button>
                             <button
                                 onClick={handleCancelClick}
-                                className="border border-gray-400 px-4 py-2 rounded hover:bg-gray-100"
+                                className="border border-gray-400 px-4 py-2 rounded-lg hover:bg-gray-100 transition"
                             >
                                 Hủy
                             </button>
@@ -182,7 +184,7 @@ export default function ProfilePage() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div className="bg-white p-6 rounded-xl shadow text-center relative">
+                    <div className="bg-white p-6 rounded-xl shadow text-center">
                         <div className="relative w-32 h-32 mx-auto">
                             <Image
                                 src={form.avatarPreview || user.avatar || "/default-avatar.png"}
@@ -199,13 +201,13 @@ export default function ProfilePage() {
                                         onChange={handleAvatarChange}
                                         className="absolute inset-0 opacity-0 cursor-pointer"
                                     />
-                                    <div className="absolute -top-0.5 -right-0.5 bg-blue-600 text-white rounded-3xl p-2 text-xs">
+                                    <div className="absolute top-0 right-0 bg-blue-600 text-white rounded-full p-1 text-xs shadow-md">
                                         🖊
                                     </div>
                                 </>
                             )}
                         </div>
-                        <h2 className="text-xl font-semibold mt-4">{user.full_name}</h2>
+                        <h2 className="text-xl font-semibold mt-4 text-gray-800">{user.full_name}</h2>
                         <p className="text-blue-600 mt-1">{user.phone}</p>
                         <p className="text-gray-500 text-sm">{user.email}</p>
                     </div>
@@ -215,11 +217,11 @@ export default function ProfilePage() {
                             <form id="edit-form" onSubmit={handleSubmit} className="bg-white p-6 rounded-xl shadow space-y-4">
                                 <h3 className="text-lg font-semibold text-gray-700">Chỉnh sửa thông tin</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <input type="text" name="full_name" value={form.full_name} onChange={handleInputChange} placeholder="Họ và tên" className="border p-2 rounded w-full" required />
-                                    <input type="date" name="date_of_birth" value={form.date_of_birth} onChange={handleInputChange} className="border p-2 rounded w-full" />
-                                    <input type="text" name="address" value={form.address} onChange={handleInputChange} placeholder="Địa chỉ" className="border p-2 rounded w-full" />
-                                    <input type="tel" name="phone" value={form.phone} onChange={handleInputChange} placeholder="Số điện thoại" className="border p-2 rounded w-full" />
-                                    <select name="gender" value={form.gender} onChange={handleInputChange} className="border p-2 rounded w-full" required>
+                                    <input type="text" name="full_name" value={form.full_name} onChange={handleInputChange} placeholder="Họ và tên" className="border p-2 rounded-lg w-full" required />
+                                    <input type="date" name="date_of_birth" value={form.date_of_birth} onChange={handleInputChange} className="border p-2 rounded-lg w-full" />
+                                    <input type="text" name="address" value={form.address} onChange={handleInputChange} placeholder="Địa chỉ" className="border p-2 rounded-lg w-full" />
+                                    <input type="tel" name="phone" value={form.phone} onChange={handleInputChange} placeholder="Số điện thoại" className="border p-2 rounded-lg w-full" />
+                                    <select name="gender" value={form.gender} onChange={handleInputChange} className="border p-2 rounded-lg w-full" required>
                                         <option value="">Chọn giới tính</option>
                                         <option value="MALE">Nam</option>
                                         <option value="FEMALE">Nữ</option>

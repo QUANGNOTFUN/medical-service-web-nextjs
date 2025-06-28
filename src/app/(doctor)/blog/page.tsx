@@ -6,16 +6,19 @@ import { useMutation } from "@apollo/client";
 import { INIT_BLOG_TABLE } from "@/app/(doctor)/blog/m_resource/constants";
 import { UPDATE_POST} from "@/libs/graphqls/post";
 import { useCreatePost } from "@/libs/hooks/posts/useCreatePost";
-import ConfirmationDialog from "@/app/(admin)/_components/dialog/ConfirmationDialog";
 import {useGetAllPost} from "@/libs/hooks/posts/useGetPost";
 import {useDeletePost} from "@/libs/hooks/posts/useDeletePost";
 import {Post} from "@/types/posts";
+import {useSession} from "next-auth/react";
+import ConfirmationDialog from "@/app/(admin)/_components/molecules/dialog/ConfirmationDialog";
 
 export default function BlogPage() {
     const [selectedId, setSelectedId] = useState<number | null>(null);
     const [selectedAction, setSelectedAction] = useState<"view" | "create" | "update" | "delete">("view");
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(5);
+    const { data: session } = useSession();
+    const authorId = session.user.id;
     const [formData, setFormData] = useState({
         title: "",
         content: "",
@@ -42,6 +45,17 @@ export default function BlogPage() {
 
 
     const displayedPosts = posts;
+
+    function formatDate(dateString: string): string {
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) return "--";
+        return date.toLocaleDateString("vi-VN", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+        });
+    }
+
 
     function handleAction(action: "view" | "create" | "update" | "delete", id?: number) {
         setSelectedAction(action);
@@ -75,7 +89,6 @@ export default function BlogPage() {
             return;
         }
         try {
-            const authorId = "f131d16a-5fd5-4a5c-ae7d-c7471c7e8c52";
             await createPostInput({
                 title: formData.title,
                 content: formData.content,
@@ -146,29 +159,7 @@ export default function BlogPage() {
             </button>
         </div>
     );
-
-    // Chuẩn bị dữ liệu cho bảng
-    const tableItems = [
-        ...displayedPosts.map((post: any) => ({
-            id: post.id,
-            title: post.title || "N/A",
-            content: post.content || "N/A",
-            author_id: post.author_id || "N/A",
-            category: post.category || "N/A",
-            created_at: post.created_at ? new Date(post.created_at).toLocaleString() : "N/A",
-            action: renderActions(post),
-        })),
-        {
-            id: "--",
-            title: "--",
-            content: "--",
-            author_id: "--",
-            category: "--",
-            created_at: "--",
-            action: "--",
-        },
-    ];
-
+    
     const renderForm = () => {
         switch (selectedAction) {
             case "delete":
@@ -310,7 +301,7 @@ export default function BlogPage() {
                         </tr>
                         </thead>
                         <tbody>
-                        {tableItems.map((item, rowIndex) => (
+                        {displayedPosts.map((item, rowIndex) => (
                             <tr
                                 key={rowIndex}
                                 className="border-t hover:bg-gray-50"
@@ -318,18 +309,19 @@ export default function BlogPage() {
                             >
                                 {INIT_BLOG_TABLE.map((header, colIndex) => (
                                     <td key={colIndex} className="p-4 text-gray-600">
-                                        {item[header.key] === "--" && colIndex === 0 ? (
-                                            <span className="text-gray-400">{item[header.key]}</span>
-                                        ) : header.key === "action" ? (
-                                            item[header.key]
+                                        {header.key === "action" ? (
+                                            renderActions(item)
+                                        ) : header.type === "date" && item[header.key] ? (
+                                            <span>{formatDate(item[header.key])}</span>
                                         ) : (
-                                            <span>{item[header.key]}</span>
+                                            <span>{item[header.key] || "--"}</span>
                                         )}
                                     </td>
                                 ))}
                             </tr>
                         ))}
                         </tbody>
+
                     </table>
                 </div>
             </div>

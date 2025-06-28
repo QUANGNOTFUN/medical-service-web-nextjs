@@ -1,13 +1,17 @@
+import {Patient} from "@/types/patient";
+
 export interface Appointment {
     appointment_id: number;
-    patient_id: number;
+    patient_id: string;
     doctor_id: number;
     slot_id: number;
     appointment_type: string;
     appointment_date: string;
     status: string;
+    is_done?: boolean;
     is_anonymous: boolean;
     notes: string;
+    patient:Patient;
 }
 
 export interface PaginationAppointmentInput{
@@ -39,6 +43,11 @@ export interface UpdateAppointmentInput {
     appointment_type?: string;
     appointment_date?: string;
     status?: string;
+    is_done?: boolean;
+}
+
+export class DeleteAppointmentInput {
+    appointment_id: number;
 }
 
 
