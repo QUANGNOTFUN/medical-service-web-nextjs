@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import ConfirmationDialog from "@/app/(admin)/_components/dialog/ConfirmationDialog";
 import { Check, Loader, X } from "lucide-react";
 import { HEADER_APPOINMENTS_TABLE } from "@/app/(doctor)/appointment-manage/m_resource/constants";
 import { useUpdateAppointment } from "@/libs/hooks/appoiment/useUpdateAppointment";
 import { useGetAppointments } from "@/libs/hooks/appoiment/useGetAppointment";
 import {useSession} from "next-auth/react";
+import ConfirmationDialog from "@/app/(admin)/_components/molecules/dialog/ConfirmationDialog";
 
 export default function AppointmentManage() {
     const [selectedId, setSelectedId] = useState<number | null>(null);

@@ -9,8 +9,8 @@ import {useGetAppointments} from "@/libs/hooks/appoiment/useGetAppointment";
 import {useCreateExamination} from "@/libs/hooks/a/useCreateExaminationReport";
 import {useUpdateAppointment} from "@/libs/hooks/appoiment/useUpdateAppointment";
 import {useSession} from "next-auth/react";
-import ConfirmationDialog from "@/app/(admin)/_components/dialog/ConfirmationDialog";
 import {useDeleteAppointment} from "@/libs/hooks/appoiment/useDeleteAppointment";
+import ConfirmationDialog from "@/app/(admin)/_components/molecules/dialog/ConfirmationDialog";
 
 export default function PatientPage() {
     const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -183,7 +183,7 @@ export default function PatientPage() {
     };
 
 
-    const pagedAppointments = appointments.slice((page - 1) * pageSize, page * pageSize);
+    const pagedAppointments = appointments.slice((page - 1) * pageSize, page * pageSize).filter((appointment) => appointment.status === "CONFIRMED");
     const pagedDataAppointments = dataAppointments.slice((page - 1) * pageSize, page * pageSize);
 
     if (isLoading) return <Loader className="w-8 h-8 animate-spin mx-auto mt-10" />;

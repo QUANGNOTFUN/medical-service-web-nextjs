@@ -6,7 +6,7 @@ export interface Appointment {
     doctor_id: number;
     slot_id: number;
     appointment_type: string;
-    appointment_date: string;
+    appointment_date: Date;
     status: string;
     is_done?: boolean;
     is_anonymous: boolean;

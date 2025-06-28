@@ -1,6 +1,6 @@
 import React, { ComponentType } from 'react';
 import Link from 'next/link';
-import {LockIcon, LockKeyhole, LockKeyholeOpen, LucideProps} from 'lucide-react';
+import {LockKeyhole, LockKeyholeOpen, LucideProps} from 'lucide-react';
 
 export interface SidebarItem {
   title: string;
