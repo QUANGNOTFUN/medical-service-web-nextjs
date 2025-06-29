@@ -146,10 +146,17 @@ export default function AppointmentManage() {
     const tableItems = appointments.map(app => ({
         appointment_id: app.appointment_id,
         "patient.user.full_name": app.patient?.user?.full_name || "Không rõ",
-        schedule_id: app.slot_id || "N/A",
+        slot_id: app.slot_id || "N/A",
         appointment_type: app.appointment_type || "N/A",
         appointment_date: app.appointment_date
-            ? new Date(app.appointment_date).toLocaleString()
+            ? new Intl.DateTimeFormat("vi-VN", {
+                timeZone: "Asia/Ho_Chi_Minh",
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+            }).format(new Date(app.appointment_date))
             : "N/A",
         status: app.status || "N/A",
         action: renderActions(app.appointment_id),

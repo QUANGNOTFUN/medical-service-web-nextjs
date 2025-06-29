@@ -9,15 +9,24 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, AlertCircle } from "lucide-react";
 import MedicationSelector from "@/app/(doctor)/patient/m_resource/MedicationSelector";
 import {Medication} from "@/types/medications";
+import {useQuery} from "@apollo/client";
+import {GET_DOCTOR} from "@/libs/graphqls/doctors";
 
 interface Props {
-    onSubmit: (input: MedicalExaminationInput) => void;
-    onClose: () => void;
+    onSubmitAction: (input: MedicalExaminationInput) => void;
+    onCloseAction: () => void;
     patient_id: string;
     doctor_id: string;
 }
 
-export default function MedicalExaminationForm({ onSubmit, onClose, patient_id, doctor_id }: Props) {
+export default function MedicalExaminationForm({ onSubmitAction, onCloseAction, patient_id, doctor_id }: Props) {
+    const{data} = useQuery(GET_DOCTOR,{
+        variables: { id: doctor_id },
+        skip: !doctor_id,
+    });
+
+    const user = data?.doctor?.user;
+
     const [treatmentPlan, setTreatmentPlan] = useState<CreateTreatmentPlanInput>({
         name: "",
         hiv_diagnosis_date: undefined,
@@ -96,7 +105,7 @@ export default function MedicalExaminationForm({ onSubmit, onClose, patient_id, 
         }
 
         setErrors({});
-        onSubmit({ treatmentPlan, regimen, report });
+        onSubmitAction({ treatmentPlan, regimen, report });
     };
 
     return (
@@ -115,7 +124,7 @@ export default function MedicalExaminationForm({ onSubmit, onClose, patient_id, 
                 >
                     {/* Close Button */}
                     <button
-                        onClick={onClose}
+                        onClick={onCloseAction}
                         className="absolute top-4 right-4 p-2 text-gray-500 hover:text-gray-700 transition-colors"
                         aria-label="Đóng form"
                     >
@@ -354,14 +363,17 @@ export default function MedicalExaminationForm({ onSubmit, onClose, patient_id, 
                             </div>
 
                             <div>
-                                <label className="block font-medium mb-1 text-gray-700">ID Bác sĩ</label>
+                                <label className="block font-medium mb-1 text-gray-700">Bác sĩ</label>
                                 <input
-                                    className={`w-full px-4 py-2 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
-                                        errors.report_doctor ? "border-red-500" : "border-gray-300"
-                                    }`}
-                                    placeholder="Nhập ID bác sĩ"
+                                    className="w-full px-4 py-2 border-2 rounded-lg bg-gray-100 cursor-not-allowed text-gray-700"
+                                    value={user?.full_name}
+                                    readOnly
+                                />
+
+                                <input
+                                    type="hidden"
                                     value={report.doctor_id}
-                                    onChange={(e) => setReport({ ...report, doctor_id: e.target.value })}
+                                    name="doctor_id"
                                 />
                                 {errors.report_doctor && (
                                     <p className="text-red-500 text-sm mt-1 flex items-center">
@@ -438,7 +450,7 @@ export default function MedicalExaminationForm({ onSubmit, onClose, patient_id, 
                     {/* Buttons */}
                     <div className="flex justify-end gap-4">
                         <button
-                            onClick={onClose}
+                            onClick={onCloseAction}
                             className="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
                         >
                             Hủy

@@ -96,8 +96,8 @@ export default function PatientPage() {
                     <MedicalExaminationForm
                         patient_id={selectedId}
                         doctor_id={doctorId}
-                        onSubmit={handleCreate}
-                        onClose={() => setSelectedAction(null)}
+                        onSubmitAction={handleCreate}
+                        onCloseAction={() => setSelectedAction(null)}
                     />
                 );
             case "update":
@@ -115,8 +115,6 @@ export default function PatientPage() {
                                 setSelectedAction(null);
                             }
                         }}
-                        confirmText="Xóa"
-                        cancelText="Hủy"
                     />
                 );
 
@@ -178,6 +176,11 @@ export default function PatientPage() {
             const birth = new Date(value);
             const age = new Date().getFullYear() - birth.getFullYear();
             return `${age} tuổi`;
+        }
+        if (key === "patient.gender") {
+            if (value === "MALE") return "Nam";
+            if (value === "FEMALE") return "Nữ";
+            return "Khác";
         }
         return value || "--";
     };

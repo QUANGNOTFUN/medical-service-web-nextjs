@@ -134,7 +134,7 @@ export default function BlogPage() {
             console.error("Delete post error:", error);
         }
     }
-    const renderActions = (post: any) => (
+    const renderActions = (post: Post) => (
         <div className="flex space-x-2">
             <button
                 className="p-1 text-blue-500 hover:text-blue-700"
@@ -171,8 +171,6 @@ export default function BlogPage() {
                         onClose={() => handleAction("view")}
                         onConfirm={handleDeleteSubmit}
                         title={"Xác nhận xóa bài viết"}
-                        confirmText="Chắc chắn"
-                        cancelText="Hủy"
                     />
                 );
             case "update":
