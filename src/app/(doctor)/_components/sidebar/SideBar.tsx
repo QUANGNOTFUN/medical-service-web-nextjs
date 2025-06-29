@@ -16,16 +16,16 @@ export interface SideBarDoctor {
 }
 
 const mainItems: SideBarDoctor[] = [
-    { label: "Dashboard", href: "/dash-board", icon: "dashboard" },
-    { label: "Appointment", href: "/appointment-manage", icon: "calendar" },
-    { label: "Patient", href: "/patient", icon: "users" },
-    { label: "Blog", href: "/blog", icon: "message" },
+    { label: "Trang chủ", href: "/dash-board", icon: "dashboard" },
+    { label: "Quản lý cuộc hẹn", href: "/appointment-manage", icon: "calendar" },
+    { label: "Khám bệnh", href: "/patient", icon: "users" },
+    { label: "Bài đăng", href: "/blog", icon: "message" },
 ];
 
 const bottomItems: SideBarDoctor[] = [
-    { label: "Help", href: "/help", icon: "help" },
-    { label: "Setting", href: "/setting", icon: "settings" },
-    { label: "Logout", href: "/logout", icon: "logout" },
+    { label: "Giúp đỡ", href: "/help", icon: "help" },
+    { label: "Cài đặt", href: "/setting", icon: "settings" },
+    { label: "Đăng xuất", href: "/logout", icon: "logout" },
 ];
 
 const getIconComponent = (icon: string) => {

@@ -11,7 +11,6 @@ function Layout({ children }) {
                 <h1 className="text-2xl font-bold text-left text-gray-800 mb-6">Tin tức gần đây</h1>
                 {children}
             </div>
-            <Footer />
         </div>
     );
 }

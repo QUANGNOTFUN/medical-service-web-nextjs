@@ -2,19 +2,22 @@ import { gql } from "@apollo/client";
 
 // Lấy danh sách tất cả lịch bác sĩ
 export const GET_DOCTOR_SCHEDULES_BY_WEEK_DATE = gql`
-    query GetDoctorScheduleByWeekDate($input: WeekDateInput!) {
-			getDoctorScheduleByWeekDate(weekDate: $input) {
-			  doctor_id
-		    doctor {
-		      user {
-		        full_name
-		      }
-		    }
-		    day
-		    shift
-		    is_available
-			}
-		}
+  query GetDoctorScheduleByWeekDate($weekDate: WeekDateInput!) {
+    getDoctorScheduleByWeekDate(weekDate: $weekDate) {
+      id
+      doctor_id
+      doctor {
+        user {
+          full_name
+        }
+      }
+      day
+      shift
+      is_available
+      start_time
+      end_time
+    }
+  }
 `;
 
 // Lấy một lịch bác sĩ theo schedule_id
@@ -33,16 +36,9 @@ export const GET_DOCTOR_SCHEDULE = gql`
 
 // Tạo mới một lịch bác sĩ
 export const CREATE_DOCTOR_SCHEDULE = gql`
-    mutation CreateDoctorSchedule($input: CreateDoctorScheduleInput!) {
-        createDoctorSchedule(input: $input) {
-          doctor_id
-          day
-          shift
-          start_time
-          end_time
-          is_available
-        }
-    }
+  mutation CreateDoctorSchedule($input: CreateDoctorScheduleInput!) {
+    createDoctorSchedule(input: $input)
+  }
 `;
 
 // Cập nhật thông tin lịch bác sĩ
@@ -61,9 +57,7 @@ export const UPDATE_DOCTOR_SCHEDULE = gql`
 
 // Xóa lịch bác sĩ
 export const DELETE_DOCTOR_SCHEDULE = gql`
-    mutation DeleteDoctorSchedule($schedule_id: Int!) {
-        deleteDoctorSchedule(schedule_id: $schedule_id) {
-            schedule_id
-        }
-    }
+  mutation DeleteDoctorSchedule($schedule_id: Float!) {
+    deleteDoctorSchedule(schedule_id: $schedule_id)
+  }
 `;

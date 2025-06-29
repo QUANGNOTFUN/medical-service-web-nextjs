@@ -1,13 +1,21 @@
 export type DoctorSchedule = {
+	id: number;
 	doctor_id: string;
-	day: 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY';
-	shift: 'MORNING' | 'AFTERNOON' | 'OVERTIME';
+	doctor: {
+		user: {
+			full_name: string;
+		};
+	};
+	day: "MONDAY" | "TUESDAY" | "WEDNESDAY" | "THURSDAY" | "FRIDAY" | "SATURDAY" | "SUNDAY";
+	shift: "MORNING" | "AFTERNOON" | "OVERTIME";
 	start_time: string;
 	end_time: string;
 	is_available: boolean;
-	user: {
-		full_name: string;
-	}
+};
+
+export type WeekDateInput = {
+	start_week: string;
+	end_week: string;
 }
 
 export type CreateDoctorScheduleInput = {

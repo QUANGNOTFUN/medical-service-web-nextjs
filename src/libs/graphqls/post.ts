@@ -11,6 +11,11 @@ export const GET_POSTS = gql`
                 category
                 created_at
                 updated_at
+                author{
+                    user{
+                        full_name
+                    }
+                }
             }
             total
             page
@@ -36,7 +41,7 @@ export const SEARCH_POSTS = gql`
 
 export const GET_POST = gql`
     query GetPost($id: Int!) {
-        post(id: $id) {
+        findOneBlogPost(id: $id) {
             id
             title
             content
@@ -44,6 +49,11 @@ export const GET_POST = gql`
             category
             created_at
             updated_at
+            author{
+                user{
+                    full_name
+                }
+            }
         }
     }
 `;
