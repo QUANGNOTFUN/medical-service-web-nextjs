@@ -48,3 +48,12 @@ mutation UpdatePatient($input: UpdatePatientInput!) {
   }
 }
 `
+
+const SEND_OTP_MUTATION = gql`
+  mutation SendResetPasswordOtp($input: SendOtpInput!) {
+    sendResetPasswordOtp(input: $input) {
+      success
+      message
+    }
+  }
+`;

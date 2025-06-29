@@ -111,8 +111,13 @@ const Login = () => {
                         </button>
                     </div>
 
-                    <div className="text-sm text-right">
-                        <Link href="/register" className="text-blue-600 hover:underline">
+                    <div className="text-sm text-center">
+                        <Link href="/forgot-password" className="text-blue-600 hover:underline">
+                            Quên mật khẩu?
+                        </Link>
+                    </div>
+                    <div className="text-sm text-center">
+                    <Link href="/register" className="text-blue-600 hover:underline">
                             Không có tài khoản? Đăng ký ngay!!
                         </Link>
                     </div>
