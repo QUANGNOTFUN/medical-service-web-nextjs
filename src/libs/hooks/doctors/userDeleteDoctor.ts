@@ -5,7 +5,7 @@ import { Doctor } from "@/types/doctors";
 export function useDeleteDoctor() {
     const [deleteDoctor, { data, loading, error }] = useMutation<
         { doctor: Doctor },
-        { id: number }
+        { id: string }
     >(DELETE_DOCTOR, {
         update(cache, { data }) {
             if (data?.doctor) {

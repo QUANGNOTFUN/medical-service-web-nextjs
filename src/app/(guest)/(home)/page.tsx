@@ -1,3 +1,4 @@
+
 import type {Metadata} from "next";
 import ServiceCard from "@/components/cards/ServiceCard";
 import DoctorPage from "@/app/(guest)/doctor/page";
@@ -17,9 +18,11 @@ export default function HomePage() {
     return (
         <div className="flex flex-col">
             {/* Services Section */}
-            <section className="py-12 bg-white dark:bg-gray-800">
+            <section className="h-screen flex items-center bg-emerald-500 dark:bg-gray-800 animate-fade-in-down">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-200 text-center mb-8">Dịch Vụ Của Chúng Tôi</h2>
+                    <h1 className="text-base md:text-3xl font-bold text-gray-800 dark:text-gray-200 text-center mb-8">
+                        {"Dịch Vụ Của Chúng Tôi"}
+                    </h1>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         {services.map((service, index) => (
                             <ServiceCard
@@ -33,14 +36,14 @@ export default function HomePage() {
                 </div>
             </section>
 
-            <section className="py-12 bg-gray-50 dark:bg-gray-900">
+            <section className="h-screen flex items-center bg-white dark:bg-gray-800 animate-fade-in-down">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-200 text-center">Bác Sĩ Nổi Bật</h2>
                         <DoctorPage/>
                 </div>
             </section>
 
-            <section className="bg-gray-100 text-black py-16 px-4">
+            <section className="h-screen flex items-center bg-emerald-300 dark:bg-gray-800 animate-fade-in-down">
                 <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10">
 
                     {/* Thông tin liên hệ */}

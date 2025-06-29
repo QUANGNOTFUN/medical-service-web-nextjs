@@ -121,43 +121,48 @@ export default function BookingPage() {
 
             <hr className="my-8" />
 
-            <div className="flex flex-col md:flex-row gap-8">
-                <div className="bg-blue-50 border border-blue-300 p-4 rounded-md w-full md:w-1/2">
-                    <h2 className="text-lg font-semibold mb-4">Ngày khám</h2>
-                    <DateSelector
-                        doctorId={doctorId}
-                        selectedDate={selectedDate}
-                        onDateChange={handleDateChange}
-                        availableDates={availableDates}
-                    />
-
-                    <h2 className="text-lg font-semibold mb-4">Giờ khám</h2>
-                    <TimeSlotSelector
-                        slots={slots.map((slot) => ({
-                            id: slot.id,
-                            time: slot.start_time.slice(11, 16),
-                            max_patients: slot.max_patients,
-                            booked_count: slot.booked_count,
-                        }))}
-                        selectedSlotId={selectedSlotId}
-                        onSelect={setSelectedSlotId}
-                    />
+            <div className="flex flex-col md:flex-row gap-4">
+                <div className="bg-zinc-50 border border p-2 rounded-md w-full md:w-1/2">
+                    <div className={"bg-white border p-2 rounded-md shadow-sm mb-4"}>
+                        <h2 className="text-lg font-semibold mb-4">Ngày khám</h2>
+                        <DateSelector
+                          doctorId={doctorId}
+                          selectedDate={selectedDate}
+                          onDateChange={handleDateChange}
+                          availableDates={availableDates}
+                        />
+                    </div>
+                    <div className={"bg-white border p-2 rounded-md shadow-sm"}>
+                        <h2 className="text-lg font-semibold mb-4">Giờ khám</h2>
+                        <TimeSlotSelector
+                          slots={slots.map((slot) => ({
+                              id: slot.id,
+                              time: slot.start_time.slice(11, 16),
+                              max_patients: slot.max_patients,
+                              booked_count: slot.booked_count,
+                          }))}
+                          selectedSlotId={selectedSlotId}
+                          onSelect={setSelectedSlotId}
+                        />
+                    </div>
                 </div>
 
-                <div className="w-full md:w-1/2">
+                <div className="bg-zinc-50 border border p-2 rounded-md w-full md:w-1/2">
                     <form onSubmit={handleSubmit} className="space-y-6">
-                        <h2 className="text-2xl font-bold mb-4">Thông tin bệnh nhân</h2>
+                        <h2 className="text-2xl font-bold mb-4 text-center">Thông tin bệnh nhân</h2>
                         {mutationError && <p className="text-red-500">Lỗi: {mutationError.message}</p>}
-                        <PatientForm form={form} onChange={handleChange} />
-                        <button
-                            type="submit"
-                            disabled={mutationLoading}
-                            className={`w-full bg-blue-600 text-white font-semibold px-6 py-3 rounded-md hover:bg-blue-700 transition ${
+                        <div className={"bg-white border p-2 rounded-md shadow-sm"}>
+                            <PatientForm form={form} onChange={handleChange} />
+                            <button
+                              type="submit"
+                              disabled={mutationLoading}
+                              className={`w-full bg-blue-600 text-white font-semibold px-6 py-3 rounded-md cursor-pointer hover:bg-blue-700 transition ${
                                 mutationLoading ? 'opacity-50 cursor-not-allowed' : ''
-                            }`}
-                        >
-                            {mutationLoading ? 'Đang xử lý...' : 'Đặt lịch'}
-                        </button>
+                              }`}
+                            >
+                                {mutationLoading ? 'Đang xử lý...' : 'Đặt lịch'}
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>

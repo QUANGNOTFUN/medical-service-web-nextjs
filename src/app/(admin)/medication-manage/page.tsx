@@ -26,7 +26,7 @@ export default function MedicationPage() {
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [paginationInput, setPaginationInput] = useState<PaginationInput>({
     page: 1,
-    limit: 5,
+    limit: 20,
   });
   const { medications: medications, page, pageSize, totalPage, loading: initLoading, error: errorMedications, refetch: refetchMedications } = useGetMedications(
     paginationInput.page, paginationInput.limit
@@ -140,9 +140,11 @@ export default function MedicationPage() {
           action: { type: selectedAction, onClick: (item) => handleSelectedId(item as number) }
           }}
         paginationProps={{
-          page: paginationInput,
-          limit: 10,
-          total: totalPage,
+          state: {
+            page: 1,
+            limit: 20,
+            total: totalPage,
+          }
         }}
       />
     </>

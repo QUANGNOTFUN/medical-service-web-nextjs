@@ -21,6 +21,7 @@ export const GET_APPOINTMENTS = gql`
                         updated_at
                     }
                 }
+                slot_id
                 appointment_type
                 appointment_date
                 status
