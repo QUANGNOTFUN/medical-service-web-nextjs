@@ -26,7 +26,7 @@ export default function HeroBanner() {
                 <div className="flex gap-4">
 
                     <Link href="/doctor">
-                        <button className="bg-teal-500 hover:bg-teal-600 px-6 py-3 rounded-full font-semibold">
+                        <button className="bg-teal-500 hover:bg-teal-600 px-6 py-3 rounded-full font-semibold cursor-pointer transition-colors duration-300">
                             Đặt lịch khám ngay
                         </button>
                     </Link>

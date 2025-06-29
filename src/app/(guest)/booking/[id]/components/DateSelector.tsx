@@ -11,17 +11,16 @@ interface DateSelectorProps {
 
 const days = ['Chủ Nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'];
 
-const DateSelector: React.FC<DateSelectorProps> = ({
-                                                       selectedDate,
-                                                       onDateChange,
-                                                       availableDates,
-                                                   }) => {
+const DateSelector: React.FC<DateSelectorProps> = (
+  { selectedDate, onDateChange, availableDates,}
+) => {
     if (!availableDates || availableDates.length === 0) {
         return <p>Không có ngày khám khả dụng.</p>;
     }
-
+    const colCount = availableDates.length > 4 ? 4 : availableDates.length;
+    
     return (
-        <div className="grid grid-cols-4 gap-2 mb-4">
+        <div className={`grid grid-cols-${colCount} gap-2 mb-4`}>
             {availableDates.map((dateStr) => {
                 const date = new Date(dateStr);
                 return (
@@ -29,9 +28,11 @@ const DateSelector: React.FC<DateSelectorProps> = ({
                         key={dateStr}
                         type="button"
                         onClick={() => onDateChange(dateStr)}
-                        className={`py-2 px-3 rounded border text-center ${
+                        className={`py-2 px-3 rounded-md shadow-sm border cursor-pointer text-sm text-center
+                            hover:bg-blue-300 hover:text-white transition
+                         ${
                             selectedDate === dateStr
-                                ? 'bg-blue-500 text-white'
+                                ? 'bg-blue-500/90 text-white'
                                 : 'bg-white text-gray-700'
                         }`}
                     >

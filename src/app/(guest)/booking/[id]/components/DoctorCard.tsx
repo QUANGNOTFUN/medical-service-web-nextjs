@@ -15,25 +15,25 @@ interface DoctorCardProps {
 }
 
 const DoctorCard: React.FC<DoctorCardProps> = ({
-                                                   avatar,
-                                                   fullName,
-                                                   qualifications,
-                                                   specialty,
-                                                   hospital,
-                                                   workSeniority,
-                                                   rating,
-                                                   gender,
-                                                   email,
-                                                   phone,
-                                                   defaultFee
-                                               }) => {
+   avatar,
+   fullName,
+   qualifications,
+   specialty,
+   hospital,
+   workSeniority,
+   rating,
+   gender,
+   email,
+   phone,
+   defaultFee
+  }) => {
     return (
         <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8 space-y-8">
             {/* Thông tin cơ bản */}
             <div className="flex flex-col md:flex-row gap-6">
                 <div className="w-40 h-40 md:w-48 md:h-48 overflow-hidden rounded-xl border shadow">
                     <img
-                        src={avatar || '/default-doctor.jpg'}
+                        src={ avatar || '/default-doctor.jpg'}
                         alt={fullName}
                         className="w-full h-full object-cover"
                     />
@@ -100,8 +100,8 @@ const DoctorCard: React.FC<DoctorCardProps> = ({
                     </ul>
                 </div>
                 <div>
-                    <h2 className="text-lg font-semibold mb-2">Dịch vụ cung cấp</h2>
-                    <ul className="list-disc list-inside space-y-1">
+                    <h2 className="text-lg font-semibold mb-2 ">Dịch vụ cung cấp</h2>
+                    <ul className="list-disc list-inside space-y-1 ">
                         <li>Điều trị HIV/AIDS</li>
                         <li>PrEP (dự phòng trước phơi nhiễm)</li>
                         <li>PEP (dự phòng sau phơi nhiễm)</li>
