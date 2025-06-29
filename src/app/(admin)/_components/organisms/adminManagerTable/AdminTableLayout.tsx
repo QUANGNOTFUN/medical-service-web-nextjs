@@ -20,17 +20,16 @@ export default function AdminTableLayout(
 			<div className={"flex flex-col"}>
 				<div className={"flex justify-between mb-4"}>
 					<TableSearch placeholder={searchProps.placeholder} onSearch={searchProps.onSearch} />
-					<DarkModeToggle />
+					{/*<DarkModeToggle />*/}
 					<TableDropdownActions onItemSelected={dropdownProps.onItemSelected} />
 				</div>
 
 				<AdminTable headers={tableProps.headers} items={tableProps.items} action={tableProps.action} />
 				<TablePagination state={{
-            page: 0,
-            limit: 0,
+            page: 1,
+            limit: 20,
 					total: 0,
         } } />
-			
 			</div>
 	);
 }
