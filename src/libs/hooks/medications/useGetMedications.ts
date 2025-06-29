@@ -4,7 +4,7 @@ import { Medication } from "@/types/medications";
 import {PaginatedResponse, PaginationInput} from "@/types/pagination";
 import {useEffect, useState} from "react";
 
-export function useGetMedications(page = 1, limit = 5) {
+export function useGetMedications(page = 1, limit = 20) {
 	const [paginationInput, setPaginationInput] = useState<PaginationInput>({
 		page: page,
 		limit: limit,

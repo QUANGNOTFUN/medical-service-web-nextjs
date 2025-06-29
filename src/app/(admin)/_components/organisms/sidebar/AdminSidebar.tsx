@@ -19,11 +19,11 @@ export function AdminSidebar({ title, items, isLocked, onLockButton }: AdminSide
   const lockHiddenButton = (isLocked: boolean) => {
     return (
       <button
-        className={"absolute top-0 right-0 m-4 p-1 rounded-full shadow-lg outline outline-gray-500 dark:outline-gray-600 " +
+        className={"absolute top-5 right-1 p-1 rounded-full shadow-lg cursor-pointer outline outline-gray-500 dark:outline-gray-600 " +
           "bg-white dark:bg-zinc-800/10 hover:bg-violet-300 dark:hover:bg-slate-500/30 "}
         onClick={() => onLockButton?.(!isLocked)}
       >
-        {isLocked ? <LockKeyhole className="w-4 h-4" /> : <LockKeyholeOpen className="w-4 h-4" />}
+        {isLocked ? <LockKeyhole className="w-3 h-3" /> : <LockKeyholeOpen className="w-3 h-3" />}
       </button>
     );
   }
@@ -32,7 +32,7 @@ export function AdminSidebar({ title, items, isLocked, onLockButton }: AdminSide
     <aside className={`h-screen bg-gray-50/60 dark:bg-zinc-900 text-gray-800 dark:text-gray-100 ${title}`}>
       <div className="p-4 border-b border-gray-300 dark:border-gray-700">
         <h2 className="text-center text-xl font-bold">
-          Admin Panel
+          { title }
         </h2>
         {lockHiddenButton(isLocked)}
       </div>
@@ -45,7 +45,7 @@ export function AdminSidebar({ title, items, isLocked, onLockButton }: AdminSide
             >
               <Link
                 href={item.href}
-                className="flex items-center p-3 hover:bg-violet-300 dark:hover:bg-slate-500/30 rounded-lg transition-colors"
+                className="flex items-center p-3 hover:bg-violet-300 focus:bg-violet-300 dark:hover:bg-slate-500/30 rounded-lg transition-colors"
               >
                 {item.icon && <item.icon className="w-6 h-6 mr-2 text-gray-600 dark:text-gray-300" />}
                 <span>{item.title}</span>
