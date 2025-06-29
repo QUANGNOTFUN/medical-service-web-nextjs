@@ -1,7 +1,7 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { gql, useMutation } from "@apollo/client";
 import { enqueueSnackbar } from "notistack";
 
@@ -121,7 +121,7 @@ export default function ForgetPasswordPage() {
                                 placeholder="Nhập email của bạn"
                             />
                             {errors.email && (
-                                <p className="text-sm text-red-600 mt-1">{errors.email.message}</p>
+                                <p className="text-sm text-red-600 mt-1">{String(errors.email.message)}</p>
                             )}
                         </div>
                     )}
@@ -139,7 +139,7 @@ export default function ForgetPasswordPage() {
                                     placeholder="Nhập mã OTP"
                                 />
                                 {errors.otp && (
-                                    <p className="text-sm text-red-600 mt-1">{errors.otp.message}</p>
+                                    <p className="text-sm text-red-600 mt-1">{String(errors.otp.message)}</p>
                                 )}
                             </div>
                             <div>
@@ -159,7 +159,7 @@ export default function ForgetPasswordPage() {
                                     placeholder="Nhập mật khẩu mới"
                                 />
                                 {errors.newPassword && (
-                                    <p className="text-sm text-red-600 mt-1">{errors.newPassword.message}</p>
+                                    <p className="text-sm text-red-600 mt-1">{String(errors.newPassword.message)}</p>
                                 )}
                             </div>
                         </>
@@ -182,6 +182,9 @@ export default function ForgetPasswordPage() {
                                     : "Gửi Mã OTP"
                                 : "Đặt Lại Mật Khẩu"}
                     </button>
+                    <p className="text-center text-sm">
+                        Đã có tài khoản? <a href="/login" className="text-blue-600 hover:underline">Đăng nhập</a>
+                    </p>
                 </form>
             </div>
         </div>
