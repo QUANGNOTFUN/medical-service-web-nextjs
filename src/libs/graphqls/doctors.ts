@@ -4,6 +4,15 @@ export const GET_DOCTORS = gql`
     query GetDoctors {
         doctors {
           id
+          qualifications
+            specialty
+            hospital
+            work_seniority
+            default_fee
+            titles
+            positions
+            rating
+            gender
           user {
             id
             email
@@ -13,10 +22,6 @@ export const GET_DOCTORS = gql`
             date_of_birth
             avatar
           }
-          qualifications
-          work_seniority
-          specialty
-          hospital
         }
     }
 `;

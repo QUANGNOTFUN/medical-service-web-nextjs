@@ -3,6 +3,7 @@
 import { useQuery } from '@apollo/client';
 import { GET_DOCTORS } from '@/libs/graphqls/doctors';
 import Link from 'next/link';
+import React from "react";
 
 function DoctorPage() {
     const { loading, error, data } = useQuery(GET_DOCTORS, {
@@ -72,6 +73,12 @@ function DoctorPage() {
                             <p className="text-sm text-gray-500">
                                 {doctor.hospital || 'Không rõ'}
                             </p>
+                            <p className="text-sm text-gray-500">
+                                {doctor.specialty || 'Không rõ'}
+                            </p>
+                            <div className="px-4 py-2 bg-green-100 text-green-800 rounded-full font-semibold text-sm">
+                                Phí khám: {doctor.default_fee ? `${doctor.default_fee.toLocaleString()} VNĐ` : 'Chưa rõ'}
+                            </div>
                         </div>
                     </div>
 

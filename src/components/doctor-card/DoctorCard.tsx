@@ -28,6 +28,7 @@ function DoctorCard({ doctor }: Props) {
                 <h2 className="text-lg font-bold text-gray-800">{user.full_name || 'Bác sĩ'}</h2>
                 <p className="text-blue-600">{doctor.specialty || 'Chưa xác định'}</p>
                 <p className="text-gray-600">{doctor.hospital || 'Chưa có thông tin bệnh viện'}</p>
+
                 <Link href={`/booking/${user.id}`} className="text-sm text-blue-600 hover:underline mt-2 block">
                     Đặt lịch với bác sĩ
                 </Link>

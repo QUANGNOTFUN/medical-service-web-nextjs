@@ -8,6 +8,8 @@ export interface Doctor {
     gender?: string | null;
     specialty?: string | null;
     hospital?: string | null;
+    default_fee? :number | null;
+
 }
 
 export interface DoctorDisplay {
@@ -23,6 +25,8 @@ export interface DoctorDisplay {
     gender?: string | null;
     specialty?: string | null;
     hospital?: string | null;
+    default_fee? :number | null;
+
 }
 
 export interface CreateDoctorInput{

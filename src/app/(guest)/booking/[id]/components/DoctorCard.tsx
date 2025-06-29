@@ -60,7 +60,7 @@ const DoctorCard: React.FC<DoctorCardProps> = ({
                     {/* Phí khám và đánh giá */}
                     <div className="mt-4 flex flex-wrap items-center gap-4">
                         <div className="px-4 py-2 bg-green-100 text-green-800 rounded-full font-semibold text-sm">
-                            Phí khám: {defaultFee ? `${defaultFee.toLocaleString()}₫` : 'Chưa rõ'}
+                            Phí khám: {defaultFee ? `${defaultFee.toLocaleString()} VNĐ` : 'Chưa rõ'}
                         </div>
                         <div className="text-yellow-500 font-medium">
                             Đánh giá: ⭐ {rating ? rating.toFixed(1) : 'N/A'}
@@ -81,7 +81,7 @@ const DoctorCard: React.FC<DoctorCardProps> = ({
                 <div>
                     <h2 className="text-lg font-semibold mb-1">Địa chỉ</h2>
                     <p>{hospital || 'Bệnh viện Nhiệt Đới - Khoa HIV/AIDS'}</p>
-                    <p>78 Giải Phóng, Phương Mai, Đống Đa, Hà Nội</p>
+                    <p>Tô Ký, Q.12, TP.HCM</p>
                 </div>
             </div>
 
