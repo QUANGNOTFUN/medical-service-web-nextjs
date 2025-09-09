@@ -1,37 +1,13 @@
-import React from 'react';
-import '../globals.css';
-import type {Metadata} from "next";
-import AdminClientWrapper from "@/app/(admin)/_components/organisms/adminClientWrapper/AdminClientWrapper";
+import { TopNav } from "@/app/(admin)/components/TopNav";
+import React from "react";
 import {ToastContainer} from "react-toastify";
-import ProtectedLayout from "@/app/(admin)/protectedLayout";
 
-export const metadata: Metadata = {
-  title: "Quản lí phòng khám",
-  description: "Nền tảng quản lý sức khỏe, hỗ trợ đặt lịch khám và theo dõi bệnh án dễ dàng.",
-};
-
-export default function AdminLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return (
-      <ProtectedLayout>
-      <AdminClientWrapper>
-        {children}
-        <ToastContainer
-          position={"top-right"}
-          autoClose={3000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick={true}
-          rtl={false}
-          pauseOnFocusLoss={false}
-          draggable
-          pauseOnHover={false}
-          theme={"light"}
-        />
-      </AdminClientWrapper>
-      </ProtectedLayout>
-  );
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+    return (
+        <div>
+            <TopNav />
+            <main>{children}</main>
+            <ToastContainer position="top-right" autoClose={3000} theme="colored" />
+        </div>
+    );
 }
